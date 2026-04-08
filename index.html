@@ -13,14 +13,14 @@
     .logo svg { flex-shrink: 0; }
     .logo-text { font-weight: 700; font-size: 18px; letter-spacing: -0.3px; }
     h1 { font-size: 26px; font-weight: 700; text-align: center; margin-bottom: 8px; color: #1a1e3a; }
-    p { color: #656d76; font-size: 15px; text-align: center; max-width: 480px; margin-bottom: 36px; }
-    .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; max-width: 680px; }
-    @media (max-width: 540px) { .cards { grid-template-columns: 1fr; } }
-    .card { background: #fff; border: 1px solid #d0d7de; border-radius: 10px; padding: 24px; text-decoration: none; color: inherit; transition: border-color 0.15s, box-shadow 0.15s; }
+    p.subtitle { color: #656d76; font-size: 15px; text-align: center; max-width: 480px; margin-bottom: 36px; }
+    .cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; width: 100%; max-width: 880px; }
+    @media (max-width: 720px) { .cards { grid-template-columns: 1fr; } }
+    .card { background: #fff; border: 1px solid #d0d7de; border-radius: 10px; padding: 22px; text-decoration: none; color: inherit; transition: border-color 0.15s, box-shadow 0.15s; }
     .card:hover { border-color: #7c6ef0; box-shadow: 0 4px 16px rgba(124,110,240,0.12); }
     .card-num { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #7c6ef0; margin-bottom: 10px; }
-    .card h2 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
-    .card p { font-size: 13px; color: #656d76; margin-bottom: 16px; text-align: left; }
+    .card h2 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+    .card p { font-size: 12.5px; color: #656d76; margin-bottom: 14px; line-height: 1.5; }
     .card-link { font-size: 13px; font-weight: 600; color: #7c6ef0; display: flex; align-items: center; gap: 4px; }
     footer { margin-top: 48px; font-size: 12px; color: #8b949e; }
   </style>
@@ -34,21 +34,27 @@
     <span class="logo-text">DryRun Security</span>
   </div>
   <h1>GitHub Comment Redesign</h1>
-  <p>Internal proposal docs for the PR comment workflow and admin configuration updates.</p>
+  <p class="subtitle">Internal proposal docs for the PR comment workflow, admin configuration, and dashboard updates.</p>
   <div class="cards">
     <a href="workflow-proposal.html" class="card">
       <div class="card-num">Document 1</div>
       <h2>Comment Workflow Proposal</h2>
-      <p>Current behavior problems, proposed lifecycle, mock-ups for all 5 comment states, and feature flag documentation.</p>
-      <span class="card-link">View proposal →</span>
+      <p>Current behavior problems, proposed lifecycle, mock-ups for all 5 comment states, and feature flag docs.</p>
+      <span class="card-link">View proposal &rarr;</span>
     </a>
     <a href="admin-config.html" class="card">
       <div class="card-num">Document 2</div>
       <h2>Admin Config Mockup</h2>
-      <p>Redesigned settings page showing the current vs. proposed toggle layout with the new comment behavior flags.</p>
-      <span class="card-link">View mockup →</span>
+      <p>Redesigned settings page with the current vs. proposed toggle layout and new comment behavior flags.</p>
+      <span class="card-link">View mockup &rarr;</span>
+    </a>
+    <a href="pr-dashboard.html" class="card">
+      <div class="card-num">Document 3</div>
+      <h2>PR Dashboard Mockup</h2>
+      <p>Finding lifecycle on the PR page — scan timeline, status badges, resolved/dismissed history inline.</p>
+      <span class="card-link">View mockup &rarr;</span>
     </a>
   </div>
-  <footer>DryRun Security · Internal Proposal · April 2026</footer>
+  <footer>DryRun Security &middot; Internal Proposal &middot; April 2026</footer>
 </body>
 </html>
