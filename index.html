@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DryRun Security — GitHub Comment Redesign</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', -apple-system, sans-serif; background: #f6f8fa; color: #1f2328; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; }
+    .logo { display: flex; align-items: center; gap: 10px; margin-bottom: 32px; }
+    .logo svg { flex-shrink: 0; }
+    .logo-text { font-weight: 700; font-size: 18px; letter-spacing: -0.3px; }
+    h1 { font-size: 26px; font-weight: 700; text-align: center; margin-bottom: 8px; color: #1a1e3a; }
+    p { color: #656d76; font-size: 15px; text-align: center; max-width: 480px; margin-bottom: 36px; }
+    .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; max-width: 680px; }
+    @media (max-width: 540px) { .cards { grid-template-columns: 1fr; } }
+    .card { background: #fff; border: 1px solid #d0d7de; border-radius: 10px; padding: 24px; text-decoration: none; color: inherit; transition: border-color 0.15s, box-shadow 0.15s; }
+    .card:hover { border-color: #7c6ef0; box-shadow: 0 4px 16px rgba(124,110,240,0.12); }
+    .card-num { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #7c6ef0; margin-bottom: 10px; }
+    .card h2 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+    .card p { font-size: 13px; color: #656d76; margin-bottom: 16px; text-align: left; }
+    .card-link { font-size: 13px; font-weight: 600; color: #7c6ef0; display: flex; align-items: center; gap: 4px; }
+    footer { margin-top: 48px; font-size: 12px; color: #8b949e; }
+  </style>
+</head>
+<body>
+  <div class="logo">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+      <path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" stroke="#1a1e3a" stroke-width="1.5" fill="none"/>
+      <path d="M9 12l2 2 4-4" stroke="#1a1e3a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span class="logo-text">DryRun Security</span>
+  </div>
+  <h1>GitHub Comment Redesign</h1>
+  <p>Internal proposal docs for the PR comment workflow and admin configuration updates.</p>
+  <div class="cards">
+    <a href="workflow-proposal.html" class="card">
+      <div class="card-num">Document 1</div>
+      <h2>Comment Workflow Proposal</h2>
+      <p>Current behavior problems, proposed lifecycle, mock-ups for all 5 comment states, and feature flag documentation.</p>
+      <span class="card-link">View proposal →</span>
+    </a>
+    <a href="admin-config.html" class="card">
+      <div class="card-num">Document 2</div>
+      <h2>Admin Config Mockup</h2>
+      <p>Redesigned settings page showing the current vs. proposed toggle layout with the new comment behavior flags.</p>
+      <span class="card-link">View mockup →</span>
+    </a>
+  </div>
+  <footer>DryRun Security · Internal Proposal · April 2026</footer>
+</body>
+</html>
