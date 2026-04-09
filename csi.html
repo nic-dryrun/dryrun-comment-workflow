@@ -438,6 +438,55 @@
       text-decoration: underline;
     }
     .loading-cancel:hover { color: var(--text-sec); }
+
+    /* ── REPORT SETUP PANEL ── */
+    .rpt-setup {
+      padding: 24px 40px; border-bottom: 1px solid var(--border);
+      background: var(--surface-alt);
+    }
+    @media (max-width: 600px) { .rpt-setup { padding: 16px; } }
+    .rpt-setup-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .rpt-setup-header h3 { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .rpt-setup-toggle {
+      font-size: 12px; font-weight: 500; color: var(--purple); cursor: pointer;
+      background: none; border: none; font-family: var(--font);
+      display: flex; align-items: center; gap: 4px;
+    }
+    .rpt-setup-body { display: none; }
+    .rpt-setup.open .rpt-setup-body { display: block; }
+    .rpt-setup.open .rpt-setup-toggle svg { transform: rotate(180deg); }
+    .rpt-setup-form { display: flex; flex-direction: column; gap: 12px; }
+    .rpt-field label {
+      display: block; font-size: 12px; font-weight: 600; color: var(--text-sec);
+      margin-bottom: 4px;
+    }
+    .rpt-field select, .rpt-field input, .rpt-field textarea {
+      width: 100%; padding: 9px 12px; border: 1px solid var(--border);
+      border-radius: 8px; font-size: 13px; font-family: var(--font);
+      color: var(--text); background: var(--surface);
+    }
+    .rpt-field textarea { min-height: 72px; resize: vertical; }
+    .rpt-field select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='%236b7084' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+    .rpt-generate-btn {
+      align-self: flex-start; padding: 9px 20px; border: none; border-radius: 8px;
+      background: var(--purple); color: #fff; font-size: 13px; font-weight: 600;
+      cursor: pointer; font-family: var(--font); display: flex; align-items: center; gap: 6px;
+    }
+    .rpt-generate-btn:hover { background: #6a5cd8; }
+    .rpt-existing {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; font-size: 12px; color: var(--text-sec);
+    }
+    .rpt-existing svg { flex-shrink: 0; }
+    .rpt-existing strong { color: var(--text); }
+    .rpt-existing-badge {
+      font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 8px;
+      background: #dafbe1; color: #1a7f37; margin-left: 4px;
+    }
   </style>
 </head>
 <body>
@@ -907,6 +956,56 @@
       </div>
     </div>
 
+    <!-- REPORT SETUP PANEL -->
+    <div class="rpt-setup open" id="rptSetup">
+      <div class="rpt-setup-header">
+        <h3>
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="var(--purple)"><path d="M7.75 2a.75.75 0 01.75.75V7h4.25a.75.75 0 010 1.5H8.5v4.25a.75.75 0 01-1.5 0V8.5H2.75a.75.75 0 010-1.5H7V2.75A.75.75 0 017.75 2z"/></svg>
+          Run New Report
+        </h3>
+        <button class="rpt-setup-toggle" onclick="document.getElementById('rptSetup').classList.toggle('open')">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" style="transition:transform 0.2s"><path d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"/></svg>
+        </button>
+      </div>
+      <div class="rpt-setup-body">
+        <div class="rpt-setup-form">
+          <div class="rpt-field">
+            <label>Target Repository</label>
+            <select>
+              <option>DryRunSec/dryrun-api</option>
+              <option>DryRunSec/reposture</option>
+              <option>DryRunSec/analyzers</option>
+              <option>DryRunSec/scanner-agent</option>
+              <option>DryRunSec/dashboard-ui</option>
+              <option>DryRunSec/simple-api</option>
+            </select>
+          </div>
+          <div class="rpt-field">
+            <label>Analysis Period</label>
+            <select>
+              <option>Last 30 days</option>
+              <option>Last 60 days</option>
+              <option>Last 90 days</option>
+              <option>Last 6 months</option>
+              <option>Custom range...</option>
+            </select>
+          </div>
+          <div class="rpt-field">
+            <label>Additional Context <span style="font-weight:400;color:var(--text-muted);">(optional)</span></label>
+            <textarea placeholder="Add details to tailor the report — e.g., focus on auth patterns, upcoming audit prep, specific compliance framework, areas of concern..."></textarea>
+          </div>
+          <button class="rpt-generate-btn" onclick="document.getElementById('rptSetup').classList.remove('open')">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="#fff"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zm.5 4.5v4l-2.75 1.63-.75-1.3L7.5 7.5V4.5h1z"/></svg>
+            Generate Report
+          </button>
+        </div>
+      </div>
+      <div class="rpt-existing" style="margin-top: 12px;">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="#5a5f6b"><path d="M3 3a2 2 0 012-2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V3z"/></svg>
+        <span>Viewing existing report: <strong>DryRunSec/dryrun-api</strong> <span class="rpt-existing-badge">Apr 9, 2026</span></span>
+      </div>
+    </div>
+
     <div class="rpt">
       <!-- HEADER -->
       <div class="rpt-header">
@@ -1131,6 +1230,5 @@
   </div>
 </div>
 
-<script src="gate.js"></script>
 </body>
 </html>
