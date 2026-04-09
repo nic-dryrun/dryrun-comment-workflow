@@ -232,13 +232,9 @@
     <div class="chart-header">
       <div class="chart-title">Findings Over Time</div>
       <div class="chart-legend">
-        <label class="legend-toggle"><input type="checkbox" checked><span class="legend-dot" style="background: var(--text);"></span> Total Findings</label>
-        <label class="legend-toggle"><input type="checkbox" checked><span class="legend-dot" style="background: var(--red);"></span> Critical</label>
-        <label class="legend-toggle"><input type="checkbox" checked><span class="legend-dot" style="background: var(--orange);"></span> High</label>
-        <label class="legend-toggle"><input type="checkbox" checked><span class="legend-dot" style="background: #d97706;"></span> Medium</label>
-        <label class="legend-toggle"><input type="checkbox" checked><span class="legend-dot" style="background: var(--blue);"></span> Low</label>
-        <label class="legend-toggle"><input type="checkbox" checked><span class="legend-dot" style="background: var(--green);"></span> Improved</label>
+        <label class="legend-toggle"><input type="checkbox" checked><span class="legend-dot" style="background: var(--purple);"></span> Total Findings</label>
         <label class="legend-toggle"><input type="checkbox" checked><span class="legend-dot" style="background: var(--cyan);"></span> Unique PRs</label>
+        <label class="legend-toggle"><input type="checkbox" checked><span class="legend-dot" style="background: var(--green);"></span> Improved PRs</label>
       </div>
     </div>
     <div class="chart-body">
@@ -250,27 +246,16 @@
         <line x1="0" y1="144" x2="800" y2="144" stroke="var(--border-light)" stroke-width="0.5"/>
 
         <!-- Unique PRs scanned (cyan, area fill) -->
-        <path d="M0,180 L0,55 C50,52 100,48 133,50 C166,52 200,44 266,40 C333,36 400,38 466,42 C533,38 600,34 666,30 C733,28 800,26 800,26 L800,180Z" fill="rgba(13,148,136,0.08)" stroke="none"/>
-        <path d="M0,55 C50,52 100,48 133,50 C166,52 200,44 266,40 C333,36 400,38 466,42 C533,38 600,34 666,30 C733,28 800,26 800,26" fill="none" stroke="var(--cyan)" stroke-width="1.5" stroke-dasharray="6,3"/>
+        <path d="M0,180 L0,55 C50,52 100,48 133,50 C166,52 200,44 266,40 C333,36 400,38 466,42 C533,38 600,34 666,30 C733,28 800,26 800,26 L800,180Z" fill="rgba(13,148,136,0.06)" stroke="none"/>
+        <path d="M0,55 C50,52 100,48 133,50 C166,52 200,44 266,40 C333,36 400,38 466,42 C533,38 600,34 666,30 C733,28 800,26 800,26" fill="none" stroke="var(--cyan)" stroke-width="1.5"/>
 
-        <!-- Total Findings (dark line, aggregate) -->
-        <path d="M0,78 C50,80 100,85 133,82 C166,76 200,72 266,68 C333,65 400,70 466,74 C533,72 600,76 666,80 C733,82 800,84 800,84" fill="none" stroke="var(--text)" stroke-width="2.5" opacity="0.7"/>
+        <!-- Total Findings (purple, primary line) -->
+        <path d="M0,180 L0,90 C50,92 100,98 133,95 C166,88 200,82 266,78 C333,74 400,80 466,85 C533,82 600,86 666,90 C733,93 800,96 800,96 L800,180Z" fill="rgba(124,110,240,0.08)" stroke="none"/>
+        <path d="M0,90 C50,92 100,98 133,95 C166,88 200,82 266,78 C333,74 400,80 466,85 C533,82 600,86 666,90 C733,93 800,96 800,96" fill="none" stroke="var(--purple)" stroke-width="2.5"/>
 
-        <!-- Improved / Resolved (green, area) -->
-        <path d="M0,180 L0,100 C50,95 100,90 133,92 C166,94 200,85 266,80 C333,75 400,70 466,65 C533,60 600,50 666,45 C733,40 800,35 800,35 L800,180Z" fill="rgba(22,163,74,0.1)" stroke="none"/>
-        <path d="M0,100 C50,95 100,90 133,92 C166,94 200,85 266,80 C333,75 400,70 466,65 C533,60 600,50 666,45 C733,40 800,35 800,35" fill="none" stroke="var(--green)" stroke-width="1.5"/>
-
-        <!-- Medium -->
-        <path d="M0,120 C50,125 100,130 133,128 C166,120 200,115 266,110 C333,108 400,112 466,118 C533,115 600,120 666,125 C733,128 800,130 800,130" fill="none" stroke="var(--orange)" stroke-width="1.5"/>
-
-        <!-- High -->
-        <path d="M0,140 C50,138 100,145 133,150 C166,148 200,140 266,135 C333,130 400,138 466,142 C533,140 600,145 666,148 C733,150 800,152 800,152" fill="none" stroke="var(--orange)" stroke-width="1.5" opacity="0.7"/>
-
-        <!-- Critical (red, dashed) -->
-        <path d="M0,162 C50,160 100,164 133,158 C166,162 200,160 266,154 C333,158 400,162 466,164 C533,160 600,162 666,158 C733,160 800,162 800,162" fill="none" stroke="var(--red)" stroke-width="2" stroke-dasharray="4,3"/>
-
-        <!-- Low -->
-        <path d="M0,150 C50,148 100,152 133,150 C166,146 200,148 266,150 C333,152 400,150 466,148 C533,150 600,152 666,154 C733,152 800,150 800,150" fill="none" stroke="var(--blue)" stroke-width="1" opacity="0.6"/>
+        <!-- Improved PRs (green, area) -->
+        <path d="M0,180 L0,130 C50,128 100,124 133,126 C166,122 200,116 266,110 C333,105 400,100 466,94 C533,88 600,80 666,72 C733,66 800,60 800,60 L800,180Z" fill="rgba(22,163,74,0.08)" stroke="none"/>
+        <path d="M0,130 C50,128 100,124 133,126 C166,122 200,116 266,110 C333,105 400,100 466,94 C533,88 600,80 666,72 C733,66 800,60 800,60" fill="none" stroke="var(--green)" stroke-width="1.5"/>
 
         <!-- Date labels -->
         <text x="0" y="178" fill="var(--text-muted)" font-size="9" font-family="Inter">Mar 10</text>
