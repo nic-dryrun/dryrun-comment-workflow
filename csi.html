@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DryRun — Code Security Intelligence Mockup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --font: 'Inter', -apple-system, sans-serif;
+      --mono: 'JetBrains Mono', 'Consolas', monospace;
+      --bg: #fafbfc;
+      --surface: #ffffff;
+      --surface-alt: #f6f8fa;
+      --text: #1a1d23;
+      --text-sec: #5a5f6b;
+      --text-muted: #8b919e;
+      --border: #e3e6eb;
+      --border-light: #eef0f4;
+      --purple: #7c6ef0;
+      --purple-bg: #f0eeff;
+      --purple-border: #d8d3f7;
+      --green: #1a7f37;
+      --green-bg: #dafbe1;
+      --green-border: #aceebb;
+      --orange: #bf8700;
+      --orange-bg: #fff8c5;
+      --red: #cf222e;
+      --red-bg: #ffebe9;
+      --blue: #0969da;
+      --blue-bg: #ddf4ff;
+      --blue-border: #b6d8ff;
+      --gray-bg: #f3f4f6;
+      --teal: #0d7377;
+      --teal-bg: #e6faf5;
+    }
+    body { font-family: var(--font); font-size: 14px; line-height: 1.5; color: var(--text); background: var(--bg); }
+
+    /* ── MOCKUP BAR ── */
+    .mockup-bar { background: linear-gradient(135deg, #1a1e3a, #2d3260); padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; color: #fff; font-size: 12px; }
+    .mockup-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(124,110,240,0.3); padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+    .change-indicator { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px; white-space: nowrap; }
+    .change-indicator--new { background: var(--purple-bg); color: var(--purple); border: 1px solid var(--purple-border); }
+    .change-indicator--renamed { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+
+    /* ── PAGE ── */
+    .page { max-width: 1100px; margin: 0 auto; padding: 28px 24px 60px; }
+
+    /* ── ANNOTATION ── */
+    .annotation-banner { background: var(--purple-bg); border: 1px solid var(--purple-border); border-radius: 8px; padding: 12px 16px; margin-bottom: 24px; display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: #4338ca; line-height: 1.5; }
+    .annotation-banner svg { flex-shrink: 0; margin-top: 2px; }
+
+    /* ── PAGE HEADER ── */
+    .page-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px; flex-wrap: wrap; gap: 8px; }
+    .page-header h1 { font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+    .page-subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; }
+    .date-pill { font-size: 12px; color: var(--text-sec); background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 5px 12px; display: flex; align-items: center; gap: 6px; }
+
+    /* ── WORKFLOW GRID ── */
+    .section-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .workflow-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; margin-bottom: 36px; }
+
+    .wf-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+      padding: 18px; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s;
+      display: flex; flex-direction: column; gap: 8px;
+      position: relative;
+    }
+    .wf-card:hover { border-color: var(--purple); box-shadow: 0 2px 12px rgba(124,110,240,0.1); }
+    .wf-card-top { display: flex; align-items: flex-start; gap: 10px; }
+    .wf-icon {
+      width: 36px; height: 36px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .wf-card h3 { font-size: 13.5px; font-weight: 600; line-height: 1.3; }
+    .wf-card p { font-size: 12px; color: var(--text-sec); line-height: 1.45; flex: 1; }
+    .wf-card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+    .wf-output { font-size: 10.5px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+    .wf-run-btn {
+      font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 6px;
+      border: 1px solid var(--purple-border); background: var(--purple-bg); color: var(--purple);
+      cursor: pointer; transition: all 0.15s;
+    }
+    .wf-run-btn:hover { background: var(--purple); color: #fff; }
+
+    /* icon colors */
+    .ic-orange { background: var(--orange-bg); }
+    .ic-red { background: var(--red-bg); }
+    .ic-blue { background: var(--blue-bg); }
+    .ic-purple { background: var(--purple-bg); }
+    .ic-green { background: var(--green-bg); }
+    .ic-teal { background: var(--teal-bg); }
+    .ic-gray { background: var(--gray-bg); }
+
+    /* ── SPLIT: AI + REPORTS ── */
+    .split-section { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 36px; }
+    @media (max-width: 768px) { .split-section { grid-template-columns: 1fr; } }
+
+    /* ── AI ASSISTANT ── */
+    .ai-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 0; overflow: hidden;
+    }
+    .ai-header {
+      padding: 14px 18px; background: var(--surface-alt);
+      border-bottom: 1px solid var(--border-light);
+      font-size: 13px; font-weight: 600;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .ai-body { padding: 16px 18px; }
+    .ai-message {
+      font-size: 13px; color: var(--text-sec); line-height: 1.6;
+      font-family: var(--mono); background: var(--surface-alt);
+      padding: 12px 14px; border-radius: 8px; margin-bottom: 12px;
+    }
+    .ai-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .ai-pill {
+      font-size: 11.5px; padding: 5px 12px; border-radius: 16px;
+      border: 1px solid var(--border); background: var(--surface);
+      color: var(--text-sec); cursor: pointer; transition: all 0.15s;
+    }
+    .ai-pill:hover { border-color: var(--purple); color: var(--purple); background: var(--purple-bg); }
+    .ai-input-row { display: flex; gap: 8px; }
+    .ai-input {
+      flex: 1; padding: 10px 14px; border: 1px solid var(--border);
+      border-radius: 8px; font-size: 13px; font-family: var(--font); color: var(--text);
+    }
+    .ai-input::placeholder { color: var(--text-muted); }
+    .ai-send {
+      width: 36px; height: 36px; border-radius: 8px;
+      border: 1px solid var(--purple-border); background: var(--purple);
+      color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ── RECENT REPORTS ── */
+    .reports-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 0; overflow: hidden;
+    }
+    .reports-header {
+      padding: 14px 18px; background: var(--surface-alt);
+      border-bottom: 1px solid var(--border-light);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .reports-header h3 { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+    .reports-view-all { font-size: 12px; color: var(--purple); font-weight: 500; text-decoration: none; cursor: pointer; }
+    .reports-list { padding: 0; }
+    .report-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 18px; border-bottom: 1px solid var(--border-light);
+      cursor: pointer; transition: background 0.1s;
+    }
+    .report-item:last-child { border-bottom: none; }
+    .report-item:hover { background: var(--surface-alt); }
+    .report-icon {
+      width: 32px; height: 32px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .report-content { flex: 1; min-width: 0; }
+    .report-title { font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .report-meta { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+    .report-badge { font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 8px; }
+    .rb-auto { background: var(--blue-bg); color: var(--blue); }
+    .rb-manual { background: var(--gray-bg); color: var(--text-sec); }
+    .report-arrow { color: var(--text-muted); flex-shrink: 0; }
+
+    /* ── SCHEDULED WORKFLOWS ── */
+    .scheduled-section { margin-bottom: 36px; }
+    .sched-row {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 12px 16px;
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 8px;
+    }
+    .sched-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .sched-info { flex: 1; }
+    .sched-name { font-size: 13px; font-weight: 600; }
+    .sched-detail { font-size: 11px; color: var(--text-muted); }
+    .sched-freq {
+      font-size: 11px; font-weight: 500; padding: 3px 10px;
+      border-radius: 12px; background: var(--blue-bg); color: var(--blue);
+      border: 1px solid var(--blue-border); white-space: nowrap;
+    }
+    .sched-toggle { width: 36px; height: 20px; border-radius: 10px; background: var(--purple); position: relative; border: none; cursor: pointer; }
+    .sched-toggle::after { content: ''; position: absolute; width: 14px; height: 14px; border-radius: 50%; background: #fff; top: 3px; left: 19px; box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
+    .sched-add {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 500; color: var(--purple);
+      padding: 10px 16px; border: 1px dashed var(--purple-border);
+      border-radius: 8px; background: var(--purple-bg); cursor: pointer;
+      transition: all 0.15s;
+    }
+    .sched-add:hover { background: #e8e3ff; }
+
+    /* ── COMPARISON BOX ── */
+    .compare-box {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+      margin-bottom: 32px;
+    }
+    @media (max-width: 640px) { .compare-box { grid-template-columns: 1fr; } }
+    .compare-col {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; overflow: hidden;
+    }
+    .compare-col-header { padding: 10px 16px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 1px solid var(--border-light); }
+    .cc-current { background: #fef2f2; color: #991b1b; }
+    .cc-proposed { background: var(--purple-bg); color: var(--purple); }
+    .compare-col-body { padding: 16px; font-size: 12.5px; color: var(--text-sec); line-height: 1.55; }
+    .compare-col-body ul { margin: 8px 0 0 18px; }
+    .compare-col-body li { margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+
+<div class="mockup-bar">
+  <div style="display: flex; align-items: center; gap: 12px;">
+    <span class="mockup-badge"><svg width="10" height="10" viewBox="0 0 16 16" fill="#c4b5fd"><circle cx="8" cy="8" r="8"/></svg> PROPOSED MOCKUP</span>
+    <span style="opacity: 0.6;">Code Security Intelligence — Insights Redesign</span>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- ANNOTATION -->
+  <div class="annotation-banner">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="#7c6ef0"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zm0 3a1 1 0 110 2 1 1 0 010-2zm2 9H6v-1h1V7H6V6h3v6h1v1z"/></svg>
+    <div><strong>Proposed redesign of the Insights page.</strong> Renamed to Code Security Intelligence. Replaces the open-ended AI chat with structured, click-to-run security workflows that produce templated reports. The AI assistant is retained for ad-hoc queries. Existing capabilities (search, summarize, analyzer stats, file history) are preserved and power the workflows behind the scenes.</div>
+  </div>
+
+  <!-- SIDE-BY-SIDE COMPARISON -->
+  <div class="compare-box">
+    <div class="compare-col">
+      <div class="compare-col-header cc-current">Current: Insights</div>
+      <div class="compare-col-body">
+        <strong>Open-ended AI chat</strong> — users must know what to ask
+        <ul>
+          <li>Pre-built question pills (generic)</li>
+          <li>Custom categories with free-text prompts</li>
+          <li>Daily auto-run results as a flat list</li>
+          <li>No structured output format</li>
+          <li>Users guess what workflows are possible</li>
+        </ul>
+      </div>
+    </div>
+    <div class="compare-col">
+      <div class="compare-col-header cc-proposed">Proposed: Code Security Intelligence</div>
+      <div class="compare-col-body">
+        <strong>Structured, click-to-run workflows</strong> — users see what's possible
+        <ul>
+          <li>10 named workflows with clear descriptions</li>
+          <li>Each produces a templated document/report</li>
+          <li>Scheduled workflows with configurable cadence</li>
+          <li>Report library with history and versioning</li>
+          <li>AI assistant retained for ad-hoc exploration</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <h1>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7c6ef0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      Code Security Intelligence
+      <span class="change-indicator change-indicator--renamed">Replaces Insights</span>
+    </h1>
+    <div class="date-pill">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="#5a5f6b"><path d="M4.75 0a.75.75 0 01.75.75V2h5V.75a.75.75 0 011.5 0V2h1.25c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0113.25 16H2.75A1.75 1.75 0 011 14.25V3.75C1 2.784 1.784 2 2.75 2H4V.75A.75.75 0 014.75 0zM2.5 7.5v6.75c0 .138.112.25.25.25h10.5a.25.25 0 00.25-.25V7.5H2.5zm0-3.75V6h11V3.75a.25.25 0 00-.25-.25H2.75a.25.25 0 00-.25.25z"/></svg>
+      Apr 09, 2026
+    </div>
+  </div>
+  <div class="page-subtitle">Run security workflows against your PR findings, or ask the AI assistant anything.</div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!--           WORKFLOW GRID (NEW)           -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="section-label">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="#8b919e"><path d="M1.5 3.25a2.25 2.25 0 113 2.122v5.256a2.251 2.251 0 11-1.5 0V5.372A2.25 2.25 0 011.5 3.25zm5.677-.177L9.573.677A.25.25 0 0110 .854V2.5h1A2.5 2.5 0 0113.5 5v5.628a2.251 2.251 0 11-1.5 0V5a1 1 0 00-1-1h-1v1.646a.25.25 0 01-.427.177L7.177 3.427a.25.25 0 010-.354z"/></svg>
+    Security Workflows
+    <span class="change-indicator change-indicator--new">New</span>
+  </div>
+
+  <div class="workflow-grid">
+
+    <!-- 1. Feature Ships -->
+    <div class="wf-card">
+      <div class="wf-card-top">
+        <div class="wf-icon ic-green">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="#1a7f37"><path d="M8.878.392a1.75 1.75 0 00-1.756 0l-5.25 3.045A1.75 1.75 0 001 4.951v6.098c0 .624.332 1.2.872 1.514l5.25 3.045a1.75 1.75 0 001.756 0l5.25-3.045c.54-.313.872-.89.872-1.514V4.951c0-.624-.332-1.2-.872-1.514L8.878.392zM7.875 1.69a.25.25 0 01.25 0l4.63 2.685L8 7.133 3.245 4.375l4.63-2.685zM2.5 5.677l5 2.9v5.765l-4.63-2.685a.25.25 0 01-.124-.216L2.5 5.677zm6.25 8.665V8.578l5-2.9v5.764a.25.25 0 01-.125.216L8.75 14.34z"/></svg>
+        </div>
+        <div>
+          <h3>Feature Ships</h3>
+        </div>
+      </div>
+      <p>Security posture of recently shipped features. What went out, what was flagged, and what was resolved before merge.</p>
+      <div class="wf-card-footer">
+        <span class="wf-output"><svg width="12" height="12" viewBox="0 0 16 16" fill="#8b919e"><path d="M3 3a2 2 0 012-2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V3z"/></svg> Report</span>
+        <button class="wf-run-btn">Run workflow</button>
+      </div>
+    </div>
+
+    <!-- 2. Architecture Risks -->
+    <div class="wf-card">
+      <div class="wf-card-top">
+        <div class="wf-icon ic-red">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="#cf222e"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0114.082 15H1.918a1.75 1.75 0 01-1.543-2.575L6.457 1.047zM8 5a.75.75 0 00-.75.75v2.5a.75.75 0 001.5 0v-2.5A.75.75 0 008 5zm0 9a1 1 0 100-2 1 1 0 000 2z"/></svg>
+        </div>
+        <div>
+          <h3>Architecture Risks</h3>
+        </div>
+      </div>
+      <p>Identify structural security concerns across repos — auth patterns, trust boundaries, and cross-service risks.</p>
+      <div class="wf-card-footer">
+        <span class="wf-output"><svg width="12" height="12" viewBox="0 0 16 16" fill="#8b919e"><path d="M3 3a2 2 0 012-2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V3z"/></svg> Report</span>
+        <button class="wf-run-btn">Run workflow</button>
+      </div>
+    </div>
+
+    <!-- 3. Developer Trends -->
+    <div class="wf-card">
+      <div class="wf-card-top">
+        <div class="wf-icon ic-blue">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="#0969da"><path d="M7.467.133a1.75 1.75 0 011.066 0l5.25 1.68A1.75 1.75 0 0115 3.48V7c0 1.566-.32 3.182-1.303 4.682-.983 1.498-2.585 2.813-5.032 3.855a1.697 1.697 0 01-1.33 0c-2.447-1.042-4.049-2.357-5.032-3.855C1.32 10.182 1 8.566 1 7V3.48a1.75 1.75 0 011.217-1.667l5.25-1.68zm.61 1.429a.25.25 0 00-.153 0l-5.25 1.68a.25.25 0 00-.174.238V7c0 1.358.275 2.666 1.057 3.86.784 1.194 2.121 2.34 4.366 3.297a.2.2 0 00.154 0c2.245-.956 3.582-2.104 4.366-3.298C13.225 9.666 13.5 8.36 13.5 7V3.48a.25.25 0 00-.174-.237l-5.25-1.68z"/></svg>
+        </div>
+        <div>
+          <h3>Developer Trends</h3>
+        </div>
+      </div>
+      <p>How developers interact with findings — fix rates, dismissal patterns, response times, and repeat offenders.</p>
+      <div class="wf-card-footer">
+        <span class="wf-output"><svg width="12" height="12" viewBox="0 0 16 16" fill="#8b919e"><path d="M3 3a2 2 0 012-2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V3z"/></svg> Report</span>
+        <button class="wf-run-btn">Run workflow</button>
+      </div>
+    </div>
+
+    <!-- 4. Incident Response -->
+    <div class="wf-card">
+      <div class="wf-card-top">
+        <div class="wf-icon ic-red">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="#cf222e"><path d="M4.47.22A.749.749 0 015 0h6c.199 0 .389.079.53.22l4.25 4.25c.141.14.22.331.22.53v6a.749.749 0 01-.22.53l-4.25 4.25A.749.749 0 0111 16H5a.749.749 0 01-.53-.22L.22 11.53A.749.749 0 010 11V5c0-.199.079-.389.22-.53L4.47.22zm.84 1.28L1.5 5.31v5.38l3.81 3.81h5.38l3.81-3.81V5.31L10.69 1.5H5.31zM8 4a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 018 4zm0 8a1 1 0 100-2 1 1 0 000 2z"/></svg>
+        </div>
+        <div>
+          <h3>Incident Response</h3>
+        </div>
+      </div>
+      <p>Investigate a vulnerability across your codebase. Trace exposure, find related patterns, and assess blast radius.</p>
+      <div class="wf-card-footer">
+        <span class="wf-output"><svg width="12" height="12" viewBox="0 0 16 16" fill="#8b919e"><path d="M3 3a2 2 0 012-2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V3z"/></svg> Investigation brief</span>
+        <button class="wf-run-btn">Run workflow</button>
+      </div>
+    </div>
+
+    <!-- 5. Shadow AI -->
+    <div class="wf-card">
+      <div class="wf-card-top">
+        <div class="wf-icon ic-purple">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="#7c6ef0"><path d="M5.5 8.75a.75.75 0 00-1.5 0v.5a.75.75 0 001.5 0v-.5zm6-.75a.75.75 0 01.75.75v.5a.75.75 0 01-1.5 0v-.5a.75.75 0 01.75-.75zM8 0a8 8 0 100 16A8 8 0 008 0zM1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0z"/></svg>
+        </div>
+        <div>
+          <h3>Shadow AI Detection</h3>
+        </div>
+      </div>
+      <p>Detect unauthorized AI/LLM integrations, API keys, and model calls introduced in recent PRs across your org.</p>
+      <div class="wf-card-footer">
+        <span class="wf-output"><svg width="12" height="12" viewBox="0 0 16 16" fill="#8b919e"><path d="M3 3a2 2 0 012-2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V3z"/></svg> Report</span>
+        <button class="wf-run-btn">Run workflow</button>
+      </div>
+    </div>
+
+    <!-- 6. New Feature / Repo Security Review -->
+    <div class="wf-card">
+      <div class="wf-card-top">
+        <div class="wf-icon ic-teal">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="#0d7377"><path d="M2 1.75C2 .784 2.784 0 3.75 0h6.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0113.25 15h-9.5A1.75 1.75 0 012 13.25V1.75zm1.75-.25a.25.25 0 00-.25.25v11.5c0 .138.112.25.25.25h9.5a.25.25 0 00.25-.25V5h-2.75A1.75 1.75 0 019 3.25V.5H3.75zM10.5 1.62v1.63c0 .138.112.25.25.25h1.63L10.5 1.62zM8 7a.75.75 0 01.75.75v1.5h1.5a.75.75 0 010 1.5h-1.5v1.5a.75.75 0 01-1.5 0v-1.5h-1.5a.75.75 0 010-1.5h1.5v-1.5A.75.75 0 018 7z"/></svg>
+        </div>
+        <div>
+          <h3>New Feature / Repo Review</h3>
+        </div>
+      </div>
+      <p>Security review of a new feature branch or repository. Summarize risk profile, dependencies, and recommendations.</p>
+      <div class="wf-card-footer">
+        <span class="wf-output"><svg width="12" height="12" viewBox="0 0 16 16" fill="#8b919e"><path d="M3 3a2 2 0 012-2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V3z"/></svg> Review doc</span>
+        <button class="wf-run-btn">Run workflow</button>
+      </div>
+    </div>
+
+    <!-- 7. Security Reviews -->
+    <div class="wf-card">
+      <div class="wf-card-top">
+        <div class="wf-icon ic-orange">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="#bf8700"><path d="M9.585.52a2.678 2.678 0 00-3.17 0l-.928.68a1.178 1.178 0 01-.518.215L3.83 1.59a2.678 2.678 0 00-2.24 2.24l-.175 1.14a1.178 1.178 0 01-.215.518l-.68.928a2.678 2.678 0 000 3.17l.68.928c.113.153.186.33.215.518l.175 1.138a2.678 2.678 0 002.24 2.24l1.138.175c.187.029.365.102.518.215l.928.68a2.678 2.678 0 003.17 0l.928-.68a1.17 1.17 0 01.518-.215l1.138-.175a2.678 2.678 0 002.241-2.24l.175-1.138c.029-.187.102-.365.215-.518l.68-.928a2.678 2.678 0 000-3.17l-.68-.928a1.179 1.179 0 01-.215-.518L14.41 3.83a2.678 2.678 0 00-2.24-2.24l-1.138-.175a1.179 1.179 0 01-.518-.215L9.585.52zM7.303 1.77l.927-.68a1.178 1.178 0 011.4 0l.928.68c.29.212.63.35.988.393l1.14.175c.483.074.87.46.943.943l.175 1.138c.043.358.182.699.393.99l.68.927a1.178 1.178 0 010 1.4l-.68.928c-.211.29-.35.63-.393.988l-.175 1.14a1.178 1.178 0 01-.943.943l-1.14.175a2.678 2.678 0 00-.988.393l-.928.68a1.178 1.178 0 01-1.4 0l-.927-.68a2.678 2.678 0 00-.99-.393l-1.138-.175a1.178 1.178 0 01-.943-.943l-.175-1.14a2.678 2.678 0 00-.393-.988l-.68-.928a1.178 1.178 0 010-1.4l.68-.927c.212-.29.35-.632.393-.99l.175-1.138a1.178 1.178 0 01.943-.943l1.14-.175c.357-.043.698-.181.988-.393zM11.28 6.78a.75.75 0 00-1.06-1.06L7 8.94 5.78 7.72a.75.75 0 00-1.06 1.06l1.75 1.75a.75.75 0 001.06 0l3.75-3.75z"/></svg>
+        </div>
+        <div>
+          <h3>Security Reviews</h3>
+        </div>
+      </div>
+      <p>Comprehensive security review report for a repo or org over a time period. Findings, trends, and action items.</p>
+      <div class="wf-card-footer">
+        <span class="wf-output"><svg width="12" height="12" viewBox="0 0 16 16" fill="#8b919e"><path d="M3 3a2 2 0 012-2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V3z"/></svg> Review report</span>
+        <button class="wf-run-btn">Run workflow</button>
+      </div>
+    </div>
+
+    <!-- 8. PR Variant Analysis -->
+    <div class="wf-card">
+      <div class="wf-card-top">
+        <div class="wf-icon ic-purple">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="#7c6ef0"><path d="M5.45 5.154A4.25 4.25 0 009.25 7.5h1.378a5.75 5.75 0 10-3.752-6.846.75.75 0 101.43.458 4.25 4.25 0 11.044 4.788.75.75 0 00-.604-.31h-.075a5.715 5.715 0 00-2.221.436zM8 12.5a.75.75 0 110 1.5.75.75 0 010-1.5zM3 8.75A.75.75 0 013.75 8h4.5a.75.75 0 010 1.5h-4.5A.75.75 0 013 8.75zm0 3A.75.75 0 013.75 11h4.5a.75.75 0 010 1.5h-4.5A.75.75 0 013 11.75z"/></svg>
+        </div>
+        <div>
+          <h3>PR Variant Analysis</h3>
+        </div>
+      </div>
+      <p>Investigate a finding across all PRs. Find similar patterns, related code paths, and assess if the same issue exists elsewhere.</p>
+      <div class="wf-card-footer">
+        <span class="wf-output"><svg width="12" height="12" viewBox="0 0 16 16" fill="#8b919e"><path d="M3 3a2 2 0 012-2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V3z"/></svg> Analysis doc</span>
+        <button class="wf-run-btn">Run workflow</button>
+      </div>
+    </div>
+
+    <!-- 9. Vulnerability Trends -->
+    <div class="wf-card">
+      <div class="wf-card-top">
+        <div class="wf-icon ic-orange">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="#bf8700"><path d="M1.5 1.75V13.5h13.75a.75.75 0 010 1.5H.75a.75.75 0 01-.75-.75V1.75a.75.75 0 011.5 0zm14.28 2.53a.75.75 0 00-1.06-1.06L10 7.94 7.53 5.47a.75.75 0 00-1.06 0L3.22 8.72a.75.75 0 001.06 1.06L7 7.06l2.47 2.47a.75.75 0 001.06 0l5.25-5.25z"/></svg>
+        </div>
+        <div>
+          <h3>Vulnerability Trends</h3>
+        </div>
+      </div>
+      <p>Trend analysis of findings over time — by severity, analyzer, repo, and resolution rate. Spot emerging patterns.</p>
+      <div class="wf-card-footer">
+        <span class="wf-output"><svg width="12" height="12" viewBox="0 0 16 16" fill="#8b919e"><path d="M3 3a2 2 0 012-2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V3z"/></svg> Trend report</span>
+        <button class="wf-run-btn">Run workflow</button>
+      </div>
+    </div>
+
+    <!-- 10. Application Summary -->
+    <div class="wf-card">
+      <div class="wf-card-top">
+        <div class="wf-icon ic-blue">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="#0969da"><path d="M2 1.75C2 .784 2.784 0 3.75 0h8.5C13.216 0 14 .784 14 1.75v12.5A1.75 1.75 0 0112.25 16h-8.5A1.75 1.75 0 012 14.25V1.75zm1.75-.25a.25.25 0 00-.25.25v12.5c0 .138.112.25.25.25h8.5a.25.25 0 00.25-.25V1.75a.25.25 0 00-.25-.25h-8.5zM5 4.75A.75.75 0 015.75 4h4.5a.75.75 0 010 1.5h-4.5A.75.75 0 015 4.75zM5.75 7.5a.75.75 0 000 1.5h4.5a.75.75 0 000-1.5h-4.5zM5 11.25a.75.75 0 01.75-.75h2a.75.75 0 010 1.5h-2a.75.75 0 01-.75-.75z"/></svg>
+        </div>
+        <div>
+          <h3>Application Summary</h3>
+        </div>
+      </div>
+      <p>Full security profile of a repo or application — auth methods, APIs, dependencies, risk areas, and recent activity.</p>
+      <div class="wf-card-footer">
+        <span class="wf-output"><svg width="12" height="12" viewBox="0 0 16 16" fill="#8b919e"><path d="M3 3a2 2 0 012-2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V3z"/></svg> Summary doc</span>
+        <button class="wf-run-btn">Run workflow</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!--       AI ASSISTANT + RECENT REPORTS      -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="split-section">
+
+    <!-- AI ASSISTANT -->
+    <div class="ai-card">
+      <div class="ai-header">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="#7c6ef0"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zm0 3a1 1 0 110 2 1 1 0 010-2zM6 7.75A.75.75 0 016.75 7h1.5a.75.75 0 01.75.75v3.75h.75a.75.75 0 010 1.5h-3a.75.75 0 010-1.5h.75v-3h-.75A.75.75 0 016 7.75z"/></svg>
+        DryRun AI Assistant
+      </div>
+      <div class="ai-body">
+        <div class="ai-message">Hello! I can help you explore your security data, investigate specific findings, or answer questions about your code and PRs.</div>
+        <div class="ai-pills">
+          <button class="ai-pill">Weekly summary</button>
+          <button class="ai-pill">Top risks by repo</button>
+          <button class="ai-pill">Recent policy violations</button>
+          <button class="ai-pill">File-level investigation</button>
+        </div>
+        <div class="ai-input-row">
+          <input type="text" class="ai-input" placeholder="Ask a question about your security data...">
+          <button class="ai-send">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="#fff"><path d="M.989 8.014L15.492 1.27a.5.5 0 01.657.657L9.406 16.43a.5.5 0 01-.917-.07l-2.32-5.57L.6 8.47a.5.5 0 01.389-.456z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECENT REPORTS -->
+    <div class="reports-card">
+      <div class="reports-header">
+        <h3>
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="#5a5f6b"><path d="M3 3a2 2 0 012-2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V3z"/></svg>
+          Recent Reports
+          <span class="change-indicator change-indicator--new">New</span>
+        </h3>
+        <a class="reports-view-all">View all &rarr;</a>
+      </div>
+      <div class="reports-list">
+        <div class="report-item">
+          <div class="report-icon ic-orange">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="#bf8700"><path d="M1.5 1.75V13.5h13.75a.75.75 0 010 1.5H.75a.75.75 0 01-.75-.75V1.75a.75.75 0 011.5 0zm14.28 2.53a.75.75 0 00-1.06-1.06L10 7.94 7.53 5.47a.75.75 0 00-1.06 0L3.22 8.72a.75.75 0 001.06 1.06L7 7.06l2.47 2.47a.75.75 0 001.06 0l5.25-5.25z"/></svg>
+          </div>
+          <div class="report-content">
+            <div class="report-title">Vulnerability Trends — March 2026</div>
+            <div class="report-meta">
+              <span class="report-badge rb-auto">Scheduled</span>
+              Apr 1, 2026
+            </div>
+          </div>
+          <svg class="report-arrow" width="14" height="14" viewBox="0 0 16 16" fill="#8b919e"><path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z"/></svg>
+        </div>
+        <div class="report-item">
+          <div class="report-icon ic-blue">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="#0969da"><path d="M7.467.133a1.75 1.75 0 011.066 0l5.25 1.68A1.75 1.75 0 0115 3.48V7c0 1.566-.32 3.182-1.303 4.682-.983 1.498-2.585 2.813-5.032 3.855a1.697 1.697 0 01-1.33 0C4.888 10.813 3.286 9.498 2.303 8C1.32 6.5 1 4.884 1 3.318V3.48a1.75 1.75 0 011.217-1.667l5.25-1.68z"/></svg>
+          </div>
+          <div class="report-content">
+            <div class="report-title">Developer Trends — Q1 2026</div>
+            <div class="report-meta">
+              <span class="report-badge rb-manual">Manual</span>
+              Mar 28, 2026
+            </div>
+          </div>
+          <svg class="report-arrow" width="14" height="14" viewBox="0 0 16 16" fill="#8b919e"><path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z"/></svg>
+        </div>
+        <div class="report-item">
+          <div class="report-icon ic-red">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="#cf222e"><path d="M4.47.22A.749.749 0 015 0h6c.199 0 .389.079.53.22l4.25 4.25c.141.14.22.331.22.53v6a.749.749 0 01-.22.53l-4.25 4.25A.749.749 0 0111 16H5a.749.749 0 01-.53-.22L.22 11.53A.749.749 0 010 11V5c0-.199.079-.389.22-.53L4.47.22z"/></svg>
+          </div>
+          <div class="report-content">
+            <div class="report-title">Incident Response — Log4j variant in payment-svc</div>
+            <div class="report-meta">
+              <span class="report-badge rb-manual">Manual</span>
+              Mar 15, 2026
+            </div>
+          </div>
+          <svg class="report-arrow" width="14" height="14" viewBox="0 0 16 16" fill="#8b919e"><path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z"/></svg>
+        </div>
+        <div class="report-item">
+          <div class="report-icon ic-green">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="#1a7f37"><path d="M8.878.392a1.75 1.75 0 00-1.756 0l-5.25 3.045A1.75 1.75 0 001 4.951v6.098c0 .624.332 1.2.872 1.514l5.25 3.045a1.75 1.75 0 001.756 0l5.25-3.045c.54-.313.872-.89.872-1.514V4.951c0-.624-.332-1.2-.872-1.514L8.878.392z"/></svg>
+          </div>
+          <div class="report-content">
+            <div class="report-title">Feature Ships — Sprint 14 Release</div>
+            <div class="report-meta">
+              <span class="report-badge rb-auto">Scheduled</span>
+              Mar 10, 2026
+            </div>
+          </div>
+          <svg class="report-arrow" width="14" height="14" viewBox="0 0 16 16" fill="#8b919e"><path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z"/></svg>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!--         SCHEDULED WORKFLOWS (NEW)        -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="scheduled-section">
+    <div class="section-label">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="#8b919e"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zm.5 4.5v4l-2.75 1.63-.75-1.3L7.5 7.5V4.5h1z"/></svg>
+      Scheduled Workflows
+      <span class="change-indicator change-indicator--new">New</span>
+    </div>
+
+    <div class="sched-row">
+      <div class="sched-icon ic-orange">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="#bf8700"><path d="M1.5 1.75V13.5h13.75a.75.75 0 010 1.5H.75a.75.75 0 01-.75-.75V1.75a.75.75 0 011.5 0zm14.28 2.53a.75.75 0 00-1.06-1.06L10 7.94 7.53 5.47a.75.75 0 00-1.06 0L3.22 8.72a.75.75 0 001.06 1.06L7 7.06l2.47 2.47a.75.75 0 001.06 0l5.25-5.25z"/></svg>
+      </div>
+      <div class="sched-info">
+        <div class="sched-name">Vulnerability Trends</div>
+        <div class="sched-detail">All repos · Last 30 days · Generated on the 1st of each month</div>
+      </div>
+      <span class="sched-freq">Monthly</span>
+      <div class="sched-toggle"></div>
+    </div>
+
+    <div class="sched-row">
+      <div class="sched-icon ic-green">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="#1a7f37"><path d="M8.878.392a1.75 1.75 0 00-1.756 0l-5.25 3.045A1.75 1.75 0 001 4.951v6.098c0 .624.332 1.2.872 1.514l5.25 3.045a1.75 1.75 0 001.756 0l5.25-3.045c.54-.313.872-.89.872-1.514V4.951c0-.624-.332-1.2-.872-1.514L8.878.392z"/></svg>
+      </div>
+      <div class="sched-info">
+        <div class="sched-name">Feature Ships</div>
+        <div class="sched-detail">All repos · Merged PRs from the past week · Every Monday</div>
+      </div>
+      <span class="sched-freq">Weekly</span>
+      <div class="sched-toggle"></div>
+    </div>
+
+    <div class="sched-row">
+      <div class="sched-icon ic-purple">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="#7c6ef0"><path d="M5.5 8.75a.75.75 0 00-1.5 0v.5a.75.75 0 001.5 0v-.5zm6-.75a.75.75 0 01.75.75v.5a.75.75 0 01-1.5 0v-.5a.75.75 0 01.75-.75zM8 0a8 8 0 100 16A8 8 0 008 0z"/></svg>
+      </div>
+      <div class="sched-info">
+        <div class="sched-name">Shadow AI Detection</div>
+        <div class="sched-detail">All repos · Scan for new AI/LLM integrations · Every Monday</div>
+      </div>
+      <span class="sched-freq">Weekly</span>
+      <div class="sched-toggle"></div>
+    </div>
+
+    <div class="sched-add">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M7.75 2a.75.75 0 01.75.75V7h4.25a.75.75 0 010 1.5H8.5v4.25a.75.75 0 01-1.5 0V8.5H2.75a.75.75 0 010-1.5H7V2.75A.75.75 0 017.75 2z"/></svg>
+      Schedule a workflow
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
