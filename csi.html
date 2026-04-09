@@ -137,10 +137,12 @@
       content: ''; position: absolute; inset: -3px; border-radius: 13px;
       border: 2px dashed var(--purple); opacity: 0;
       animation: anno-pulse 2s ease-in-out infinite;
+      pointer-events: none;
     }
     @keyframes anno-pulse { 0%,100% { opacity: 0.3; } 50% { opacity: 0.8; } }
     .anno-tag {
       position: absolute; top: -12px; right: 12px; z-index: 2;
+      pointer-events: none;
       font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
       padding: 3px 10px; border-radius: 4px;
       background: var(--purple); color: #fff;
