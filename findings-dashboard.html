@@ -11,35 +11,36 @@
     :root {
       --font: 'Inter', -apple-system, sans-serif;
       --mono: 'JetBrains Mono', monospace;
-      --bg: #0f1117;
-      --surface: #181b23;
-      --surface-alt: #1e2130;
-      --surface-hover: #252839;
-      --border: #2a2d3a;
-      --border-light: #333648;
-      --text: #e2e4ea;
-      --text-sec: #9399a8;
-      --text-muted: #6b7084;
-      --purple: #8b7cf8;
-      --purple-dim: rgba(139,124,248,0.15);
-      --cyan: #4ecdc4;
-      --cyan-dim: rgba(78,205,196,0.15);
-      --orange: #f0a43a;
-      --orange-dim: rgba(240,164,58,0.15);
-      --red: #f06449;
-      --red-dim: rgba(240,100,73,0.15);
-      --green: #4ade80;
-      --green-dim: rgba(74,222,128,0.15);
-      --blue: #60a5fa;
-      --blue-dim: rgba(96,165,250,0.15);
-      --pink: #f472b6;
-      --pink-dim: rgba(244,114,182,0.15);
+      --bg: #f6f8fa;
+      --surface: #ffffff;
+      --surface-alt: #f0f2f5;
+      --surface-hover: #ebedf1;
+      --border: #d0d7de;
+      --border-light: #e8ecf0;
+      --text: #1a1d23;
+      --text-sec: #5a5f6b;
+      --text-muted: #8b919e;
+      --purple: #7c6ef0;
+      --purple-dim: rgba(124,110,240,0.1);
+      --cyan: #0d9488;
+      --cyan-dim: rgba(13,148,136,0.1);
+      --orange: #d97706;
+      --orange-dim: rgba(217,119,6,0.1);
+      --red: #dc2626;
+      --red-dim: rgba(220,38,38,0.1);
+      --green: #16a34a;
+      --green-dim: rgba(22,163,74,0.1);
+      --blue: #2563eb;
+      --blue-dim: rgba(37,99,235,0.1);
+      --pink: #db2777;
+      --pink-dim: rgba(219,39,119,0.1);
     }
     body { font-family: var(--font); font-size: 13px; line-height: 1.5; color: var(--text); background: var(--bg); overflow-x: hidden; }
 
     /* ── MOCKUP BAR ── */
     .mockup-bar { background: linear-gradient(135deg, #1a1e3a, #2d3260); padding: 8px 20px; display: flex; align-items: center; gap: 12px; font-size: 12px; color: #fff; }
     .mockup-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(139,124,248,0.3); padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+    .t-row-head { background: var(--surface-alt); }
 
     /* ── LAYOUT ── */
     .page { padding: 20px; }
@@ -53,7 +54,7 @@
     .pill-group { display: flex; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
     .pill { font-size: 11px; font-weight: 500; padding: 6px 12px; color: var(--text-sec); border: none; background: transparent; cursor: pointer; font-family: var(--font); }
     .pill:hover { color: var(--text); background: var(--surface-alt); }
-    .pill--active { color: var(--cyan); background: var(--surface-alt); }
+    .pill--active { color: var(--purple); background: var(--surface-alt); font-weight: 600; }
     .filter-btn { font-size: 11px; font-weight: 500; padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text-sec); cursor: pointer; display: flex; align-items: center; gap: 5px; font-family: var(--font); }
     .filter-btn:hover { border-color: var(--purple); color: var(--text); }
     .filter-btn svg { flex-shrink: 0; }
@@ -77,6 +78,9 @@
     .chart-title { font-size: 13px; font-weight: 600; }
     .chart-legend { display: flex; gap: 14px; }
     .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-sec); }
+    .legend-toggle { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-sec); cursor: pointer; padding: 3px 8px; border-radius: 4px; border: 1px solid transparent; transition: all 0.1s; }
+    .legend-toggle:hover { background: var(--surface-alt); }
+    .legend-toggle input { width: 12px; height: 12px; accent-color: var(--purple); cursor: pointer; }
     .legend-dot { width: 8px; height: 8px; border-radius: 2px; }
     .chart-body { padding: 20px; position: relative; height: 220px; }
 
@@ -212,9 +216,9 @@
       <div class="kpi-sub">14 Critical · 33 High</div>
     </div>
     <div class="kpi">
-      <div class="kpi-label">Resolved Rate</div>
+      <div class="kpi-label">Improvement Rate</div>
       <div class="kpi-val" style="color: var(--green);">72%</div>
-      <div class="kpi-sub"><span class="kpi-delta down">↑ 8%</span> improvement</div>
+      <div class="kpi-sub"><span class="kpi-delta down">↑ 8%</span> vs. prev period</div>
     </div>
     <div class="kpi">
       <div class="kpi-label">Avg Resolve Time</div>
@@ -228,38 +232,54 @@
     <div class="chart-header">
       <div class="chart-title">Findings Over Time</div>
       <div class="chart-legend">
-        <span class="legend-item"><span class="legend-dot" style="background: var(--red);"></span> Critical</span>
-        <span class="legend-item"><span class="legend-dot" style="background: var(--orange);"></span> High</span>
-        <span class="legend-item"><span class="legend-dot" style="background: #fbbf24;"></span> Medium</span>
-        <span class="legend-item"><span class="legend-dot" style="background: var(--blue);"></span> Low</span>
-        <span class="legend-item"><span class="legend-dot" style="background: var(--green);"></span> Resolved</span>
+        <label class="legend-toggle"><input type="checkbox" checked><span class="legend-dot" style="background: var(--text);"></span> Total Findings</label>
+        <label class="legend-toggle"><input type="checkbox" checked><span class="legend-dot" style="background: var(--red);"></span> Critical</label>
+        <label class="legend-toggle"><input type="checkbox" checked><span class="legend-dot" style="background: var(--orange);"></span> High</label>
+        <label class="legend-toggle"><input type="checkbox" checked><span class="legend-dot" style="background: #d97706;"></span> Medium</label>
+        <label class="legend-toggle"><input type="checkbox" checked><span class="legend-dot" style="background: var(--blue);"></span> Low</label>
+        <label class="legend-toggle"><input type="checkbox" checked><span class="legend-dot" style="background: var(--green);"></span> Improved</label>
+        <label class="legend-toggle"><input type="checkbox" checked><span class="legend-dot" style="background: var(--cyan);"></span> Unique PRs</label>
       </div>
     </div>
     <div class="chart-body">
       <svg class="area-chart" viewBox="0 0 800 180" preserveAspectRatio="none">
         <!-- Grid lines -->
-        <line x1="0" y1="45" x2="800" y2="45" stroke="#2a2d3a" stroke-width="0.5"/>
-        <line x1="0" y1="90" x2="800" y2="90" stroke="#2a2d3a" stroke-width="0.5"/>
-        <line x1="0" y1="135" x2="800" y2="135" stroke="#2a2d3a" stroke-width="0.5"/>
-        <!-- Resolved (green, bottom layer) -->
-        <path d="M0,180 L0,100 C50,95 100,90 133,92 C166,94 200,85 266,80 C333,75 400,70 466,65 C533,60 600,50 666,45 C733,40 800,35 800,35 L800,180Z" fill="rgba(74,222,128,0.15)" stroke="none"/>
+        <line x1="0" y1="36" x2="800" y2="36" stroke="var(--border-light)" stroke-width="0.5"/>
+        <line x1="0" y1="72" x2="800" y2="72" stroke="var(--border-light)" stroke-width="0.5"/>
+        <line x1="0" y1="108" x2="800" y2="108" stroke="var(--border-light)" stroke-width="0.5"/>
+        <line x1="0" y1="144" x2="800" y2="144" stroke="var(--border-light)" stroke-width="0.5"/>
+
+        <!-- Unique PRs scanned (cyan, area fill) -->
+        <path d="M0,180 L0,55 C50,52 100,48 133,50 C166,52 200,44 266,40 C333,36 400,38 466,42 C533,38 600,34 666,30 C733,28 800,26 800,26 L800,180Z" fill="rgba(13,148,136,0.08)" stroke="none"/>
+        <path d="M0,55 C50,52 100,48 133,50 C166,52 200,44 266,40 C333,36 400,38 466,42 C533,38 600,34 666,30 C733,28 800,26 800,26" fill="none" stroke="var(--cyan)" stroke-width="1.5" stroke-dasharray="6,3"/>
+
+        <!-- Total Findings (dark line, aggregate) -->
+        <path d="M0,78 C50,80 100,85 133,82 C166,76 200,72 266,68 C333,65 400,70 466,74 C533,72 600,76 666,80 C733,82 800,84 800,84" fill="none" stroke="var(--text)" stroke-width="2.5" opacity="0.7"/>
+
+        <!-- Improved / Resolved (green, area) -->
+        <path d="M0,180 L0,100 C50,95 100,90 133,92 C166,94 200,85 266,80 C333,75 400,70 466,65 C533,60 600,50 666,45 C733,40 800,35 800,35 L800,180Z" fill="rgba(22,163,74,0.1)" stroke="none"/>
         <path d="M0,100 C50,95 100,90 133,92 C166,94 200,85 266,80 C333,75 400,70 466,65 C533,60 600,50 666,45 C733,40 800,35 800,35" fill="none" stroke="var(--green)" stroke-width="1.5"/>
-        <!-- Medium (yellow, middle) -->
-        <path d="M0,180 L0,120 C50,125 100,130 133,128 C166,120 200,115 266,110 C333,108 400,112 466,118 C533,115 600,120 666,125 C733,128 800,130 800,130 L800,180Z" fill="rgba(251,191,36,0.12)" stroke="none"/>
-        <path d="M0,120 C50,125 100,130 133,128 C166,120 200,115 266,110 C333,108 400,112 466,118 C533,115 600,120 666,125 C733,128 800,130 800,130" fill="none" stroke="#fbbf24" stroke-width="1.5"/>
-        <!-- High (orange) -->
-        <path d="M0,180 L0,140 C50,138 100,145 133,150 C166,148 200,140 266,135 C333,130 400,138 466,142 C533,140 600,145 666,148 C733,150 800,152 800,152 L800,180Z" fill="rgba(240,164,58,0.12)" stroke="none"/>
-        <path d="M0,140 C50,138 100,145 133,150 C166,148 200,140 266,135 C333,130 400,138 466,142 C533,140 600,145 666,148 C733,150 800,152 800,152" fill="none" stroke="var(--orange)" stroke-width="1.5"/>
-        <!-- Critical (red, top spikes) -->
-        <path d="M0,170 C50,168 100,172 133,165 C166,170 200,168 266,160 C333,165 400,170 466,172 C533,168 600,170 666,165 C733,168 800,170 800,170" fill="none" stroke="var(--red)" stroke-width="2" stroke-dasharray="4,3"/>
+
+        <!-- Medium -->
+        <path d="M0,120 C50,125 100,130 133,128 C166,120 200,115 266,110 C333,108 400,112 466,118 C533,115 600,120 666,125 C733,128 800,130 800,130" fill="none" stroke="var(--orange)" stroke-width="1.5"/>
+
+        <!-- High -->
+        <path d="M0,140 C50,138 100,145 133,150 C166,148 200,140 266,135 C333,130 400,138 466,142 C533,140 600,145 666,148 C733,150 800,152 800,152" fill="none" stroke="var(--orange)" stroke-width="1.5" opacity="0.7"/>
+
+        <!-- Critical (red, dashed) -->
+        <path d="M0,162 C50,160 100,164 133,158 C166,162 200,160 266,154 C333,158 400,162 466,164 C533,160 600,162 666,158 C733,160 800,162 800,162" fill="none" stroke="var(--red)" stroke-width="2" stroke-dasharray="4,3"/>
+
+        <!-- Low -->
+        <path d="M0,150 C50,148 100,152 133,150 C166,146 200,148 266,150 C333,152 400,150 466,148 C533,150 600,152 666,154 C733,152 800,150 800,150" fill="none" stroke="var(--blue)" stroke-width="1" opacity="0.6"/>
+
         <!-- Date labels -->
-        <text x="0" y="178" fill="#6b7084" font-size="9" font-family="Inter">Mar 10</text>
-        <text x="133" y="178" fill="#6b7084" font-size="9" font-family="Inter">Mar 17</text>
-        <text x="266" y="178" fill="#6b7084" font-size="9" font-family="Inter">Mar 24</text>
-        <text x="400" y="178" fill="#6b7084" font-size="9" font-family="Inter">Mar 31</text>
-        <text x="533" y="178" fill="#6b7084" font-size="9" font-family="Inter">Apr 2</text>
-        <text x="666" y="178" fill="#6b7084" font-size="9" font-family="Inter">Apr 5</text>
-        <text x="770" y="178" fill="#6b7084" font-size="9" font-family="Inter">Apr 9</text>
+        <text x="0" y="178" fill="var(--text-muted)" font-size="9" font-family="Inter">Mar 10</text>
+        <text x="133" y="178" fill="var(--text-muted)" font-size="9" font-family="Inter">Mar 17</text>
+        <text x="266" y="178" fill="var(--text-muted)" font-size="9" font-family="Inter">Mar 24</text>
+        <text x="400" y="178" fill="var(--text-muted)" font-size="9" font-family="Inter">Mar 31</text>
+        <text x="533" y="178" fill="var(--text-muted)" font-size="9" font-family="Inter">Apr 2</text>
+        <text x="666" y="178" fill="var(--text-muted)" font-size="9" font-family="Inter">Apr 5</text>
+        <text x="770" y="178" fill="var(--text-muted)" font-size="9" font-family="Inter">Apr 9</text>
       </svg>
     </div>
   </div>
@@ -362,7 +382,7 @@
         </div>
         <div class="dist-body">
           <div class="donut-wrap">
-            <div class="donut" style="background: conic-gradient(var(--red) 0% 9%, var(--orange) 9% 33%, #fbbf24 33% 65%, var(--blue) 65% 85%, var(--green) 85% 100%);">
+            <div class="donut" style="background: conic-gradient(var(--red) 0% 9%, var(--orange) 9% 33%, #d97706 33% 65%, var(--blue) 65% 85%, var(--green) 85% 100%);">
               <div class="donut-center">
                 <div class="donut-center-val">312</div>
                 <div class="donut-center-label">Findings</div>
