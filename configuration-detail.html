@@ -249,6 +249,14 @@
           <div class="step-sublabel">Merge enforcement</div>
         </div>
       </div>
+      <div class="step-connector"></div>
+      <div class="step" id="tab-5" onclick="goToStep(5)">
+        <div class="step-num" id="num-5">5</div>
+        <div>
+          <div class="step-label">Review &amp; Save</div>
+          <div class="step-sublabel">Confirm all settings</div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -533,7 +541,106 @@
 
     <div class="step-nav">
       <button class="btn-secondary" onclick="goToStep(3)">← Back</button>
-      <button class="btn-primary" onclick="saveConfig()">Save Configuration</button>
+      <button class="btn-primary" onclick="goToStep(5)">Next: Review &amp; Save →</button>
+      <button class="btn-ghost" onclick="window.location='configurations.html'">Cancel</button>
+    </div>
+  </div>
+
+  <!-- ══ STEP 5: REVIEW & SAVE ══ -->
+  <div class="step-content" id="step-5">
+    <div class="step-heading">Review &amp; Save</div>
+    <div class="step-subheading">Confirm your configuration before saving. Click any section to jump back and edit.</div>
+
+    <div class="summary-grid">
+
+      <!-- Analyzers summary -->
+      <div class="summary-card">
+        <div class="summary-card-title">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M7.467.133a1.75 1.75 0 011.066 0l5.25 1.68A1.75 1.75 0 0115 3.48V7c0 1.566-.32 3.182-1.303 4.682-.983 1.498-2.585 2.813-5.032 3.855a1.697 1.697 0 01-1.33 0c-2.447-1.042-4.049-2.357-5.032-3.855C1.32 10.182 1 8.566 1 7V3.48a1.75 1.75 0 011.217-1.667l5.25-1.68z"/></svg>
+          Core Analyzers
+          <button class="card-btn" onclick="goToStep(1)" style="margin-left:auto;font-size:10px;padding:2px 8px;">Edit</button>
+        </div>
+        <div class="summary-item"><span class="dot-on"></span> Cross-Site Scripting Analyzer</div>
+        <div class="summary-item"><span class="dot-on"></span> General Security Analyzer</div>
+        <div class="summary-item"><span class="dot-on"></span> IDOR Analyzer</div>
+        <div class="summary-item"><span class="dot-on"></span> Mass Assignment</div>
+        <div class="summary-item"><span class="dot-on"></span> Secrets Analyzer</div>
+        <div class="summary-item"><span class="dot-on"></span> Server-Side Request Forgery Analyzer</div>
+        <div class="summary-item"><span class="dot-on"></span> SQL Injection Analyzer</div>
+      </div>
+
+      <!-- Custom policies summary -->
+      <div class="summary-card">
+        <div class="summary-card-title">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8.878.392a1.75 1.75 0 00-1.756 0l-5.25 3.045A1.75 1.75 0 001 4.951v6.098c0 .624.332 1.2.872 1.514l5.25 3.045a1.75 1.75 0 001.756 0l5.25-3.045c.54-.313.872-.89.872-1.514V4.951c0-.624-.332-1.2-.872-1.514L8.878.392z"/></svg>
+          Custom Code Policies
+          <button class="card-btn" onclick="goToStep(1)" style="margin-left:auto;font-size:10px;padding:2px 8px;">Edit</button>
+        </div>
+        <div class="summary-item"><span class="dot-on"></span> Dependency License Check v1</div>
+        <div class="summary-item"><span class="dot-on"></span> No Default Env Var Values</div>
+      </div>
+
+      <!-- Comment visibility summary -->
+      <div class="summary-card">
+        <div class="summary-card-title">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0114.25 13H8.06l-2.573 2.573A1.458 1.458 0 013 14.543V13H1.75A1.75 1.75 0 010 11.25v-9.5z"/></svg>
+          Comment Visibility
+          <button class="card-btn" onclick="goToStep(2)" style="margin-left:auto;font-size:10px;padding:2px 8px;">Edit</button>
+        </div>
+        <div id="sum-comments">
+          <div class="summary-item"><span class="dot-on"></span> Issue comments enabled</div>
+          <div class="summary-item"><span class="dot-on"></span> Comment on clean scans</div>
+          <div class="summary-item"><span class="dot-on"></span> Comment on draft PRs</div>
+          <div class="summary-item"><span class="dot-on"></span> Retain comment when resolved</div>
+        </div>
+      </div>
+
+      <!-- Integrations summary -->
+      <div class="summary-card">
+        <div class="summary-card-title">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 16a2 2 0 001.985-1.75c.017-.137-.097-.25-.235-.25h-3.5c-.138 0-.252.113-.235.25A2 2 0 008 16zm.25-14.75v-.5a.75.75 0 00-1.5 0v.5A4.56 4.56 0 003.5 7.35c0 1.129-.133 2.099-.348 2.895A2.088 2.088 0 001 12.5c0 .828.48 1.5 1.085 1.5h11.83C14.52 14 15 13.328 15 12.5a2.088 2.088 0 00-2.152-2.255c-.215-.796-.348-1.766-.348-2.895A4.56 4.56 0 008.25 2.25z"/></svg>
+          Integrations
+          <button class="card-btn" onclick="goToStep(3)" style="margin-left:auto;font-size:10px;padding:2px 8px;">Edit</button>
+        </div>
+        <div class="summary-item"><span class="dot-on"></span> Notifications enabled</div>
+        <div class="summary-item" style="flex-direction:column;align-items:flex-start;gap:2px;">
+          <div style="display:flex;align-items:center;gap:6px;"><span class="dot-on"></span> Security Alerts — Tines</div>
+          <div style="font-size:11px;color:var(--text-muted);padding-left:13px;">5 events · PR scan, new vulns, blocked…</div>
+        </div>
+      </div>
+
+      <!-- Blocking summary — full width -->
+      <div class="summary-card" style="grid-column:1/-1;">
+        <div class="summary-card-title">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M4.47.22A.749.749 0 015 0h6c.199 0 .389.079.53.22l4.25 4.25c.141.14.22.331.22.53v6a.749.749 0 01-.22.53l-4.25 4.25A.749.749 0 0111 16H5a.749.749 0 01-.53-.22L.22 11.53A.749.749 0 010 11V5c0-.199.079-.389.22-.53L4.47.22z"/></svg>
+          Blocking
+          <button class="card-btn" onclick="goToStep(4)" style="margin-left:auto;font-size:10px;padding:2px 8px;">Edit</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:4px 0 8px;">
+          <span style="font-size:13px;font-weight:600;color:var(--orange);">Global threshold: High+</span>
+          <span style="font-size:12px;color:var(--text-muted);">PRs with high or critical findings are blocked from merging</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:4px;">
+          <div class="summary-item"><span class="dot-off"></span> Cross-Site Scripting — not blocking</div>
+          <div class="summary-item"><span class="dot-off"></span> General Security — not blocking</div>
+          <div class="summary-item"><span class="dot-off"></span> IDOR — not blocking</div>
+          <div class="summary-item"><span class="dot-off"></span> Mass Assignment — not blocking</div>
+          <div class="summary-item"><span class="dot-on"></span> Secrets — blocking (Any)</div>
+          <div class="summary-item"><span class="dot-off"></span> SSRF — not blocking</div>
+          <div class="summary-item"><span class="dot-off"></span> SQL Injection — not blocking</div>
+          <div class="summary-item"><span class="dot-on"></span> License Check — blocking (Any)</div>
+          <div class="summary-item"><span class="dot-off"></span> No Default Env Vars — not blocking</div>
+        </div>
+      </div>
+
+    </div><!-- /summary-grid -->
+
+    <div class="step-nav">
+      <button class="btn-secondary" onclick="goToStep(4)">← Back</button>
+      <button class="btn-primary" onclick="saveConfig()" style="background:var(--green);padding:9px 28px;font-size:14px;">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" style="vertical-align:-2px;margin-right:5px;"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"/></svg>
+        Save Configuration
+      </button>
       <button class="btn-ghost" onclick="window.location='configurations.html'">Cancel</button>
     </div>
   </div>
@@ -543,7 +650,7 @@
 
 <script>
 // ── STEP NAVIGATION ──
-const totalSteps = 4;
+const totalSteps = 5;
 let currentStep = 1;
 const completedSteps = new Set();
 
@@ -616,8 +723,7 @@ function selectBlock(val) {
 
 // ── SAVE ──
 function saveConfig() {
-  completedSteps.add(4);
-  // Mark all done visually then redirect
+  // Flash all steps done, then navigate
   for (let i = 1; i <= totalSteps; i++) {
     completedSteps.add(i);
     const tab = document.getElementById('tab-' + i);
@@ -626,7 +732,12 @@ function saveConfig() {
     tab.classList.add('step--done');
     num.innerHTML = '<svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"/></svg>';
   }
-  setTimeout(() => window.location = 'configurations.html', 600);
+  // Show brief saved toast
+  const toast = document.createElement('div');
+  toast.textContent = 'Configuration saved';
+  toast.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#1a7f37;color:#fff;padding:10px 24px;border-radius:8px;font-size:13px;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,0.18);z-index:9999;';
+  document.body.appendChild(toast);
+  setTimeout(() => window.location = 'configurations.html', 1200);
 }
 </script>
 
