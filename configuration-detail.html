@@ -683,8 +683,8 @@
         </div>
       </div>
 
-      <!-- Blocking summary — full width, dynamic -->
-      <div class="summary-card" style="grid-column:1/-1;">
+      <!-- Blocking summary — dynamic width -->
+      <div class="summary-card" id="sum-blocking-card" style="grid-column:1/-1;">
         <div class="summary-card-title">
           <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M4.47.22A.749.749 0 015 0h6c.199 0 .389.079.53.22l4.25 4.25c.141.14.22.331.22.53v6a.749.749 0 01-.22.53l-4.25 4.25A.749.749 0 0111 16H5a.749.749 0 01-.53-.22L.22 11.53A.749.749 0 010 11V5c0-.199.079-.389.22-.53L4.47.22z"/></svg>
           Blocking
@@ -932,6 +932,9 @@ function buildSummary() {
   }
 
   document.getElementById('sum-blocking').innerHTML = blockHtml;
+
+  // Only span full width when per-analyzer mode (needs the grid)
+  document.getElementById('sum-blocking-card').style.gridColumn = (blockMode === 'per') ? '1/-1' : 'auto';
 }
 
 // ── SAVE ──
