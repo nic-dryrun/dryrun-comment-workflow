@@ -52,7 +52,27 @@
     .wizard-title-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 16px; }
     .wizard-title { font-size: 20px; font-weight: 700; }
     .wizard-meta { font-size: 12px; color: var(--text-muted); }
-    .repo-pill { font-size: 11px; font-weight: 500; padding: 1px 8px; border-radius: 10px; background: var(--purple-bg); color: var(--purple); border: 1px solid var(--purple-border); }
+    .repo-pill { font-size: 11px; font-weight: 500; padding: 2px 10px; border-radius: 10px; background: var(--purple-bg); color: var(--purple); border: 1px solid var(--purple-border); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: background 0.15s; }
+    .repo-pill:hover { background: var(--purple); color: #fff; border-color: var(--purple); }
+    .repo-pill svg { flex-shrink: 0; }
+
+    /* REPO POPOVER */
+    .repo-popover-overlay { display: none; position: fixed; inset: 0; z-index: 900; }
+    .repo-popover { position: absolute; top: calc(100% + 8px); left: 0; z-index: 1000; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.14); width: 340px; overflow: hidden; }
+    .repo-popover-header { padding: 10px 14px; background: var(--surface-alt); border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; }
+    .repo-popover-title { font-size: 12px; font-weight: 700; color: var(--text); }
+    .repo-popover-close { width: 22px; height: 22px; border-radius: 5px; border: 1px solid var(--border); background: var(--surface); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 13px; }
+    .repo-popover-close:hover { background: var(--red-bg); color: var(--red); }
+    .repo-popover-search { padding: 8px 12px; border-bottom: 1px solid var(--border-light); position: relative; }
+    .repo-popover-search input { width: 100%; padding: 6px 10px 6px 28px; border: 1px solid var(--border); border-radius: 7px; font-size: 12px; font-family: var(--font); color: var(--text); background: var(--surface); outline: none; }
+    .repo-popover-search input:focus { border-color: var(--purple); }
+    .repo-popover-search svg { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); pointer-events: none; }
+    .repo-popover-list { max-height: 280px; overflow-y: auto; }
+    .repo-popover-item { display: flex; align-items: center; gap: 10px; padding: 9px 14px; border-bottom: 1px solid var(--border-light); }
+    .repo-popover-item:last-child { border-bottom: none; }
+    .repo-popover-item-name { font-size: 12.5px; font-weight: 500; flex: 1; }
+    .repo-popover-item-sub { font-size: 11px; color: var(--text-muted); }
+    .repo-popover-footer { padding: 8px 14px; background: var(--surface-alt); border-top: 1px solid var(--border-light); font-size: 11px; color: var(--text-muted); }
 
     /* STEP TRACK */
     .step-track { display: flex; align-items: stretch; gap: 0; }
@@ -213,7 +233,43 @@
   <div class="wizard-header">
     <div class="wizard-title-row">
       <div class="wizard-title">Default Configuration</div>
-      <div class="wizard-meta">Applied to <span class="repo-pill">31 repos</span></div>
+      <div class="wizard-meta" style="position:relative;">
+        Applied to
+        <button class="repo-pill" id="repo-pill-btn" onclick="toggleRepoPopover(event)">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 010-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z"/></svg>
+          31 repos
+        </button>
+
+        <!-- Repo popover -->
+        <div class="repo-popover" id="repo-popover" style="display:none;">
+          <div class="repo-popover-header">
+            <div class="repo-popover-title">Repos using Default Configuration</div>
+            <button class="repo-popover-close" onclick="closeRepoPopover()">×</button>
+          </div>
+          <div class="repo-popover-search">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="var(--text-muted)"><path d="M10.68 11.74a6 6 0 01-7.922-8.982 6 6 0 018.982 7.922l3.04 3.04a.749.749 0 01-.326 1.275.749.749 0 01-.734-.215l-3.04-3.04zm-5.44.406a4.5 4.5 0 100-9 4.5 4.5 0 000 9z"/></svg>
+            <input type="text" id="repo-popover-search" placeholder="Search repos..." oninput="filterPopoverRepos(this.value)">
+          </div>
+          <div class="repo-popover-list" id="repo-popover-list">
+            <div class="repo-popover-item" data-repo="dryrun-api"><div><div class="repo-popover-item-name">DryRunSec/dryrun-api</div><div class="repo-popover-item-sub">Go · 28,412 PRs scanned</div></div></div>
+            <div class="repo-popover-item" data-repo="reposture"><div><div class="repo-popover-item-name">DryRunSec/reposture</div><div class="repo-popover-item-sub">Ruby · 14,201 PRs scanned</div></div></div>
+            <div class="repo-popover-item" data-repo="analyzers"><div><div class="repo-popover-item-name">DryRunSec/analyzers</div><div class="repo-popover-item-sub">Go · 6,847 PRs scanned</div></div></div>
+            <div class="repo-popover-item" data-repo="scanner-agent"><div><div class="repo-popover-item-name">DryRunSec/scanner-agent</div><div class="repo-popover-item-sub">Go · 2,104 PRs scanned</div></div></div>
+            <div class="repo-popover-item" data-repo="policy-engine"><div><div class="repo-popover-item-name">DryRunSec/policy-engine</div><div class="repo-popover-item-sub">Go · 1,088 PRs scanned</div></div></div>
+            <div class="repo-popover-item" data-repo="csi-reports"><div><div class="repo-popover-item-name">DryRunSec/csi-reports</div><div class="repo-popover-item-sub">TypeScript · 447 PRs scanned</div></div></div>
+            <div class="repo-popover-item" data-repo="infra-scripts"><div><div class="repo-popover-item-name">DryRunSec/infra-scripts</div><div class="repo-popover-item-sub">Shell · 203 PRs scanned</div></div></div>
+            <div class="repo-popover-item" data-repo="billing-service"><div><div class="repo-popover-item-name">DryRunSec/billing-service</div><div class="repo-popover-item-sub">Go · 189 PRs scanned</div></div></div>
+            <div class="repo-popover-item" data-repo="auth-middleware"><div><div class="repo-popover-item-name">DryRunSec/auth-middleware</div><div class="repo-popover-item-sub">Go · 162 PRs scanned</div></div></div>
+            <div class="repo-popover-item" data-repo="data-pipeline"><div><div class="repo-popover-item-name">DryRunSec/data-pipeline</div><div class="repo-popover-item-sub">Python · 134 PRs scanned</div></div></div>
+            <div class="repo-popover-item" data-repo="metrics-exporter"><div><div class="repo-popover-item-name">DryRunSec/metrics-exporter</div><div class="repo-popover-item-sub">Go · 98 PRs scanned</div></div></div>
+            <div class="repo-popover-item" data-repo="terraform-modules"><div><div class="repo-popover-item-name">DryRunSec/terraform-modules</div><div class="repo-popover-item-sub">HCL · 72 PRs scanned</div></div></div>
+            <div class="repo-popover-item" data-repo="scan-worker"><div><div class="repo-popover-item-name">DryRunSec/scan-worker</div><div class="repo-popover-item-sub">Go · 61 PRs scanned</div></div></div>
+            <div class="repo-popover-item" data-repo="demo-app"><div><div class="repo-popover-item-name">DryRunSec/demo-app</div><div class="repo-popover-item-sub">JavaScript · 44 PRs scanned</div></div></div>
+            <div id="repo-popover-empty" style="display:none;padding:20px 14px;text-align:center;font-size:12px;color:var(--text-muted);">No repos match your search</div>
+          </div>
+          <div class="repo-popover-footer">Showing 14 of 31 repos — <span style="color:var(--purple);cursor:pointer;">View all in Repositories</span></div>
+        </div>
+      </div>
     </div>
 
     <!-- STEP TRACK -->
@@ -956,6 +1012,42 @@ function buildSummary() {
   // Only span full width when per-analyzer mode (needs the grid)
   document.getElementById('sum-blocking-card').style.gridColumn = (blockMode === 'per') ? '1/-1' : 'auto';
 }
+
+// ── REPO POPOVER ──
+function toggleRepoPopover(e) {
+  e.stopPropagation();
+  const pop = document.getElementById('repo-popover');
+  const isOpen = pop.style.display === 'block';
+  pop.style.display = isOpen ? 'none' : 'block';
+  if (!isOpen) {
+    setTimeout(() => document.getElementById('repo-popover-search').focus(), 50);
+  }
+}
+function closeRepoPopover() {
+  document.getElementById('repo-popover').style.display = 'none';
+  document.getElementById('repo-popover-search').value = '';
+  filterPopoverRepos('');
+}
+function filterPopoverRepos(q) {
+  const items = document.querySelectorAll('#repo-popover-list .repo-popover-item');
+  const empty = document.getElementById('repo-popover-empty');
+  const lower = q.toLowerCase();
+  let visible = 0;
+  items.forEach(item => {
+    const match = item.dataset.repo.includes(lower);
+    item.style.display = match ? '' : 'none';
+    if (match) visible++;
+  });
+  empty.style.display = visible === 0 ? 'block' : 'none';
+}
+// Close popover on outside click
+document.addEventListener('click', (e) => {
+  const pop = document.getElementById('repo-popover');
+  const btn = document.getElementById('repo-pill-btn');
+  if (pop && !pop.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
+    pop.style.display = 'none';
+  }
+});
 
 // ── SAVE ──
 function saveConfig() {
