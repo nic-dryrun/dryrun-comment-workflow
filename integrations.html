@@ -138,6 +138,31 @@
     .modal-footer { padding: 14px 24px; border-top: 1px solid var(--border-light); display: flex; align-items: center; justify-content: flex-end; gap: 10px; background: var(--surface-alt); border-radius: 0 0 12px 12px; }
     .btn-cancel { padding: 8px 20px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text-sec); font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--font); }
     .btn-save { padding: 8px 20px; border: none; border-radius: 8px; background: var(--purple); color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--font); }
+
+    /* JSON Payload section */
+    .payload-section { max-width: 860px; margin: 40px auto 0; padding: 0 36px 60px; }
+    .payload-section-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .payload-section-sub { font-size: 13px; color: var(--text-sec); margin-bottom: 28px; line-height: 1.5; }
+    .payload-group { margin-bottom: 32px; }
+    .payload-group-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border-light); }
+    .payload-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 12px; }
+    .payload-card-header { padding: 12px 16px; background: var(--surface-alt); border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+    .payload-card-header:hover { background: #ebedf1; }
+    .payload-event-name { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+    .event-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; padding: 2px 7px; border-radius: 4px; background: #ddf4ff; color: #0969da; border: 1px solid #b6d8ff; }
+    .event-tag--new { background: var(--purple-bg); color: var(--purple); border-color: var(--purple-border); }
+    .event-tag--existing { background: var(--green-bg); color: var(--green); border-color: var(--green-border); }
+    .payload-chevron { color: var(--text-muted); transition: transform 0.2s; }
+    .payload-card.open .payload-chevron { transform: rotate(180deg); }
+    .payload-card-body { display: none; padding: 0; }
+    .payload-card.open .payload-card-body { display: block; }
+    .payload-desc { padding: 10px 16px; font-size: 12.5px; color: var(--text-sec); border-bottom: 1px solid var(--border-light); background: #fafbfc; }
+    pre.json { margin: 0; padding: 16px; font-family: var(--mono); font-size: 12px; line-height: 1.7; overflow-x: auto; background: #1e2130; color: #e2e4ea; }
+    .json-key { color: #79b8ff; }
+    .json-str { color: #9ecbff; }
+    .json-num { color: #f8c555; }
+    .json-bool { color: #f97583; }
+    .json-comment { color: #6b7084; font-style: italic; }
   </style>
 </head>
 <body>
@@ -435,6 +460,468 @@
       <button class="btn-outline" style="padding:8px 16px;">Test</button>
       <button class="btn-save" onclick="document.getElementById('webhookModal').style.display='none'">Save Webhook</button>
     </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!--              WEBHOOK JSON PAYLOAD REFERENCE          -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="payload-section">
+  <div style="border-top: 2px solid var(--border); padding-top: 36px;">
+    <div class="payload-section-title">Webhook JSON Payloads</div>
+    <div class="payload-section-sub">
+      Reference for all event payload bodies. The existing <code style="font-family:var(--mono);font-size:12px;background:var(--surface-alt);padding:1px 5px;border-radius:3px;">new_vulnerabilities_pr</code> payload is shown for comparison. All new events include a common base of <code style="font-family:var(--mono);font-size:12px;background:var(--surface-alt);padding:1px 5px;border-radius:3px;">event</code>, <code style="font-family:var(--mono);font-size:12px;background:var(--surface-alt);padding:1px 5px;border-radius:3px;">event_id</code>, <code style="font-family:var(--mono);font-size:12px;background:var(--surface-alt);padding:1px 5px;border-radius:3px;">org</code>, <code style="font-family:var(--mono);font-size:12px;background:var(--surface-alt);padding:1px 5px;border-radius:3px;">repo_name</code>, and <code style="font-family:var(--mono);font-size:12px;background:var(--surface-alt);padding:1px 5px;border-radius:3px;">timestamp</code>. Click any event to expand its payload.
+    </div>
+
+    <!-- PR EVENTS -->
+    <div class="payload-group">
+      <div class="payload-group-title">PR Events</div>
+
+      <!-- pr_scan_started -->
+      <div class="payload-card" onclick="this.classList.toggle('open')">
+        <div class="payload-card-header">
+          <div class="payload-event-name"><code style="font-family:var(--mono);">pr_scan_started</code><span class="event-tag event-tag--new">New</span></div>
+          <svg class="payload-chevron" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"/></svg>
+        </div>
+        <div class="payload-card-body">
+          <div class="payload-desc">Fired when DryRun begins scanning a pull request commit.</div>
+          <pre class="json">{
+  <span class="json-key">"event"</span>: <span class="json-str">"pr_scan_started"</span>,
+  <span class="json-key">"event_id"</span>: <span class="json-str">"evt_a1b2c3d4"</span>,
+  <span class="json-key">"org"</span>: <span class="json-str">"DryRunSec"</span>,
+  <span class="json-key">"repo_name"</span>: <span class="json-str">"dryrun-api"</span>,
+  <span class="json-key">"timestamp"</span>: <span class="json-str">"2026-04-10T14:30:00Z"</span>,
+  <span class="json-key">"pr_number"</span>: <span class="json-num">412</span>,
+  <span class="json-key">"pr_title"</span>: <span class="json-str">"fix: move db creds to vault"</span>,
+  <span class="json-key">"branch"</span>: <span class="json-str">"fix/db-creds-vault"</span>,
+  <span class="json-key">"commit_sha"</span>: <span class="json-str">"a3f82c1"</span>,
+  <span class="json-key">"commit_author"</span>: <span class="json-str">"wickett"</span>,
+  <span class="json-key">"github_url"</span>: <span class="json-str">"https://github.com/DryRunSec/dryrun-api/pull/412"</span>,
+  <span class="json-key">"dashboard_url"</span>: <span class="json-str">"https://app.dryrun.security/pull-requests/412?org=DryRunSec"</span>
+}</pre>
+        </div>
+      </div>
+
+      <!-- pr_scan_complete -->
+      <div class="payload-card" onclick="this.classList.toggle('open')">
+        <div class="payload-card-header">
+          <div class="payload-event-name"><code style="font-family:var(--mono);">pr_scan_complete</code><span class="event-tag event-tag--new">New</span></div>
+          <svg class="payload-chevron" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"/></svg>
+        </div>
+        <div class="payload-card-body">
+          <div class="payload-desc">Fired when a PR scan finishes, regardless of outcome.</div>
+          <pre class="json">{
+  <span class="json-key">"event"</span>: <span class="json-str">"pr_scan_complete"</span>,
+  <span class="json-key">"event_id"</span>: <span class="json-str">"evt_a1b2c3d5"</span>,
+  <span class="json-key">"org"</span>: <span class="json-str">"DryRunSec"</span>,
+  <span class="json-key">"repo_name"</span>: <span class="json-str">"dryrun-api"</span>,
+  <span class="json-key">"timestamp"</span>: <span class="json-str">"2026-04-10T14:30:22Z"</span>,
+  <span class="json-key">"pr_number"</span>: <span class="json-num">412</span>,
+  <span class="json-key">"pr_title"</span>: <span class="json-str">"fix: move db creds to vault"</span>,
+  <span class="json-key">"branch"</span>: <span class="json-str">"fix/db-creds-vault"</span>,
+  <span class="json-key">"commit_sha"</span>: <span class="json-str">"a3f82c1"</span>,
+  <span class="json-key">"commit_author"</span>: <span class="json-str">"wickett"</span>,
+  <span class="json-key">"duration_seconds"</span>: <span class="json-num">22</span>,
+  <span class="json-key">"status"</span>: <span class="json-str">"pass"</span>, <span class="json-comment">// "pass" | "fail" | "blocked"</span>
+  <span class="json-key">"findings_count"</span>: <span class="json-num">0</span>,
+  <span class="json-key">"findings_by_severity"</span>: { <span class="json-key">"critical"</span>: <span class="json-num">0</span>, <span class="json-key">"high"</span>: <span class="json-num">0</span>, <span class="json-key">"medium"</span>: <span class="json-num">0</span>, <span class="json-key">"low"</span>: <span class="json-num">0</span> },
+  <span class="json-key">"github_url"</span>: <span class="json-str">"https://github.com/DryRunSec/dryrun-api/pull/412"</span>,
+  <span class="json-key">"dashboard_url"</span>: <span class="json-str">"https://app.dryrun.security/pull-requests/412?org=DryRunSec"</span>
+}</pre>
+        </div>
+      </div>
+
+      <!-- new_vulnerabilities_pr (existing, enhanced) -->
+      <div class="payload-card open" onclick="this.classList.toggle('open')">
+        <div class="payload-card-header">
+          <div class="payload-event-name"><code style="font-family:var(--mono);">new_vulnerabilities_pr</code><span class="event-tag event-tag--existing">Existing — enhanced</span></div>
+          <svg class="payload-chevron" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"/></svg>
+        </div>
+        <div class="payload-card-body">
+          <div class="payload-desc">Currently the only supported event. Enhanced with <code style="font-family:var(--mono);font-size:11px;">event</code>, <code style="font-family:var(--mono);font-size:11px;">event_id</code>, and richer <code style="font-family:var(--mono);font-size:11px;">results</code> fields (finding_id, severity, analyzer).</div>
+          <pre class="json">{
+  <span class="json-key">"event"</span>: <span class="json-str">"new_vulnerabilities_pr"</span>,
+  <span class="json-key">"event_id"</span>: <span class="json-str">"evt_a1b2c3d6"</span>,
+  <span class="json-key">"dashboard_url"</span>: <span class="json-str">"https://app.dryrun.security/pull-requests/199?org=sampleuser"</span>,
+  <span class="json-key">"github_url"</span>: <span class="json-str">"https://github.com/sampleuser/repo/pull/199"</span>,
+  <span class="json-key">"risk_threshold"</span>: <span class="json-str">"failing"</span>,
+  <span class="json-key">"org"</span>: <span class="json-str">"sampleuser"</span>,
+  <span class="json-key">"repo_name"</span>: <span class="json-str">"repo"</span>,
+  <span class="json-key">"pr_number"</span>: <span class="json-num">81</span>,
+  <span class="json-key">"pr_title"</span>: <span class="json-str">"Update analytics.py"</span>,
+  <span class="json-key">"branch"</span>: <span class="json-str">"sampleuser-patch-77"</span>,
+  <span class="json-key">"commit_author"</span>: <span class="json-str">"sampleuser"</span>,
+  <span class="json-key">"issue_status"</span>: <span class="json-str">"open"</span>,
+  <span class="json-key">"timestamp"</span>: <span class="json-str">"2025-09-22T20:43:57Z"</span>,
+  <span class="json-key">"results"</span>: [
+    {
+      <span class="json-key">"finding_id"</span>: <span class="json-str">"drs_b8948228"</span>, <span class="json-comment">// new</span>
+      <span class="json-key">"type"</span>: <span class="json-str">"SQL Injection"</span>,
+      <span class="json-key">"severity"</span>: <span class="json-str">"high"</span>, <span class="json-comment">// new</span>
+      <span class="json-key">"analyzer"</span>: <span class="json-str">"SQL Injection Analyzer"</span>, <span class="json-comment">// new</span>
+      <span class="json-key">"filename"</span>: <span class="json-str">"pkg/models/drift.go"</span>,
+      <span class="json-key">"line_start"</span>: <span class="json-num">224</span>,
+      <span class="json-key">"line_end"</span>: <span class="json-num">227</span>
+    }
+  ]
+}</pre>
+        </div>
+      </div>
+
+      <!-- pr_blocked -->
+      <div class="payload-card" onclick="this.classList.toggle('open')">
+        <div class="payload-card-header">
+          <div class="payload-event-name"><code style="font-family:var(--mono);">pr_blocked</code><span class="event-tag event-tag--new">New</span></div>
+          <svg class="payload-chevron" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"/></svg>
+        </div>
+        <div class="payload-card-body">
+          <div class="payload-desc">Fired when a PR is blocked from merging due to critical or high-severity findings that breach the blocking threshold.</div>
+          <pre class="json">{
+  <span class="json-key">"event"</span>: <span class="json-str">"pr_blocked"</span>,
+  <span class="json-key">"event_id"</span>: <span class="json-str">"evt_a1b2c3d7"</span>,
+  <span class="json-key">"org"</span>: <span class="json-str">"DryRunSec"</span>,
+  <span class="json-key">"repo_name"</span>: <span class="json-str">"dryrun-api"</span>,
+  <span class="json-key">"timestamp"</span>: <span class="json-str">"2026-04-10T14:31:02Z"</span>,
+  <span class="json-key">"pr_number"</span>: <span class="json-num">415</span>,
+  <span class="json-key">"pr_title"</span>: <span class="json-str">"feat: add SQL query builder"</span>,
+  <span class="json-key">"branch"</span>: <span class="json-str">"feat/query-builder"</span>,
+  <span class="json-key">"commit_author"</span>: <span class="json-str">"devops-user"</span>,
+  <span class="json-key">"blocking_findings"</span>: [
+    {
+      <span class="json-key">"finding_id"</span>: <span class="json-str">"drs_c4291037"</span>,
+      <span class="json-key">"type"</span>: <span class="json-str">"SQL Injection"</span>,
+      <span class="json-key">"severity"</span>: <span class="json-str">"critical"</span>,
+      <span class="json-key">"filename"</span>: <span class="json-str">"pkg/api/search.go"</span>,
+      <span class="json-key">"line_start"</span>: <span class="json-num">87</span>
+    }
+  ],
+  <span class="json-key">"github_url"</span>: <span class="json-str">"https://github.com/DryRunSec/dryrun-api/pull/415"</span>,
+  <span class="json-key">"dashboard_url"</span>: <span class="json-str">"https://app.dryrun.security/pull-requests/415?org=DryRunSec"</span>
+}</pre>
+        </div>
+      </div>
+
+      <!-- pr_merged_with_issues -->
+      <div class="payload-card" onclick="this.classList.toggle('open')">
+        <div class="payload-card-header">
+          <div class="payload-event-name"><code style="font-family:var(--mono);">pr_merged_with_issues</code><span class="event-tag event-tag--new">New</span></div>
+          <svg class="payload-chevron" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"/></svg>
+        </div>
+        <div class="payload-card-body">
+          <div class="payload-desc">Fired when a PR is merged while open vulnerability findings are still present.</div>
+          <pre class="json">{
+  <span class="json-key">"event"</span>: <span class="json-str">"pr_merged_with_issues"</span>,
+  <span class="json-key">"event_id"</span>: <span class="json-str">"evt_a1b2c3d8"</span>,
+  <span class="json-key">"org"</span>: <span class="json-str">"DryRunSec"</span>,
+  <span class="json-key">"repo_name"</span>: <span class="json-str">"dryrun-api"</span>,
+  <span class="json-key">"timestamp"</span>: <span class="json-str">"2026-04-10T15:00:00Z"</span>,
+  <span class="json-key">"pr_number"</span>: <span class="json-num">416</span>,
+  <span class="json-key">"pr_title"</span>: <span class="json-str">"chore: dependency updates"</span>,
+  <span class="json-key">"merged_by"</span>: <span class="json-str">"wickett"</span>,
+  <span class="json-key">"merged_at"</span>: <span class="json-str">"2026-04-10T15:00:00Z"</span>,
+  <span class="json-key">"open_findings_count"</span>: <span class="json-num">2</span>,
+  <span class="json-key">"findings_by_severity"</span>: { <span class="json-key">"critical"</span>: <span class="json-num">0</span>, <span class="json-key">"high"</span>: <span class="json-num">2</span>, <span class="json-key">"medium"</span>: <span class="json-num">0</span>, <span class="json-key">"low"</span>: <span class="json-num">0</span> },
+  <span class="json-key">"github_url"</span>: <span class="json-str">"https://github.com/DryRunSec/dryrun-api/pull/416"</span>,
+  <span class="json-key">"dashboard_url"</span>: <span class="json-str">"https://app.dryrun.security/pull-requests/416?org=DryRunSec"</span>
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- VULNERABILITY EVENTS -->
+    <div class="payload-group">
+      <div class="payload-group-title">Vulnerability Events</div>
+
+      <!-- new_vulnerabilities_full_scan -->
+      <div class="payload-card" onclick="this.classList.toggle('open')">
+        <div class="payload-card-header">
+          <div class="payload-event-name"><code style="font-family:var(--mono);">new_vulnerabilities_full_scan</code><span class="event-tag event-tag--new">New</span></div>
+          <svg class="payload-chevron" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"/></svg>
+        </div>
+        <div class="payload-card-body">
+          <div class="payload-desc">Fired when a DeepScan (full repository scan) detects new findings not present in the previous scan.</div>
+          <pre class="json">{
+  <span class="json-key">"event"</span>: <span class="json-str">"new_vulnerabilities_full_scan"</span>,
+  <span class="json-key">"event_id"</span>: <span class="json-str">"evt_a1b2c3d9"</span>,
+  <span class="json-key">"org"</span>: <span class="json-str">"DryRunSec"</span>,
+  <span class="json-key">"repo_name"</span>: <span class="json-str">"dryrun-api"</span>,
+  <span class="json-key">"timestamp"</span>: <span class="json-str">"2026-04-10T02:05:00Z"</span>,
+  <span class="json-key">"scan_id"</span>: <span class="json-str">"scan_xyz789"</span>,
+  <span class="json-key">"risk_threshold"</span>: <span class="json-str">"high"</span>,
+  <span class="json-key">"new_findings_count"</span>: <span class="json-num">2</span>,
+  <span class="json-key">"results"</span>: [
+    {
+      <span class="json-key">"finding_id"</span>: <span class="json-str">"drs_c4291037"</span>,
+      <span class="json-key">"type"</span>: <span class="json-str">"SQL Injection"</span>,
+      <span class="json-key">"severity"</span>: <span class="json-str">"critical"</span>,
+      <span class="json-key">"analyzer"</span>: <span class="json-str">"SQL Injection Analyzer"</span>,
+      <span class="json-key">"filename"</span>: <span class="json-str">"pkg/api/search.go"</span>,
+      <span class="json-key">"line_start"</span>: <span class="json-num">87</span>,
+      <span class="json-key">"line_end"</span>: <span class="json-num">92</span>
+    }
+  ],
+  <span class="json-key">"dashboard_url"</span>: <span class="json-str">"https://app.dryrun.security/repositories/dryrun-api?org=DryRunSec"</span>
+}</pre>
+        </div>
+      </div>
+
+      <!-- vulnerability_patched -->
+      <div class="payload-card" onclick="this.classList.toggle('open')">
+        <div class="payload-card-header">
+          <div class="payload-event-name"><code style="font-family:var(--mono);">vulnerability_patched</code><span class="event-tag event-tag--new">New</span></div>
+          <svg class="payload-chevron" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"/></svg>
+        </div>
+        <div class="payload-card-body">
+          <div class="payload-desc">Fired when a previously open finding is no longer detected on a subsequent scan (either PR scan or full scan).</div>
+          <pre class="json">{
+  <span class="json-key">"event"</span>: <span class="json-str">"vulnerability_patched"</span>,
+  <span class="json-key">"event_id"</span>: <span class="json-str">"evt_a1b2c3e1"</span>,
+  <span class="json-key">"org"</span>: <span class="json-str">"DryRunSec"</span>,
+  <span class="json-key">"repo_name"</span>: <span class="json-str">"dryrun-api"</span>,
+  <span class="json-key">"timestamp"</span>: <span class="json-str">"2026-04-03T11:20:00Z"</span>,
+  <span class="json-key">"finding_id"</span>: <span class="json-str">"drs_b8948228"</span>,
+  <span class="json-key">"finding_type"</span>: <span class="json-str">"Hardcoded Database Credentials"</span>,
+  <span class="json-key">"severity"</span>: <span class="json-str">"high"</span>,
+  <span class="json-key">"resolved_by_scan_type"</span>: <span class="json-str">"pr"</span>, <span class="json-comment">// "pr" | "full_scan"</span>
+  <span class="json-key">"resolved_in_pr"</span>: <span class="json-num">412</span>,
+  <span class="json-key">"resolved_by"</span>: <span class="json-str">"wickett"</span>,
+  <span class="json-key">"commit_sha"</span>: <span class="json-str">"e7b21d4"</span>,
+  <span class="json-key">"originally_detected_at"</span>: <span class="json-str">"2026-01-05T09:00:00Z"</span>,
+  <span class="json-key">"dashboard_url"</span>: <span class="json-str">"https://app.dryrun.security/pull-requests/412?org=DryRunSec"</span>
+}</pre>
+        </div>
+      </div>
+
+      <!-- vulnerability_reopened -->
+      <div class="payload-card" onclick="this.classList.toggle('open')">
+        <div class="payload-card-header">
+          <div class="payload-event-name"><code style="font-family:var(--mono);">vulnerability_reopened</code><span class="event-tag event-tag--new">New</span></div>
+          <svg class="payload-chevron" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"/></svg>
+        </div>
+        <div class="payload-card-body">
+          <div class="payload-desc">Fired when a previously resolved or dismissed finding is detected again in a new scan.</div>
+          <pre class="json">{
+  <span class="json-key">"event"</span>: <span class="json-str">"vulnerability_reopened"</span>,
+  <span class="json-key">"event_id"</span>: <span class="json-str">"evt_a1b2c3e2"</span>,
+  <span class="json-key">"org"</span>: <span class="json-str">"DryRunSec"</span>,
+  <span class="json-key">"repo_name"</span>: <span class="json-str">"dryrun-api"</span>,
+  <span class="json-key">"timestamp"</span>: <span class="json-str">"2026-04-10T14:31:00Z"</span>,
+  <span class="json-key">"finding_id"</span>: <span class="json-str">"drs_b8948228"</span>,
+  <span class="json-key">"finding_type"</span>: <span class="json-str">"Hardcoded Database Credentials"</span>,
+  <span class="json-key">"severity"</span>: <span class="json-str">"high"</span>,
+  <span class="json-key">"previously_resolved_at"</span>: <span class="json-str">"2026-04-03T11:20:00Z"</span>,
+  <span class="json-key">"pr_number"</span>: <span class="json-num">419</span>,
+  <span class="json-key">"branch"</span>: <span class="json-str">"feat/new-config"</span>,
+  <span class="json-key">"commit_author"</span>: <span class="json-str">"devops-user"</span>,
+  <span class="json-key">"dashboard_url"</span>: <span class="json-str">"https://app.dryrun.security/pull-requests/419?org=DryRunSec"</span>
+}</pre>
+        </div>
+      </div>
+
+      <!-- sca_new_cve -->
+      <div class="payload-card" onclick="this.classList.toggle('open')">
+        <div class="payload-card-header">
+          <div class="payload-event-name"><code style="font-family:var(--mono);">sca_new_cve</code><span class="event-tag event-tag--new">New</span></div>
+          <svg class="payload-chevron" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"/></svg>
+        </div>
+        <div class="payload-card-body">
+          <div class="payload-desc">Fired when a newly published CVE matches a dependency in one or more of your repositories.</div>
+          <pre class="json">{
+  <span class="json-key">"event"</span>: <span class="json-str">"sca_new_cve"</span>,
+  <span class="json-key">"event_id"</span>: <span class="json-str">"evt_a1b2c3e3"</span>,
+  <span class="json-key">"org"</span>: <span class="json-str">"DryRunSec"</span>,
+  <span class="json-key">"timestamp"</span>: <span class="json-str">"2026-04-10T08:00:00Z"</span>,
+  <span class="json-key">"cve_id"</span>: <span class="json-str">"CVE-2024-45337"</span>,
+  <span class="json-key">"severity"</span>: <span class="json-str">"high"</span>,
+  <span class="json-key">"cvss_score"</span>: <span class="json-num">8.1</span>,
+  <span class="json-key">"package_name"</span>: <span class="json-str">"golang.org/x/crypto"</span>,
+  <span class="json-key">"affected_version"</span>: <span class="json-str">"v0.17.0"</span>,
+  <span class="json-key">"fixed_version"</span>: <span class="json-str">"v0.31.0"</span>,
+  <span class="json-key">"affected_repos"</span>: [<span class="json-str">"dryrun-api"</span>, <span class="json-str">"reposture"</span>],
+  <span class="json-key">"cve_published_at"</span>: <span class="json-str">"2024-12-11T00:00:00Z"</span>,
+  <span class="json-key">"dashboard_url"</span>: <span class="json-str">"https://app.dryrun.security/risk-register?org=DryRunSec&cve=CVE-2024-45337"</span>
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCAN EVENTS -->
+    <div class="payload-group">
+      <div class="payload-group-title">Scan Events</div>
+
+      <!-- scan_started -->
+      <div class="payload-card" onclick="this.classList.toggle('open')">
+        <div class="payload-card-header">
+          <div class="payload-event-name"><code style="font-family:var(--mono);">scan_started</code><span class="event-tag event-tag--new">New</span></div>
+          <svg class="payload-chevron" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"/></svg>
+        </div>
+        <div class="payload-card-body">
+          <div class="payload-desc">Fired when a full repository (DeepScan) scan begins.</div>
+          <pre class="json">{
+  <span class="json-key">"event"</span>: <span class="json-str">"scan_started"</span>,
+  <span class="json-key">"event_id"</span>: <span class="json-str">"evt_a1b2c3e4"</span>,
+  <span class="json-key">"org"</span>: <span class="json-str">"DryRunSec"</span>,
+  <span class="json-key">"repo_name"</span>: <span class="json-str">"dryrun-api"</span>,
+  <span class="json-key">"timestamp"</span>: <span class="json-str">"2026-04-10T02:00:00Z"</span>,
+  <span class="json-key">"scan_id"</span>: <span class="json-str">"scan_xyz789"</span>,
+  <span class="json-key">"scan_type"</span>: <span class="json-str">"full"</span>,
+  <span class="json-key">"triggered_by"</span>: <span class="json-str">"schedule"</span>, <span class="json-comment">// "schedule" | "manual" | "api"</span>
+  <span class="json-key">"dashboard_url"</span>: <span class="json-str">"https://app.dryrun.security/repositories/dryrun-api?org=DryRunSec"</span>
+}</pre>
+        </div>
+      </div>
+
+      <!-- scan_complete -->
+      <div class="payload-card" onclick="this.classList.toggle('open')">
+        <div class="payload-card-header">
+          <div class="payload-event-name"><code style="font-family:var(--mono);">scan_complete</code><span class="event-tag event-tag--new">New</span></div>
+          <svg class="payload-chevron" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"/></svg>
+        </div>
+        <div class="payload-card-body">
+          <div class="payload-desc">Fired when a full repository scan finishes successfully.</div>
+          <pre class="json">{
+  <span class="json-key">"event"</span>: <span class="json-str">"scan_complete"</span>,
+  <span class="json-key">"event_id"</span>: <span class="json-str">"evt_a1b2c3e5"</span>,
+  <span class="json-key">"org"</span>: <span class="json-str">"DryRunSec"</span>,
+  <span class="json-key">"repo_name"</span>: <span class="json-str">"dryrun-api"</span>,
+  <span class="json-key">"timestamp"</span>: <span class="json-str">"2026-04-10T02:35:22Z"</span>,
+  <span class="json-key">"scan_id"</span>: <span class="json-str">"scan_xyz789"</span>,
+  <span class="json-key">"scan_type"</span>: <span class="json-str">"full"</span>,
+  <span class="json-key">"duration_seconds"</span>: <span class="json-num">2122</span>,
+  <span class="json-key">"total_findings"</span>: <span class="json-num">6</span>,
+  <span class="json-key">"new_findings"</span>: <span class="json-num">2</span>,
+  <span class="json-key">"resolved_findings"</span>: <span class="json-num">1</span>,
+  <span class="json-key">"findings_by_severity"</span>: { <span class="json-key">"critical"</span>: <span class="json-num">1</span>, <span class="json-key">"high"</span>: <span class="json-num">2</span>, <span class="json-key">"medium"</span>: <span class="json-num">3</span>, <span class="json-key">"low"</span>: <span class="json-num">0</span> },
+  <span class="json-key">"dashboard_url"</span>: <span class="json-str">"https://app.dryrun.security/repositories/dryrun-api?org=DryRunSec"</span>
+}</pre>
+        </div>
+      </div>
+
+      <!-- scan_failed -->
+      <div class="payload-card" onclick="this.classList.toggle('open')">
+        <div class="payload-card-header">
+          <div class="payload-event-name"><code style="font-family:var(--mono);">scan_failed</code><span class="event-tag event-tag--new">New</span></div>
+          <svg class="payload-chevron" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"/></svg>
+        </div>
+        <div class="payload-card-body">
+          <div class="payload-desc">Fired when any scan (PR or full) fails to complete.</div>
+          <pre class="json">{
+  <span class="json-key">"event"</span>: <span class="json-str">"scan_failed"</span>,
+  <span class="json-key">"event_id"</span>: <span class="json-str">"evt_a1b2c3e6"</span>,
+  <span class="json-key">"org"</span>: <span class="json-str">"DryRunSec"</span>,
+  <span class="json-key">"repo_name"</span>: <span class="json-str">"dryrun-api"</span>,
+  <span class="json-key">"timestamp"</span>: <span class="json-str">"2026-04-10T14:45:00Z"</span>,
+  <span class="json-key">"scan_id"</span>: <span class="json-str">"scan_abc001"</span>,
+  <span class="json-key">"scan_type"</span>: <span class="json-str">"pr"</span>, <span class="json-comment">// "pr" | "full"</span>
+  <span class="json-key">"pr_number"</span>: <span class="json-num">417</span>,
+  <span class="json-key">"error_code"</span>: <span class="json-str">"TIMEOUT"</span>,
+  <span class="json-key">"error_message"</span>: <span class="json-str">"Scan exceeded maximum allowed duration"</span>,
+  <span class="json-key">"dashboard_url"</span>: <span class="json-str">"https://app.dryrun.security/pull-requests/417?org=DryRunSec"</span>
+}</pre>
+        </div>
+      </div>
+
+      <!-- scan_scheduled -->
+      <div class="payload-card" onclick="this.classList.toggle('open')">
+        <div class="payload-card-header">
+          <div class="payload-event-name"><code style="font-family:var(--mono);">scan_scheduled</code><span class="event-tag event-tag--new">New</span></div>
+          <svg class="payload-chevron" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"/></svg>
+        </div>
+        <div class="payload-card-body">
+          <div class="payload-desc">Fired when a scan is queued on a schedule (advance notice before it starts).</div>
+          <pre class="json">{
+  <span class="json-key">"event"</span>: <span class="json-str">"scan_scheduled"</span>,
+  <span class="json-key">"event_id"</span>: <span class="json-str">"evt_a1b2c3e7"</span>,
+  <span class="json-key">"org"</span>: <span class="json-str">"DryRunSec"</span>,
+  <span class="json-key">"repo_name"</span>: <span class="json-str">"dryrun-api"</span>,
+  <span class="json-key">"timestamp"</span>: <span class="json-str">"2026-04-10T01:55:00Z"</span>,
+  <span class="json-key">"scan_id"</span>: <span class="json-str">"scan_xyz789"</span>,
+  <span class="json-key">"scan_type"</span>: <span class="json-str">"full"</span>,
+  <span class="json-key">"scheduled_at"</span>: <span class="json-str">"2026-04-10T02:00:00Z"</span>,
+  <span class="json-key">"schedule_cadence"</span>: <span class="json-str">"weekly"</span>,
+  <span class="json-key">"dashboard_url"</span>: <span class="json-str">"https://app.dryrun.security/repositories/dryrun-api?org=DryRunSec"</span>
+}</pre>
+        </div>
+      </div>
+
+      <!-- long_running_scan -->
+      <div class="payload-card" onclick="this.classList.toggle('open')">
+        <div class="payload-card-header">
+          <div class="payload-event-name"><code style="font-family:var(--mono);">long_running_scan</code><span class="event-tag event-tag--new">New</span></div>
+          <svg class="payload-chevron" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"/></svg>
+        </div>
+        <div class="payload-card-body">
+          <div class="payload-desc">Fired when an in-progress scan exceeds the expected duration threshold.</div>
+          <pre class="json">{
+  <span class="json-key">"event"</span>: <span class="json-str">"long_running_scan"</span>,
+  <span class="json-key">"event_id"</span>: <span class="json-str">"evt_a1b2c3e8"</span>,
+  <span class="json-key">"org"</span>: <span class="json-str">"DryRunSec"</span>,
+  <span class="json-key">"repo_name"</span>: <span class="json-str">"dryrun-api"</span>,
+  <span class="json-key">"timestamp"</span>: <span class="json-str">"2026-04-10T02:30:00Z"</span>,
+  <span class="json-key">"scan_id"</span>: <span class="json-str">"scan_xyz789"</span>,
+  <span class="json-key">"scan_type"</span>: <span class="json-str">"full"</span>,
+  <span class="json-key">"elapsed_seconds"</span>: <span class="json-num">1800</span>,
+  <span class="json-key">"threshold_seconds"</span>: <span class="json-num">900</span>,
+  <span class="json-key">"status"</span>: <span class="json-str">"in_progress"</span>,
+  <span class="json-key">"dashboard_url"</span>: <span class="json-str">"https://app.dryrun.security/repositories/dryrun-api?org=DryRunSec"</span>
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- OTHER EVENTS -->
+    <div class="payload-group">
+      <div class="payload-group-title">Other Events</div>
+
+      <!-- audit_log_event -->
+      <div class="payload-card" onclick="this.classList.toggle('open')">
+        <div class="payload-card-header">
+          <div class="payload-event-name"><code style="font-family:var(--mono);">audit_log_event</code><span class="event-tag event-tag--new">New</span></div>
+          <svg class="payload-chevron" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"/></svg>
+        </div>
+        <div class="payload-card-body">
+          <div class="payload-desc">Fired on significant account or configuration actions (finding dismissed, webhook created, config changed, etc).</div>
+          <pre class="json">{
+  <span class="json-key">"event"</span>: <span class="json-str">"audit_log_event"</span>,
+  <span class="json-key">"event_id"</span>: <span class="json-str">"evt_a1b2c3e9"</span>,
+  <span class="json-key">"org"</span>: <span class="json-str">"DryRunSec"</span>,
+  <span class="json-key">"timestamp"</span>: <span class="json-str">"2026-04-10T14:35:00Z"</span>,
+  <span class="json-key">"action"</span>: <span class="json-str">"finding.dismissed"</span>, <span class="json-comment">// e.g. finding.dismissed | webhook.created | config.updated</span>
+  <span class="json-key">"actor"</span>: <span class="json-str">"cnichols-dry"</span>,
+  <span class="json-key">"repo_name"</span>: <span class="json-str">"dryrun-api"</span>,
+  <span class="json-key">"details"</span>: {
+    <span class="json-key">"finding_id"</span>: <span class="json-str">"drs_b8948228"</span>,
+    <span class="json-key">"reason"</span>: <span class="json-str">"false_positive"</span>,
+    <span class="json-key">"feedback"</span>: <span class="json-str">"Input is validated upstream"</span>
+  }
+}</pre>
+        </div>
+      </div>
+
+      <!-- report_complete -->
+      <div class="payload-card" onclick="this.classList.toggle('open')">
+        <div class="payload-card-header">
+          <div class="payload-event-name"><code style="font-family:var(--mono);">report_complete</code><span class="event-tag event-tag--new">New</span></div>
+          <svg class="payload-chevron" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"/></svg>
+        </div>
+        <div class="payload-card-body">
+          <div class="payload-desc">Fired when a Code Security Intelligence workflow report finishes generating.</div>
+          <pre class="json">{
+  <span class="json-key">"event"</span>: <span class="json-str">"report_complete"</span>,
+  <span class="json-key">"event_id"</span>: <span class="json-str">"evt_a1b2c3f1"</span>,
+  <span class="json-key">"org"</span>: <span class="json-str">"DryRunSec"</span>,
+  <span class="json-key">"repo_name"</span>: <span class="json-str">"dryrun-api"</span>,
+  <span class="json-key">"timestamp"</span>: <span class="json-str">"2026-04-10T02:06:30Z"</span>,
+  <span class="json-key">"report_id"</span>: <span class="json-str">"rpt_abc123"</span>,
+  <span class="json-key">"report_type"</span>: <span class="json-str">"security_review"</span>, <span class="json-comment">// security_review | vulnerability_trends | feature_ships | etc.</span>
+  <span class="json-key">"generated_by"</span>: <span class="json-str">"schedule"</span>, <span class="json-comment">// "schedule" | "manual"</span>
+  <span class="json-key">"requested_by"</span>: <span class="json-str">"cnichols-dry"</span>,
+  <span class="json-key">"dashboard_url"</span>: <span class="json-str">"https://app.dryrun.security/csi/reports/rpt_abc123?org=DryRunSec"</span>
+}</pre>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
