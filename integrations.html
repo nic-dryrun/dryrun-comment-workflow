@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DryRun — Integrations Page Mockup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --font: 'Inter', -apple-system, sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+      --bg: #fafbfc;
+      --surface: #fff;
+      --surface-alt: #f6f8fa;
+      --text: #1a1d23;
+      --text-sec: #5a5f6b;
+      --text-muted: #8b919e;
+      --border: #e3e6eb;
+      --border-light: #eef0f4;
+      --purple: #7c6ef0;
+      --purple-bg: #f0eeff;
+      --purple-border: #d8d3f7;
+      --green: #1a7f37;
+      --green-bg: #dafbe1;
+      --green-border: #aceebb;
+      --orange: #bf8700;
+      --orange-bg: #fff8c5;
+      --red: #cf222e;
+      --red-bg: #ffebe9;
+    }
+    body { font-family: var(--font); font-size: 14px; line-height: 1.5; color: var(--text); background: var(--bg); }
+
+    .mockup-bar { background: linear-gradient(135deg, #1a1e3a, #2d3260); padding: 10px 24px; display: flex; align-items: center; gap: 12px; font-size: 12px; color: #fff; }
+    .mockup-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(124,110,240,0.3); padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+    .mockup-breadcrumb { padding: 8px 24px; font-size: 12px; color: #8b919e; background: #fff; border-bottom: 1px solid #e8ecf0; }
+    .mockup-breadcrumb a { color: var(--purple); text-decoration: none; }
+    .change-indicator { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px; background: var(--purple-bg); color: var(--purple); border: 1px solid var(--purple-border); }
+
+    /* ── APP SHELL ── */
+    .app-shell { display: flex; min-height: calc(100vh - 64px); }
+    .sidebar { width: 200px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); padding: 16px 0; display: flex; flex-direction: column; }
+    .sidebar-logo { display: flex; align-items: center; gap: 8px; padding: 0 16px 14px; border-bottom: 1px solid var(--border-light); margin-bottom: 10px; }
+    .sidebar-logo-text { font-weight: 700; font-size: 13px; line-height: 1.2; }
+    .sidebar-logo-text span { display: block; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; color: var(--text-sec); }
+    .sidebar-org { margin: 0 12px 12px; padding: 7px 10px; border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; cursor: pointer; }
+    .sidebar-section { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); padding: 10px 16px 4px; }
+    .sidebar-link { display: flex; align-items: center; gap: 8px; padding: 7px 16px; font-size: 13px; font-weight: 500; color: var(--text-sec); text-decoration: none; cursor: pointer; }
+    .sidebar-link:hover { color: var(--text); background: var(--surface-alt); }
+    .sidebar-link--active { color: var(--purple); background: var(--purple-bg); font-weight: 600; }
+    .sidebar-link svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .sidebar-spacer { flex: 1; }
+    .sidebar-bottom { padding: 12px 16px; border-top: 1px solid var(--border-light); font-size: 12px; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between; }
+    .dark-toggle { width: 32px; height: 18px; border-radius: 9px; background: var(--border); border: none; cursor: pointer; position: relative; }
+    .dark-toggle::after { content:''; position: absolute; width: 12px; height: 12px; border-radius: 50%; background: #fff; top: 3px; left: 3px; }
+
+    /* ── MAIN ── */
+    .main-content { flex: 1; padding: 32px 36px; overflow-y: auto; }
+    .breadcrumb-inner { font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
+    .page-title { font-size: 22px; font-weight: 700; margin-bottom: 28px; }
+    .section-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+
+    /* ── INTEGRATION CARDS (original style) ── */
+    .int-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-bottom: 32px; }
+    .int-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+    .int-card-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+    .int-icon { width: 36px; height: 36px; flex-shrink: 0; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .int-name { font-size: 16px; font-weight: 700; }
+    .int-desc { font-size: 12px; color: var(--text-sec); line-height: 1.45; }
+    .int-card-footer { display: flex; align-items: center; gap: 8px; padding-top: 14px; border-top: 1px solid var(--border-light); }
+    .btn-outline { padding: 6px 14px; font-size: 12px; font-weight: 500; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); color: var(--text-sec); cursor: pointer; font-family: var(--font); }
+    .btn-outline:hover { background: var(--surface-alt); }
+    .btn-remove { color: var(--red); border-color: #ffcecb; }
+    .btn-remove:hover { background: var(--red-bg); }
+    .btn-primary { padding: 6px 14px; font-size: 12px; font-weight: 600; border: none; border-radius: 6px; background: var(--purple); color: #fff; cursor: pointer; font-family: var(--font); }
+    .toggle { width: 40px; height: 22px; border-radius: 11px; border: none; cursor: pointer; position: relative; margin-left: auto; flex-shrink: 0; }
+    .toggle--on { background: var(--purple); }
+    .toggle--off { background: var(--border); }
+    .toggle::after { content:''; position: absolute; width: 16px; height: 16px; border-radius: 50%; background: #fff; top: 3px; box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
+    .toggle--on::after { left: 21px; }
+    .toggle--off::after { left: 3px; }
+
+    /* ── WEBHOOK SECTION (new) ── */
+    .wh-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .wh-section-header h2 { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+    .add-wh-btn { display: flex; align-items: center; gap: 6px; padding: 7px 16px; border-radius: 8px; border: 1px solid var(--purple-border); background: var(--purple-bg); color: var(--purple); font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--font); transition: all 0.15s; }
+    .add-wh-btn:hover { background: var(--purple); color: #fff; }
+
+    .wh-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+    .wh-row { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .wh-status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .wh-status-dot--on { background: var(--green); }
+    .wh-status-dot--off { background: var(--text-muted); }
+    .wh-info { flex: 1; min-width: 0; }
+    .wh-name { font-size: 13.5px; font-weight: 600; }
+    .wh-url { font-size: 11px; font-family: var(--mono); color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .wh-events { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+    .wh-event-tag { font-size: 10px; font-weight: 500; padding: 1px 7px; border-radius: 8px; background: var(--purple-bg); color: var(--purple); border: 1px solid var(--purple-border); }
+    .wh-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+    /* ── WEBHOOK CONFIG MODAL ── */
+    .modal-overlay { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.4); align-items: flex-start; justify-content: center; padding: 40px 20px; overflow-y: auto; }
+    .modal { background: var(--surface); border-radius: 12px; width: 100%; max-width: 680px; box-shadow: 0 20px 60px rgba(0,0,0,0.18); }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; background: var(--surface-alt); border-bottom: 1px solid var(--border-light); border-radius: 12px 12px 0 0; }
+    .modal-header h3 { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .modal-close { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); }
+    .modal-close:hover { background: var(--red-bg); color: var(--red); }
+    .modal-body { padding: 20px 24px; }
+
+    .field-group { margin-bottom: 14px; }
+    .field-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); margin-bottom: 5px; }
+    .field-input { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; font-family: var(--mono); color: var(--text); background: var(--surface); }
+    .field-input.name-field { font-family: var(--font); font-weight: 500; }
+    .field-input:focus { outline: none; border-color: var(--purple); }
+
+    /* Events section inside modal */
+    .events-section { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 16px; }
+    .events-header { padding: 10px 14px; background: var(--surface-alt); border-bottom: 1px solid var(--border-light); font-size: 12px; font-weight: 600; color: var(--text-sec); display: flex; align-items: center; justify-content: space-between; }
+    .events-header span { text-transform: uppercase; letter-spacing: 0.04em; }
+    .event-group { border-bottom: 1px solid var(--border-light); }
+    .event-group:last-child { border-bottom: none; }
+    .event-group-header { padding: 9px 14px; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--text-sec); background: var(--surface); }
+    .event-group-header:hover { background: var(--surface-alt); }
+    .event-group-header input[type=checkbox] { width: 14px; height: 14px; accent-color: var(--purple); cursor: pointer; flex-shrink: 0; }
+    .event-group-label { flex: 1; }
+    .event-count { font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 8px; background: var(--purple-bg); color: var(--purple); }
+    .event-chevron { color: var(--text-muted); transition: transform 0.2s; }
+    .event-group.open .event-chevron { transform: rotate(180deg); }
+    .event-group-items { display: none; background: var(--surface); }
+    .event-group.open .event-group-items { display: block; }
+    .event-item { display: flex; align-items: center; gap: 10px; padding: 7px 14px 7px 34px; border-top: 1px solid var(--border-light); font-size: 12.5px; color: var(--text); }
+    .event-item input[type=checkbox] { width: 14px; height: 14px; accent-color: var(--purple); cursor: pointer; flex-shrink: 0; }
+    .event-item-label { flex: 1; }
+    .hook-badge { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; padding: 2px 6px; border-radius: 4px; background: #ddf4ff; color: #0969da; border: 1px solid #b6d8ff; flex-shrink: 0; }
+    .risk-select { font-size: 11px; padding: 3px 22px 3px 7px; border: 1px solid var(--border); border-radius: 5px; background: var(--surface); color: var(--text); font-family: var(--font); cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='%236b7084' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 6px center; }
+
+    .modal-footer { padding: 14px 24px; border-top: 1px solid var(--border-light); display: flex; align-items: center; justify-content: flex-end; gap: 10px; background: var(--surface-alt); border-radius: 0 0 12px 12px; }
+    .btn-cancel { padding: 8px 20px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text-sec); font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--font); }
+    .btn-save { padding: 8px 20px; border: none; border-radius: 8px; background: var(--purple); color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--font); }
+  </style>
+</head>
+<body>
+
+<div class="mockup-bar">
+  <span class="mockup-badge"><svg width="10" height="10" viewBox="0 0 16 16" fill="#c4b5fd"><circle cx="8" cy="8" r="8"/></svg> PROPOSED MOCKUP</span>
+  <span style="opacity:0.6;">Integrations — Webhook Redesign</span>
+</div>
+<div class="mockup-breadcrumb"><a href="index.html">Mockups</a> / <span>Notifications / Integrations Page</span></div>
+
+<div class="app-shell">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <svg width="24" height="24" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="13" stroke="var(--text)" stroke-width="1.5" fill="none"/><path d="M16 7L9 11v10l7 4 7-4V11l-7-4z" stroke="var(--text)" stroke-width="1" fill="none"/><path d="M13 16l2 2 4-4" stroke="var(--green)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div class="sidebar-logo-text">DRYRUN<span>SECURITY</span></div>
+  </div>
+  <div class="sidebar-org">
+    <svg width="16" height="16" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="13" stroke="var(--text-muted)" stroke-width="1" fill="none"/></svg>
+    <span style="font-size:13px;font-weight:500;">DryRunSec</span>
+    <svg width="12" height="12" viewBox="0 0 16 16" fill="var(--text-muted)" style="margin-left:auto;"><path d="M4.427 7.427l3.396 3.396a.25.25 0 00.354 0l3.396-3.396A.25.25 0 0011.396 7H4.604a.25.25 0 00-.177.427z"/></svg>
+  </div>
+  <div class="sidebar-section">Main</div>
+  <a class="sidebar-link" href="#"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0114.25 15H1.75A1.75 1.75 0 010 13.25V2.75C0 1.784.784 1 1.75 1zm0 1.5a.25.25 0 00-.25.25v10.5c0 .138.112.25.25.25h12.5a.25.25 0 00.25-.25V2.75a.25.25 0 00-.25-.25H1.75z"/></svg>Risk Register</a>
+  <a class="sidebar-link" href="#"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 010-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1h-8a1 1 0 00-1 1v6.708A2.486 2.486 0 014.5 9h8V1.5z"/></svg>Repositories</a>
+  <a class="sidebar-link" href="#"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M1.5 3.25a2.25 2.25 0 113 2.122v5.256a2.251 2.251 0 11-1.5 0V5.372A2.25 2.25 0 011.5 3.25zm5.677-.177L9.573.677A.25.25 0 0110 .854V2.5h1A2.5 2.5 0 0113.5 5v5.628a2.251 2.251 0 11-1.5 0V5a1 1 0 00-1-1h-1v1.646a.25.25 0 01-.427.177L7.177 3.427a.25.25 0 010-.354z"/></svg>Pull Requests</a>
+  <a class="sidebar-link" href="#"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M5.45 5.154A4.25 4.25 0 009.25 7.5h1.378a5.75 5.75 0 10-3.752-6.846.75.75 0 101.43.458A4.25 4.25 0 015.45 5.154z"/></svg>DeepScan</a>
+  <a class="sidebar-link" href="#"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8.878.392a1.75 1.75 0 00-1.756 0l-5.25 3.045A1.75 1.75 0 001 4.951v6.098c0 .624.332 1.2.872 1.514l5.25 3.045a1.75 1.75 0 001.756 0l5.25-3.045c.54-.313.872-.89.872-1.514V4.951c0-.624-.332-1.2-.872-1.514L8.878.392z"/></svg>Code Policies</a>
+  <a class="sidebar-link" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>Code Security Intelligence</a>
+  <div class="sidebar-section">Settings</div>
+  <a class="sidebar-link" href="#"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8.2 8.2 0 00-2.3.3c-.3.1-.5.4-.5.7v1.4a1 1 0 01-.6.9l-.5.3a1 1 0 01-1.1-.1L1.9 2.4c-.2-.2-.6-.2-.8 0A8 8 0 00.3 5.7c0 .3.2.6.5.7L2.2 7a1 1 0 01.5 1v.5a1 1 0 01-.5.9l-1.4.8c-.3.1-.5.4-.5.7a8 8 0 00.8 3.3c.2.3.5.3.8.1l1.1-1.1a1 1 0 011.1-.1l.5.3a1 1 0 01.6.9v1.4c0 .3.2.6.5.7a8.2 8.2 0 004.6 0c.3-.1.5-.4.5-.7v-1.4a1 1 0 01.6-.9l.5-.3a1 1 0 011.1.1l1.1 1.1c.2.2.6.2.8 0a8 8 0 00.8-3.3c0-.3-.2-.6-.5-.7L13.8 9a1 1 0 01-.5-1V7.5a1 1 0 01.5-.9l1.4-.8c.3-.1.5-.4.5-.7a8 8 0 00-.8-3.3c-.2-.3-.5-.3-.8-.1l-1.1 1.1a1 1 0 01-1.1.1l-.5-.3a1 1 0 01-.6-.9V.8c0-.3-.2-.6-.5-.7A8.2 8.2 0 008 0zM8 11a3 3 0 110-6 3 3 0 010 6z"/></svg>Configurations</a>
+  <a class="sidebar-link sidebar-link--active" href="#"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 1.75C2 .784 2.784 0 3.75 0h8.5C13.216 0 14 .784 14 1.75v12.5A1.75 1.75 0 0112.25 16h-8.5A1.75 1.75 0 012 14.25V1.75zm4 6a.75.75 0 000 1.5h4a.75.75 0 000-1.5H6zM6 4a.75.75 0 000 1.5h4A.75.75 0 006 4zm0 6a.75.75 0 000 1.5h1A.75.75 0 006 10z"/></svg>Integrations</a>
+  <a class="sidebar-link" href="#"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a3.5 3.5 0 00-3.5 3.5V7H3.75A1.75 1.75 0 002 8.75v5.5c0 .966.784 1.75 1.75 1.75h8.5A1.75 1.75 0 0014 14.25v-5.5A1.75 1.75 0 0012.25 7H11.5V4.5A3.5 3.5 0 008 1zm2 6H6V4.5a2 2 0 014 0V7z"/></svg>Access Keys</a>
+  <div class="sidebar-spacer"></div>
+  <div class="sidebar-section">Help</div>
+  <a class="sidebar-link" href="#"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 1.75A.75.75 0 01.75 1h4.253c1.227 0 2.317.59 3 1.501A3.743 3.743 0 0111.006 1h4.245a.75.75 0 01.75.75v10.5a.75.75 0 01-.75.75h-4.507a2.25 2.25 0 00-1.591.659l-.622.621a.75.75 0 01-1.06 0l-.622-.621A2.25 2.25 0 005.258 13H.75a.75.75 0 01-.75-.75V1.75z"/></svg>Docs</a>
+  <a class="sidebar-link" href="#"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zm0 3a1 1 0 110 2 1 1 0 010-2zM6 7.75A.75.75 0 016.75 7h1.5a.75.75 0 01.75.75v3.75h.75a.75.75 0 010 1.5h-3a.75.75 0 010-1.5h.75v-3h-.75A.75.75 0 016 7.75z"/></svg>Ask Questions</a>
+  <div class="sidebar-bottom">
+    Dark Mode
+    <button class="dark-toggle"></button>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+  <div class="breadcrumb-inner">Settings</div>
+  <div class="page-title">Integrations</div>
+
+  <!-- ══ WEBHOOKS (redesigned) ══ -->
+  <div class="wh-section-header">
+    <h2>
+      Webhooks
+      <span class="change-indicator">Redesigned</span>
+    </h2>
+    <button class="add-wh-btn" onclick="document.getElementById('webhookModal').style.display='flex'">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M7.75 2a.75.75 0 01.75.75V7h4.25a.75.75 0 010 1.5H8.5v4.25a.75.75 0 01-1.5 0V8.5H2.75a.75.75 0 010-1.5H7V2.75A.75.75 0 017.75 2z"/></svg>
+      New Webhook
+    </button>
+  </div>
+
+  <div class="wh-list">
+    <!-- Existing webhook 1: Security Alerts -->
+    <div class="wh-row">
+      <span class="wh-status-dot wh-status-dot--on"></span>
+      <div class="wh-info">
+        <div class="wh-name">Security Alerts — Tines</div>
+        <div class="wh-url">https://aged-snow-3554.tines.com/webhook/new-story-for-security</div>
+        <div class="wh-events">
+          <span class="wh-event-tag">PR scan complete</span>
+          <span class="wh-event-tag">New vulnerabilities (PR) · High+</span>
+          <span class="wh-event-tag">PR blocked</span>
+          <span class="wh-event-tag">New vulnerabilities (full scan) · High+</span>
+          <span class="wh-event-tag">Vulnerability reopened</span>
+        </div>
+      </div>
+      <div class="wh-actions">
+        <button class="btn-outline">Test</button>
+        <button class="btn-outline" onclick="document.getElementById('webhookModal').style.display='flex'">Configure</button>
+        <button class="btn-outline btn-remove">Remove</button>
+        <button class="toggle toggle--on"></button>
+      </div>
+    </div>
+
+    <!-- Existing webhook 2: Ops Monitoring -->
+    <div class="wh-row">
+      <span class="wh-status-dot wh-status-dot--on"></span>
+      <div class="wh-info">
+        <div class="wh-name">Ops Monitoring — PagerDuty</div>
+        <div class="wh-url">https://events.pagerduty.com/integration/abc123/enqueue</div>
+        <div class="wh-events">
+          <span class="wh-event-tag">Scan failed</span>
+          <span class="wh-event-tag">Long running scan</span>
+        </div>
+      </div>
+      <div class="wh-actions">
+        <button class="btn-outline">Test</button>
+        <button class="btn-outline">Configure</button>
+        <button class="btn-outline btn-remove">Remove</button>
+        <button class="toggle toggle--on"></button>
+      </div>
+    </div>
+
+    <!-- Existing webhook 3: old generic (disabled) -->
+    <div class="wh-row" style="opacity: 0.6;">
+      <span class="wh-status-dot wh-status-dot--off"></span>
+      <div class="wh-info">
+        <div class="wh-name">generic-webhook-39b004c4</div>
+        <div class="wh-url">https://aged-snow-3554.tines.com/webhook/new-story-for</div>
+        <div class="wh-events">
+          <span class="wh-event-tag" style="background: var(--surface-alt); color: var(--text-muted); border-color: var(--border);">New vulnerabilities (PR) · All</span>
+        </div>
+      </div>
+      <div class="wh-actions">
+        <button class="btn-outline">Test</button>
+        <button class="btn-outline">Configure</button>
+        <button class="btn-outline btn-remove">Remove</button>
+        <button class="toggle toggle--off"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SLACK (unchanged) ══ -->
+  <div class="section-title">Messaging</div>
+  <div class="int-grid" style="margin-bottom: 32px;">
+    <div class="int-card">
+      <div class="int-card-top">
+        <div class="int-icon" style="background:#f0f0f0;">
+          <svg width="24" height="24" viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="2" fill="#e01e5a"/><rect x="13" y="2" width="9" height="9" rx="2" fill="#36c5f0"/><rect x="2" y="13" width="9" height="9" rx="2" fill="#2eb67d"/><rect x="13" y="13" width="9" height="9" rx="2" fill="#ecb22e"/></svg>
+        </div>
+        <div>
+          <div class="int-name">Slack</div>
+          <div class="int-desc">Notify your team via Slack when new risky changes are discovered.</div>
+        </div>
+      </div>
+      <div class="int-card-footer">
+        <button class="btn-outline">Details</button>
+        <button class="btn-outline btn-remove">Remove</button>
+        <button class="toggle toggle--on"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ AI CODING INTEGRATIONS (unchanged) ══ -->
+  <div class="section-title">AI Coding Integrations</div>
+  <div class="int-grid">
+    <div class="int-card">
+      <div class="int-card-top">
+        <div class="int-icon" style="background:#000;border-radius:8px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2L6 5v7l6 3 6-3V5l-6-3z" fill="#fff"/></svg></div>
+        <div><div class="int-name">Cursor</div><div class="int-desc">Connect DryRun Insights MCP to Cursor IDE for AI-powered code analysis.</div></div>
+      </div>
+      <div class="int-card-footer"><button class="btn-outline">Connect</button><button class="btn-primary">Add Skill</button></div>
+    </div>
+    <div class="int-card">
+      <div class="int-card-top">
+        <div class="int-icon" style="background:#f6f8fa;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M8 8l8 8M16 8l-8 8"/></svg></div>
+        <div><div class="int-name">Codex</div><div class="int-desc">Integrate DryRun Insights MCP with OpenAI Codex for enhanced code review.</div></div>
+      </div>
+      <div class="int-card-footer"><button class="btn-outline">Connect</button><button class="btn-primary">Add Skill</button></div>
+    </div>
+    <div class="int-card">
+      <div class="int-card-top">
+        <div class="int-icon" style="background:#f6f8fa;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" stroke="#d97706" stroke-width="1.5" fill="none"/></svg></div>
+        <div><div class="int-name">Claude Code</div><div class="int-desc">Use DryRun Insights MCP with Claude Code for security-aware coding assistance.</div></div>
+      </div>
+      <div class="int-card-footer"><button class="btn-outline">Connect</button><button class="btn-primary">Add Skill</button></div>
+    </div>
+    <div class="int-card">
+      <div class="int-card-top">
+        <div class="int-icon" style="background:#f6f8fa;"><svg width="22" height="22" viewBox="0 0 24 24" fill="#5a5f6b"><path d="M12 2L2 7l10 5 10-5L12 2zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+        <div><div class="int-name">Windsurf</div><div class="int-desc">Integrate DryRun Insights MCP with Windsurf IDE for AI-assisted code review.</div></div>
+      </div>
+      <div class="int-card-footer"><button class="btn-outline">Connect</button><button class="btn-primary">Add Skill</button></div>
+    </div>
+    <div class="int-card">
+      <div class="int-card-top">
+        <div class="int-icon" style="background:#f6f8fa;"><svg width="22" height="22" viewBox="0 0 24 24" fill="#0969da"><path d="M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M8 7h8M8 12h8M8 17h4" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div><div class="int-name">VS Code</div><div class="int-desc">Connect DryRun Insights MCP to VS Code for AI-powered security analysis.</div></div>
+      </div>
+      <div class="int-card-footer"><button class="btn-outline">Connect</button><button class="btn-primary">Add Skill</button></div>
+    </div>
+  </div>
+
+  <!-- ══ DESKTOP INTEGRATIONS (unchanged) ══ -->
+  <div class="section-title" style="margin-top: 20px;">Desktop Integrations</div>
+  <div class="int-grid">
+    <div class="int-card">
+      <div class="int-card-top">
+        <div class="int-icon" style="background:#f6f8fa;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" stroke="#d97706" stroke-width="1.5" fill="none"/></svg></div>
+        <div><div class="int-name">Claude Desktop</div><div class="int-desc">Connect DryRun Insights MCP to Claude Desktop for comprehensive code analysis.</div></div>
+      </div>
+      <div class="int-card-footer"><button class="btn-outline">Connect</button></div>
+    </div>
+  </div>
+
+</div><!-- /main-content -->
+</div><!-- /app-shell -->
+
+<!-- ══ WEBHOOK CONFIG MODAL ══ -->
+<div class="modal-overlay" id="webhookModal" onclick="if(event.target===this)this.style.display='none'">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="var(--purple)"><path d="M7.75 2a.75.75 0 01.75.75V7h4.25a.75.75 0 010 1.5H8.5v4.25a.75.75 0 01-1.5 0V8.5H2.75a.75.75 0 010-1.5H7V2.75A.75.75 0 017.75 2z"/></svg>
+        Configure Webhook
+      </h3>
+      <button class="modal-close" onclick="document.getElementById('webhookModal').style.display='none'">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="field-group">
+        <div class="field-label">Name</div>
+        <input class="field-input name-field" type="text" value="Security Alerts — Tines">
+      </div>
+      <div class="field-group">
+        <div class="field-label">Webhook URL</div>
+        <input class="field-input" type="text" value="https://aged-snow-3554.tines.com/webhook/new-story-for-security">
+      </div>
+
+      <div class="field-label" style="margin-bottom: 8px;">Event Subscriptions</div>
+      <div class="events-section">
+        <div class="events-header">
+          <span>Select events that trigger this webhook</span>
+          <span style="font-size:11px;font-weight:400;color:var(--text-muted);">5 selected</span>
+        </div>
+
+        <!-- PR Events -->
+        <div class="event-group open">
+          <div class="event-group-header" onclick="this.parentElement.classList.toggle('open')">
+            <input type="checkbox" checked onclick="event.stopPropagation()">
+            <span class="event-group-label">PR Events</span>
+            <span class="event-count">3 of 5</span>
+            <svg class="event-chevron" width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"/></svg>
+          </div>
+          <div class="event-group-items">
+            <div class="event-item"><input type="checkbox"><span class="hook-badge">HOOK</span><span class="event-item-label">PR scan started</span></div>
+            <div class="event-item"><input type="checkbox" checked><span class="hook-badge">HOOK</span><span class="event-item-label">PR scan complete</span></div>
+            <div class="event-item"><input type="checkbox" checked><span class="hook-badge">HOOK</span><span class="event-item-label">New vulnerabilities (PR)</span><select class="risk-select"><option>All</option><option selected>High + Critical</option><option>Critical only</option></select></div>
+            <div class="event-item"><input type="checkbox" checked><span class="hook-badge">HOOK</span><span class="event-item-label">PR blocked</span></div>
+            <div class="event-item"><input type="checkbox"><span class="hook-badge">HOOK</span><span class="event-item-label">PR merged with issues</span></div>
+          </div>
+        </div>
+
+        <!-- Vulnerability Events -->
+        <div class="event-group open">
+          <div class="event-group-header" onclick="this.parentElement.classList.toggle('open')">
+            <input type="checkbox" checked onclick="event.stopPropagation()">
+            <span class="event-group-label">Vulnerability Events</span>
+            <span class="event-count">2 of 4</span>
+            <svg class="event-chevron" width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"/></svg>
+          </div>
+          <div class="event-group-items">
+            <div class="event-item"><input type="checkbox" checked><span class="hook-badge">HOOK</span><span class="event-item-label">New vulnerabilities (full scan)</span><select class="risk-select"><option>All</option><option selected>High + Critical</option><option>Critical only</option></select></div>
+            <div class="event-item"><input type="checkbox"><span class="hook-badge">HOOK</span><span class="event-item-label">Vulnerability patched</span></div>
+            <div class="event-item"><input type="checkbox" checked><span class="hook-badge">HOOK</span><span class="event-item-label">Vulnerability reopened</span></div>
+            <div class="event-item"><input type="checkbox"><span class="hook-badge">HOOK</span><span class="event-item-label">SCA new CVE</span><select class="risk-select"><option selected>All</option><option>High + Critical</option><option>Critical only</option></select></div>
+          </div>
+        </div>
+
+        <!-- Scan Events -->
+        <div class="event-group">
+          <div class="event-group-header" onclick="this.parentElement.classList.toggle('open')">
+            <input type="checkbox" onclick="event.stopPropagation()">
+            <span class="event-group-label">Scan Events</span>
+            <span style="font-size:10px;color:var(--text-muted);">None selected</span>
+            <svg class="event-chevron" width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"/></svg>
+          </div>
+          <div class="event-group-items">
+            <div class="event-item"><input type="checkbox"><span class="hook-badge">HOOK</span><span class="event-item-label">Scan started</span></div>
+            <div class="event-item"><input type="checkbox"><span class="hook-badge">HOOK</span><span class="event-item-label">Scan complete</span></div>
+            <div class="event-item"><input type="checkbox"><span class="hook-badge">HOOK</span><span class="event-item-label">Scan failed</span></div>
+            <div class="event-item"><input type="checkbox"><span class="hook-badge">HOOK</span><span class="event-item-label">Scan scheduled</span></div>
+            <div class="event-item"><input type="checkbox"><span class="hook-badge">HOOK</span><span class="event-item-label">Long running scan</span></div>
+          </div>
+        </div>
+
+        <!-- Other Events -->
+        <div class="event-group">
+          <div class="event-group-header" onclick="this.parentElement.classList.toggle('open')">
+            <input type="checkbox" onclick="event.stopPropagation()">
+            <span class="event-group-label">Other Events</span>
+            <span style="font-size:10px;color:var(--text-muted);">None selected</span>
+            <svg class="event-chevron" width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"/></svg>
+          </div>
+          <div class="event-group-items">
+            <div class="event-item"><input type="checkbox"><span class="hook-badge">HOOK</span><span class="event-item-label">Audit log event</span></div>
+            <div class="event-item"><input type="checkbox"><span class="hook-badge">HOOK</span><span class="event-item-label">Report complete</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="document.getElementById('webhookModal').style.display='none'">Cancel</button>
+      <button class="btn-outline" style="padding:8px 16px;">Test</button>
+      <button class="btn-save" onclick="document.getElementById('webhookModal').style.display='none'">Save Webhook</button>
+    </div>
+  </div>
+</div>
+
+<script src="gate.js"></script>
+</body>
+</html>
