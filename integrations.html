@@ -404,6 +404,7 @@
             <div class="event-item"><input type="checkbox" checked><span class="hook-badge">HOOK</span><span class="event-item-label">New vulnerabilities (PR)</span><select class="risk-select"><option>All</option><option selected>High + Critical</option><option>Critical only</option></select></div>
             <div class="event-item"><input type="checkbox" checked><span class="hook-badge">HOOK</span><span class="event-item-label">PR blocked</span></div>
             <div class="event-item"><input type="checkbox"><span class="hook-badge">HOOK</span><span class="event-item-label">PR merged with issues</span></div>
+            <div class="event-item"><input type="checkbox"><span class="hook-badge">HOOK</span><span class="event-item-label">PR improved</span></div>
             <div class="event-item"><input type="checkbox"><span class="hook-badge">HOOK</span><span class="event-item-label">Finding dismissed</span><select class="risk-select"><option>All types</option><option>False positive</option><option>Nitpick</option><option>Accepted risk</option><option>Won't fix</option></select></div>
           </div>
         </div>
@@ -628,6 +629,43 @@
   <span class="json-key">"pr_title"</span>: <span class="json-str">"fix: move db creds to vault"</span>,
   <span class="json-key">"github_comment_url"</span>: <span class="json-str">"https://github.com/DryRunSec/dryrun-api/pull/412#issuecomment-1234567"</span>,
   <span class="json-key">"fingerprint_created"</span>: <span class="json-bool">true</span>, <span class="json-comment">// true when dismissal_type is "false_positive" — suppresses in future scans</span>
+  <span class="json-key">"dashboard_url"</span>: <span class="json-str">"https://app.dryrun.security/pull-requests/412?org=DryRunSec"</span>
+}</pre>
+        </div>
+      </div>
+
+      <!-- pr_improved -->
+      <div class="payload-card" onclick="this.classList.toggle('open')">
+        <div class="payload-card-header">
+          <div class="payload-event-name"><code style="font-family:var(--mono);">pr_improved</code><span class="event-tag event-tag--new">New</span></div>
+          <svg class="payload-chevron" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"/></svg>
+        </div>
+        <div class="payload-card-body">
+          <div class="payload-desc">Fired when a PR that had findings on an earlier scan is later scanned again and one or more of those findings are no longer present — indicating the developer fixed issues before merge. All findings must be resolved for <code style="font-family:var(--mono);font-size:11px;">all_resolved</code> to be true.</div>
+          <pre class="json">{
+  <span class="json-key">"event"</span>: <span class="json-str">"pr_improved"</span>,
+  <span class="json-key">"event_id"</span>: <span class="json-str">"evt_a1b2c3c9"</span>,
+  <span class="json-key">"org"</span>: <span class="json-str">"DryRunSec"</span>,
+  <span class="json-key">"repo_name"</span>: <span class="json-str">"dryrun-api"</span>,
+  <span class="json-key">"timestamp"</span>: <span class="json-str">"2026-04-10T14:32:00Z"</span>,
+  <span class="json-key">"pr_number"</span>: <span class="json-num">412</span>,
+  <span class="json-key">"pr_title"</span>: <span class="json-str">"fix: move db creds to vault"</span>,
+  <span class="json-key">"branch"</span>: <span class="json-str">"fix/db-creds-vault"</span>,
+  <span class="json-key">"commit_sha"</span>: <span class="json-str">"e7b21d4"</span>,
+  <span class="json-key">"commit_author"</span>: <span class="json-str">"wickett"</span>,
+  <span class="json-key">"all_resolved"</span>: <span class="json-bool">true</span>, <span class="json-comment">// true = all findings cleared; false = partially improved</span>
+  <span class="json-key">"findings_resolved_count"</span>: <span class="json-num">3</span>,
+  <span class="json-key">"findings_remaining_count"</span>: <span class="json-num">0</span>,
+  <span class="json-key">"resolved_findings"</span>: [
+    {
+      <span class="json-key">"finding_id"</span>: <span class="json-str">"drs_b8948228"</span>,
+      <span class="json-key">"type"</span>: <span class="json-str">"Hardcoded Database Credentials"</span>,
+      <span class="json-key">"severity"</span>: <span class="json-str">"high"</span>,
+      <span class="json-key">"filename"</span>: <span class="json-str">"pkg/models/drift.go"</span>,
+      <span class="json-key">"first_detected_scan"</span>: <span class="json-str">"a3f82c1"</span>
+    }
+  ],
+  <span class="json-key">"github_url"</span>: <span class="json-str">"https://github.com/DryRunSec/dryrun-api/pull/412"</span>,
   <span class="json-key">"dashboard_url"</span>: <span class="json-str">"https://app.dryrun.security/pull-requests/412?org=DryRunSec"</span>
 }</pre>
         </div>
