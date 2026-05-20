@@ -420,10 +420,10 @@
           <div class="filter-panel" id="filter-panel">
             <div class="fp-section">
               <div class="fp-title">Risk</div>
-              <label class="fp-option"><input type="checkbox"> Critical</label>
-              <label class="fp-option"><input type="checkbox"> High</label>
-              <label class="fp-option"><input type="checkbox"> Medium</label>
-              <label class="fp-option"><input type="checkbox"> Low</label>
+              <label class="fp-option"><input type="checkbox" id="fp-critical" value="critical"> Critical</label>
+              <label class="fp-option"><input type="checkbox" id="fp-high" value="high"> High</label>
+              <label class="fp-option"><input type="checkbox" id="fp-medium" value="medium"> Medium</label>
+              <label class="fp-option"><input type="checkbox" id="fp-low" value="low"> Low</label>
             </div>
             <div class="fp-section">
               <div class="fp-title">Agent</div>
@@ -443,8 +443,8 @@
               <label class="fp-option"><input type="checkbox"> Dismissed</label>
             </div>
             <div class="fp-footer">
-              <button class="fp-clear" onclick="closeAllDDs()">Clear</button>
-              <button class="fp-apply" onclick="closeAllDDs()">Apply</button>
+              <button class="fp-clear" onclick="clearFilterPanel()">Clear</button>
+              <button class="fp-apply" onclick="applyFilterPanel()">Apply</button>
             </div>
           </div>
         </div>
@@ -459,7 +459,7 @@
             <div class="export-item" onclick="closeExportMenu()">Copy finding IDs</div>
           </div>
         </div>
-        <button class="dismiss-btn" onclick="openDismissModal()">Dismiss</button>
+        <button class="dismiss-btn" id="dismiss-btn" onclick="openDismissModal()" disabled style="opacity:0.38;cursor:not-allowed;color:var(--text-muted);pointer-events:none;">Dismiss</button>
       </div>
 
       <!-- Status filter tabs -->
@@ -484,7 +484,7 @@
 
       <!-- R1: Critical active risk -->
       <div class="finding-row finding-row--selected" data-sev="critical" data-merge="risk" data-status="active" onclick="selectRow(this)">
-        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()">
+        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()" onchange="updateDismissBtn()">
         <div><span class="sev-badge sev-critical">Critical</span></div>
         <div class="row-type">Authentication Bypass: Incomplete We...</div>
         <div class="row-file">pkg/usecases/providers/w...</div>
@@ -495,7 +495,7 @@
       </div>
       <!-- R2: Critical active risk -->
       <div class="finding-row" data-sev="critical" data-merge="risk" data-status="active" onclick="selectRow(this)">
-        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()">
+        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()" onchange="updateDismissBtn()">
         <div><span class="sev-badge sev-critical">Critical</span></div>
         <div class="row-type">Dependency License Check v1</div>
         <div class="row-file">.github/workflows/codex-...</div>
@@ -506,7 +506,7 @@
       </div>
       <!-- R3: Critical active risk -->
       <div class="finding-row" data-sev="critical" data-merge="risk" data-status="active" onclick="selectRow(this)">
-        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()">
+        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()" onchange="updateDismissBtn()">
         <div><span class="sev-badge sev-critical">Critical</span></div>
         <div class="row-type">Dependency License Check v1</div>
         <div class="row-file">.github/workflows/codex-...</div>
@@ -517,7 +517,7 @@
       </div>
       <!-- R4: Critical active (open PR, not yet merged) -->
       <div class="finding-row" data-sev="critical" data-merge="" data-status="active" onclick="selectRow(this)">
-        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()">
+        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()" onchange="updateDismissBtn()">
         <div><span class="sev-badge sev-critical">Critical</span></div>
         <div class="row-type">Path Traversal in File Upload Handler</div>
         <div class="row-file">app/analyzers/vulnerability_...</div>
@@ -528,7 +528,7 @@
       </div>
       <!-- R5: Critical resolved improved -->
       <div class="finding-row finding-row--resolved" data-sev="critical" data-merge="improved" data-status="resolved" onclick="selectRow(this)">
-        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()">
+        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()" onchange="updateDismissBtn()">
         <div><span class="sev-badge sev-critical">Critical</span></div>
         <div class="row-type">Unencrypted Git Protocol Exposure</div>
         <div class="row-file">aws/dryrunsec-sandbox/us...</div>
@@ -539,7 +539,7 @@
       </div>
       <!-- R6: High active risk -->
       <div class="finding-row" data-sev="high" data-merge="risk" data-status="active" onclick="selectRow(this)">
-        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()">
+        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()" onchange="updateDismissBtn()">
         <div><span class="sev-badge sev-high">High</span></div>
         <div class="row-type">Prompt Injection in Nitpick Filter</div>
         <div class="row-file">scanner/feedback/nitpick_fil...</div>
@@ -550,7 +550,7 @@
       </div>
       <!-- R7: High active (open PR) -->
       <div class="finding-row" data-sev="high" data-merge="" data-status="active" onclick="selectRow(this)">
-        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()">
+        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()" onchange="updateDismissBtn()">
         <div><span class="sev-badge sev-high">High</span></div>
         <div class="row-type">Missing Tenant Isolation in DB Delete</div>
         <div class="row-file">pkg/models/drift.go</div>
@@ -561,7 +561,7 @@
       </div>
       <!-- R8: High resolved improved -->
       <div class="finding-row finding-row--resolved" data-sev="high" data-merge="improved" data-status="resolved" onclick="selectRow(this)">
-        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()">
+        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()" onchange="updateDismissBtn()">
         <div><span class="sev-badge sev-high">High</span></div>
         <div class="row-type">Sensitive Service Exposed to Public Int...</div>
         <div class="row-file">aws/dryrunsec-sandbox/us...</div>
@@ -572,7 +572,7 @@
       </div>
       <!-- R9: High dismissed -->
       <div class="finding-row finding-row--dismissed" data-sev="high" data-merge="" data-status="dismissed" onclick="selectRow(this)">
-        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()">
+        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()" onchange="updateDismissBtn()">
         <div><span class="sev-badge sev-high">High</span></div>
         <div class="row-type">Potential SSRF in Webhook Handler</div>
         <div class="row-file">pkg/handlers/webhook.go</div>
@@ -583,7 +583,7 @@
       </div>
       <!-- R10: Medium active risk -->
       <div class="finding-row" data-sev="medium" data-merge="risk" data-status="active" onclick="selectRow(this)">
-        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()">
+        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()" onchange="updateDismissBtn()">
         <div><span class="sev-badge sev-medium">Medium</span></div>
         <div class="row-type">Insecure Storage of Sensitive Authentic...</div>
         <div class="row-file">src/features/user/userSl...</div>
@@ -594,7 +594,7 @@
       </div>
       <!-- R11: Medium active (open PR) -->
       <div class="finding-row" data-sev="medium" data-merge="" data-status="active" onclick="selectRow(this)">
-        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()">
+        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()" onchange="updateDismissBtn()">
         <div><span class="sev-badge sev-medium">Medium</span></div>
         <div class="row-type">SQL Injection via Raw Query Builder</div>
         <div class="row-file">pkg/models/repo_deep_scan.go</div>
@@ -605,7 +605,7 @@
       </div>
       <!-- R12: Medium resolved improved -->
       <div class="finding-row finding-row--resolved" data-sev="medium" data-merge="improved" data-status="resolved" onclick="selectRow(this)">
-        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()">
+        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()" onchange="updateDismissBtn()">
         <div><span class="sev-badge sev-medium">Medium</span></div>
         <div class="row-type">Hardcoded Database Credentials</div>
         <div class="row-file">config/database.go</div>
@@ -616,7 +616,7 @@
       </div>
       <!-- R13: Low active risk -->
       <div class="finding-row" data-sev="low" data-merge="risk" data-status="active" onclick="selectRow(this)">
-        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()">
+        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()" onchange="updateDismissBtn()">
         <div><span class="sev-badge" style="background:#f0f0f0;color:var(--text-muted);border:1px solid var(--border);">Low</span></div>
         <div class="row-type">Missing Content-Security-Policy Header</div>
         <div class="row-file">pkg/api/middleware/headers.go</div>
@@ -765,68 +765,180 @@
 </div><!-- /shell -->
 
 <script>
-// ── ACTIVE FILTERS STATE ──
-let activeMerge = null;
-let activeSeverity = null;
+// ══════════════════════════════════════════
+//  FILTER STATE
+// ══════════════════════════════════════════
+let activeMerge    = null;   // 'risk' | 'improved' | null
+let activeSevCard  = null;   // 'critical'|'high'|'medium'|'low' | null  (from card click)
+let panelSevs      = [];     // [] | ['critical','high',...] (from filter panel Apply)
+// When panelSevs is non-empty it overrides activeSevCard
 
-function applyRowVisibility() {
-  document.querySelectorAll('.finding-row').forEach(r => {
-    const mergeOk  = !activeMerge    || r.dataset.merge === activeMerge;
-    const sevOk    = !activeSeverity || r.dataset.sev   === activeSeverity;
-    r.style.display = (mergeOk && sevOk) ? '' : 'none';
-  });
+// ── Derive the effective severity filter ──
+function effectiveSevs() {
+  if (panelSevs.length > 0) return panelSevs;
+  if (activeSevCard)        return [activeSevCard];
+  return null; // no severity filter
 }
 
-// ── MERGE WIDGETS ──
+// ══════════════════════════════════════════
+//  CORE: FILTER + COUNT RECALC
+// ══════════════════════════════════════════
+function applyAllFilters() {
+  const sevFilter   = effectiveSevs();
+  const rows = document.querySelectorAll('.finding-row');
+  rows.forEach(r => {
+    const sevOk   = !sevFilter || sevFilter.includes(r.dataset.sev);
+    const mergeOk = !activeMerge || r.dataset.merge === activeMerge;
+    r.style.display = (sevOk && mergeOk) ? '' : 'none';
+  });
+  recalcCounts();
+}
+
+function recalcCounts() {
+  const visible = [...document.querySelectorAll('.finding-row')].filter(r => r.style.display !== 'none');
+
+  // ── Merge widget counts ──
+  const riskCt     = visible.filter(r => r.dataset.merge === 'risk').length;
+  const improvedCt = visible.filter(r => r.dataset.merge === 'improved').length;
+  document.querySelector('#widget-risk .mw-value').textContent     = riskCt;
+  document.querySelector('#widget-improved .mw-value').textContent = improvedCt;
+
+  // ── Severity card counts + sub-text ──
+  const sevGroups = { critical: [], high: [], medium: [], low: [] };
+  visible.forEach(r => { if (sevGroups[r.dataset.sev]) sevGroups[r.dataset.sev].push(r); });
+  ['critical','high','medium','low'].forEach(sev => {
+    const card = document.getElementById('scard-' + sev);
+    if (!card) return;
+    const rows = sevGroups[sev];
+    const total    = rows.length;
+    const active   = rows.filter(r => r.dataset.status === 'active').length;
+    const resolved = rows.filter(r => r.dataset.status === 'resolved').length;
+    const dismissed= rows.filter(r => r.dataset.status === 'dismissed').length;
+    card.querySelector('.sc-value').textContent = total;
+    // Build sub text
+    const parts = [];
+    if (active)    parts.push(active   + ' active');
+    if (resolved)  parts.push(resolved + ' resolved');
+    if (dismissed) parts.push(dismissed + ' dismissed');
+    const sub = card.querySelector('.sc-sub');
+    if (sub) sub.textContent = parts.join(' · ') || '—';
+  });
+
+  // ── Status tab counts ──
+  const allCt       = visible.length;
+  const activeCt    = visible.filter(r => r.dataset.status === 'active').length;
+  const resolvedCt  = visible.filter(r => r.dataset.status === 'resolved').length;
+  const dismissedCt = visible.filter(r => r.dataset.status === 'dismissed').length;
+  const tabCounts = document.querySelectorAll('.stc');
+  if (tabCounts[0]) tabCounts[0].textContent = allCt;
+  if (tabCounts[1]) tabCounts[1].textContent = activeCt;
+  if (tabCounts[2]) tabCounts[2].textContent = resolvedCt;
+  if (tabCounts[3]) tabCounts[3].textContent = dismissedCt;
+}
+
+// ══════════════════════════════════════════
+//  MERGE WIDGETS
+// ══════════════════════════════════════════
 function toggleFilter(type) {
   activeMerge = (activeMerge === type) ? null : type;
-  document.getElementById('widget-risk').classList.toggle('merge-widget--active-risk',     activeMerge === 'risk');
+  document.getElementById('widget-risk').classList.toggle('merge-widget--active-risk',      activeMerge === 'risk');
   document.getElementById('widget-improved').classList.toggle('merge-widget--active-improved', activeMerge === 'improved');
-  // reset severity if switching to merge filter
-  activeSeverity = null;
-  clearSeverityActive();
-  applyRowVisibility();
+  applyAllFilters();
 }
 
-// ── SEVERITY CARDS ──
+// ══════════════════════════════════════════
+//  SEVERITY CARDS
+// ══════════════════════════════════════════
 function toggleSeverityFilter(sev, el) {
-  activeSeverity = (activeSeverity === sev) ? null : sev;
-  activeMerge = null;
-  document.getElementById('widget-risk').classList.remove('merge-widget--active-risk');
-  document.getElementById('widget-improved').classList.remove('merge-widget--active-improved');
+  // Clicking a card clears the filter panel selection
+  panelSevs = [];
+  clearFPCheckboxes();
+  activeSevCard = (activeSevCard === sev) ? null : sev;
   clearSeverityActive();
-  if (activeSeverity) {
-    el.classList.add('summary-card--active-' + sev);
-  }
-  applyRowVisibility();
+  if (activeSevCard) el.classList.add('summary-card--active-' + sev);
+  applyAllFilters();
 }
 function clearSeverityActive() {
   ['critical','high','medium','low'].forEach(s => {
     const el = document.getElementById('scard-' + s);
-    if (el) el.className = el.className.replace(/summary-card--active-\w+/g, '').trim();
+    if (el) ['critical','high','medium','low'].forEach(x => el.classList.remove('summary-card--active-' + x));
   });
 }
 
-// ── STATUS FILTER TABS ──
+// ══════════════════════════════════════════
+//  FILTER PANEL
+// ══════════════════════════════════════════
+function applyFilterPanel() {
+  const checked = [...document.querySelectorAll('#filter-panel input[type=checkbox][value]')]
+    .filter(cb => cb.checked)
+    .map(cb => cb.value);
+  panelSevs     = checked.filter(v => ['critical','high','medium','low'].includes(v));
+  // Clear card selection when panel filter applied
+  activeSevCard = null;
+  clearSeverityActive();
+  // Visually highlight the filter button if active
+  const filterBtn = document.querySelector('[onclick*="filter-panel"]');
+  if (filterBtn) filterBtn.style.borderColor = panelSevs.length > 0 ? 'var(--purple)' : '';
+  closeAllDDs();
+  applyAllFilters();
+}
+function clearFilterPanel() {
+  clearFPCheckboxes();
+  panelSevs = [];
+  activeSevCard = null;
+  clearSeverityActive();
+  const filterBtn = document.querySelector('[onclick*="filter-panel"]');
+  if (filterBtn) filterBtn.style.borderColor = '';
+  closeAllDDs();
+  applyAllFilters();
+}
+function clearFPCheckboxes() {
+  document.querySelectorAll('#filter-panel input[type=checkbox]').forEach(cb => cb.checked = false);
+}
+
+// ══════════════════════════════════════════
+//  STATUS TABS
+// ══════════════════════════════════════════
 function setStatusFilter(status, btn) {
   document.querySelectorAll('.status-tab').forEach(t => t.classList.remove('status-tab--active'));
   btn.classList.add('status-tab--active');
-  activeMerge = null; activeSeverity = null;
-  clearSeverityActive();
+  // Status tab resets all widget filters
+  activeMerge = null; activeSevCard = null; panelSevs = [];
+  clearSeverityActive(); clearFPCheckboxes();
   document.getElementById('widget-risk').classList.remove('merge-widget--active-risk');
   document.getElementById('widget-improved').classList.remove('merge-widget--active-improved');
   document.querySelectorAll('.finding-row').forEach(r => {
     r.style.display = (status === 'all' || r.dataset.status === status) ? '' : 'none';
   });
+  recalcCounts();
 }
 
-// ── ROW SELECTION ──
+// ══════════════════════════════════════════
+//  DISMISS BUTTON
+// ══════════════════════════════════════════
+function updateDismissBtn() {
+  const anyChecked = [...document.querySelectorAll('.row-checkbox')].some(cb => cb.checked);
+  const btn = document.getElementById('dismiss-btn');
+  if (!btn) return;
+  btn.disabled = !anyChecked;
+  btn.style.opacity = anyChecked ? '1' : '0.38';
+  btn.style.pointerEvents = anyChecked ? 'auto' : 'none';
+  btn.style.cursor = anyChecked ? 'pointer' : 'not-allowed';
+  btn.style.color = anyChecked ? 'var(--text-sec)' : 'var(--text-muted)';
+  btn.style.borderColor = anyChecked ? 'var(--border)' : '';
+}
+
+// ══════════════════════════════════════════
+//  ROW SELECTION (detail panel)
+// ══════════════════════════════════════════
 function selectRow(el) {
   document.querySelectorAll('.finding-row').forEach(r => r.classList.remove('finding-row--selected'));
   el.classList.add('finding-row--selected');
 }
 
-// ── DETAIL TABS ──
+// ══════════════════════════════════════════
+//  DETAIL TABS
+// ══════════════════════════════════════════
 function switchTab(btn, panelId) {
   document.querySelectorAll('.dp-tab').forEach(t => t.classList.remove('dp-tab--active'));
   btn.classList.add('dp-tab--active');
@@ -834,7 +946,9 @@ function switchTab(btn, panelId) {
   document.getElementById('panel-' + panelId).classList.add('dp-panel--active');
 }
 
-// ── HISTORY EVENTS ──
+// ══════════════════════════════════════════
+//  HISTORY EVENTS
+// ══════════════════════════════════════════
 function toggleHistoryEvent(el) {
   const wasExpanded = el.classList.contains('expanded');
   el.classList.toggle('expanded', !wasExpanded);
@@ -842,16 +956,18 @@ function toggleHistoryEvent(el) {
   if (hint) hint.textContent = !wasExpanded ? '▲' : '▼';
 }
 
-// ── DATE DROPDOWN ──
+// ══════════════════════════════════════════
+//  DATE DROPDOWN
+// ══════════════════════════════════════════
 function setDate(val) {
   document.getElementById('date-label').textContent = val;
-  document.querySelectorAll('#date-menu .dd-item').forEach(i => {
-    i.classList.toggle('dd-item--active', i.textContent === val);
-  });
+  document.querySelectorAll('#date-menu .dd-item').forEach(i => i.classList.toggle('dd-item--active', i.textContent === val));
   closeAllDDs();
 }
 
-// ── GENERIC DROPDOWN / PANEL TOGGLE ──
+// ══════════════════════════════════════════
+//  GENERIC DROPDOWN / PANEL TOGGLE
+// ══════════════════════════════════════════
 function toggleDD(id, e) {
   e && e.stopPropagation();
   const el = document.getElementById(id);
@@ -864,17 +980,16 @@ function closeAllDDs() {
 }
 document.addEventListener('click', closeAllDDs);
 
-// ── EXPORT ──
-function toggleExportMenu(e) {
-  e.stopPropagation();
-  document.getElementById('export-menu').classList.toggle('open');
-}
-function closeExportMenu() {
-  document.getElementById('export-menu').classList.remove('open');
-}
+// ══════════════════════════════════════════
+//  EXPORT
+// ══════════════════════════════════════════
+function toggleExportMenu(e) { e.stopPropagation(); document.getElementById('export-menu').classList.toggle('open'); }
+function closeExportMenu()   { document.getElementById('export-menu').classList.remove('open'); }
 
-// ── DISMISS MODAL ──
-function openDismissModal() { document.getElementById('dismiss-modal').classList.add('open'); }
+// ══════════════════════════════════════════
+//  DISMISS MODAL
+// ══════════════════════════════════════════
+function openDismissModal()  { document.getElementById('dismiss-modal').classList.add('open'); }
 function closeDismissModal() { document.getElementById('dismiss-modal').classList.remove('open'); }
 </script>
 
