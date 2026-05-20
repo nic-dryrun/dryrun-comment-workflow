@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DryRun — Risk Register Mockup</title>
+  <title>DryRun — Risk Register</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      --mono: 'JetBrains Mono', 'Consolas', monospace;
+      --font: 'Inter', -apple-system, sans-serif;
+      --mono: 'JetBrains Mono', monospace;
       --bg: #fafbfc;
       --surface: #ffffff;
       --surface-alt: #f6f8fa;
@@ -30,614 +30,658 @@
       --orange-border: #f5e0a0;
       --red: #cf222e;
       --red-bg: #ffebe9;
+      --red-border: #ffcecb;
       --blue: #0969da;
       --blue-bg: #ddf4ff;
-      --gray-bg: #f3f4f6;
     }
-    body { font-family: var(--font); font-size: 14px; line-height: 1.5; color: var(--text); background: var(--bg); }
+    body { font-family: var(--font); font-size: 14px; line-height: 1.5; color: var(--text); background: var(--bg); overflow: hidden; height: 100vh; }
 
-    /* ── MOCKUP BAR ── */
-    .mockup-bar {
-      background: linear-gradient(135deg, #1a1e3a, #2d3260);
-      padding: 10px 24px; display: flex; align-items: center; justify-content: space-between;
-      color: #fff; font-size: 12px;
-    }
+    /* ── TOP BARS ── */
+    .mockup-bar { background: linear-gradient(135deg, #1a1e3a, #2d3260); padding: 8px 24px; display: flex; align-items: center; gap: 12px; font-size: 12px; color: #fff; }
     .mockup-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(124,110,240,0.3); padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; }
-    .change-indicator { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px; white-space: nowrap; }
-    .change-indicator--new { background: var(--purple-bg); color: var(--purple); border: 1px solid var(--purple-border); }
+    .mockup-breadcrumb { padding: 7px 24px; font-size: 12px; color: #8b919e; background: #fff; border-bottom: 1px solid #e8ecf0; }
+    .mockup-breadcrumb a { color: var(--purple); text-decoration: none; }
 
-    /* ── SPLIT LAYOUT ── */
-    .layout { display: flex; height: calc(100vh - 40px); }
-    .list-pane { flex: 1; min-width: 0; overflow-y: auto; padding: 28px 24px; }
-    .detail-pane {
-      width: 520px; flex-shrink: 0;
-      border-left: 1px solid var(--border);
-      background: var(--surface);
-      overflow-y: auto;
-      box-shadow: -4px 0 16px rgba(0,0,0,0.04);
-    }
-    @media (max-width: 900px) {
-      .layout { flex-direction: column; height: auto; }
-      .detail-pane { width: 100%; border-left: none; border-top: 1px solid var(--border); }
-    }
+    /* ── SHELL ── */
+    .shell { display: flex; height: calc(100vh - 56px); }
 
-    /* ── PAGE TITLE ── */
-    h1 { font-size: 22px; font-weight: 700; margin-bottom: 20px; }
+    /* ── SIDEBAR ── */
+    .sidebar { width: 210px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; }
+    .sb-logo { display: flex; align-items: center; gap: 8px; padding: 14px 16px 12px; border-bottom: 1px solid var(--border-light); font-weight: 700; font-size: 13px; }
+    .sb-org { margin: 10px 12px 8px; padding: 7px 10px; border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; }
+    .sb-sec { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); padding: 10px 16px 3px; }
+    .sb-link { text-decoration: none !important; display: flex; align-items: center; gap: 8px; padding: 6px 16px; font-size: 13px; font-weight: 500; color: var(--text-sec); }
+    .sb-link:hover { color: var(--text); background: var(--surface-alt); }
+    .sb-link--active { color: var(--purple); background: var(--purple-bg); font-weight: 600; }
+    .sb-link svg { width: 15px; height: 15px; flex-shrink: 0; }
+    .sb-badge { font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 6px; background: #ddf4ff; color: #0969da; margin-left: auto; }
+    .sb-spacer { flex: 1; }
 
-    /* ── SUMMARY CARDS ── */
-    .summary-cards { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
-    .summary-card {
-      flex: 1; min-width: 120px;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 8px; padding: 14px 16px;
-    }
-    .summary-card-label { font-size: 12px; color: var(--text-sec); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
-    .summary-card-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-    .dot-red { background: #cf222e; }
-    .dot-orange { background: #bf8700; }
-    .dot-yellow { background: #d4a017; }
-    .dot-green { background: #1a7f37; }
-    .dot-gray { background: #8b919e; }
-    .summary-card-value { font-size: 28px; font-weight: 700; line-height: 1.2; }
-    .summary-card-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    /* ── CONTENT AREA ── */
+    .content { flex: 1; display: flex; min-width: 0; overflow: hidden; }
 
-    /* ── FILTER BAR ── */
-    .filter-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
-    .search-input {
-      flex: 1; min-width: 180px;
-      padding: 8px 12px 8px 36px;
-      border: 1px solid var(--border); border-radius: 8px;
-      font-size: 13px; font-family: var(--font);
-      background: var(--surface) url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='%238b919e' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 10-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 001.415-1.414l-3.85-3.85a1.007 1.007 0 00-.115-.1zM12 6.5a5.5 5.5 0 11-11 0 5.5 5.5 0 0111 0z'/%3E%3C/svg%3E") 12px center no-repeat;
-      color: var(--text);
-    }
-    .search-input::placeholder { color: var(--text-muted); }
-    .status-filters { display: flex; gap: 2px; background: var(--surface-alt); border: 1px solid var(--border); border-radius: 8px; padding: 3px; }
-    .status-filter {
-      font-size: 12px; font-weight: 500; padding: 5px 10px; border-radius: 6px;
-      cursor: pointer; border: none; background: transparent; color: var(--text-sec);
-      display: flex; align-items: center; gap: 4px;
-    }
-    .status-filter:hover { background: var(--surface); }
-    .status-filter--active { background: var(--surface); color: var(--text); font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-    .filter-count { font-size: 10px; font-weight: 700; padding: 1px 5px; border-radius: 8px; }
-    .fc-all { background: var(--gray-bg); color: var(--text-sec); }
-    .fc-active { background: var(--orange-bg); color: var(--orange); }
-    .fc-resolved { background: var(--green-bg); color: var(--green); }
-    .fc-fp { background: var(--gray-bg); color: var(--text-muted); }
-
-    /* ── TABLE ── */
-    .findings-table { width: 100%; }
-    .table-header {
-      display: grid; grid-template-columns: 28px 80px 1fr 1fr 1fr 90px;
-      padding: 8px 12px; font-size: 11px; font-weight: 600; color: var(--text-muted);
-      text-transform: uppercase; letter-spacing: 0.03em;
-      border-bottom: 1px solid var(--border);
-    }
-    .table-header .sortable { cursor: pointer; display: flex; align-items: center; gap: 3px; }
-
-    .finding-row {
-      display: grid; grid-template-columns: 28px 80px 1fr 1fr 1fr 90px;
-      align-items: center; padding: 12px; border-bottom: 1px solid var(--border-light);
-      cursor: pointer; transition: background 0.1s;
-    }
-    .finding-row:hover { background: var(--surface-alt); }
-    .finding-row--selected { background: var(--purple-bg); border-left: 3px solid var(--purple); }
-    .finding-row--resolved { opacity: 0.55; }
-    .finding-row--resolved:hover { opacity: 0.75; }
-    .finding-row--dismissed { opacity: 0.45; }
-    .finding-row--dismissed:hover { opacity: 0.65; }
-
-    .row-checkbox { width: 16px; height: 16px; border: 1.5px solid var(--border); border-radius: 3px; cursor: pointer; appearance: none; }
-    .sev-badge {
-      font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 4px;
-      text-align: center; display: inline-block;
-    }
-    .sev-critical { background: var(--red-bg); color: var(--red); border: 1px solid #ffcecb; }
-    .sev-high { background: var(--orange-bg); color: #92400e; border: 1px solid var(--orange-border); }
-    .sev-medium { background: #fff8c5; color: #6b5300; border: 1px solid #f5e0a0; }
-    .row-type { font-size: 13px; font-weight: 500; }
-    .row-file { font-size: 12px; font-family: var(--mono); color: var(--text-sec); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .row-repo { font-size: 12px; color: var(--text-sec); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .row-status { font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 10px; text-align: center; display: inline-flex; align-items: center; gap: 3px; }
-    .rs-active { background: var(--orange-bg); color: var(--orange); border: 1px solid var(--orange-border); }
-    .rs-resolved { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
-    .rs-fp { background: var(--gray-bg); color: var(--text-muted); border: 1px solid var(--border); }
-    .rs-nit { background: #fff8c5; color: #7d6807; border: 1px solid #f5e0a0; }
-
-    /* ── DETAIL PANEL ── */
-    .detail-header {
-      display: flex; align-items: center; gap: 10px;
-      padding: 20px 20px 12px;
-      border-bottom: 1px solid var(--border-light);
-    }
-    .detail-title { font-size: 16px; font-weight: 700; flex: 1; }
-    .detail-minimize {
-      width: 28px; height: 28px; border: 1px solid var(--border);
-      border-radius: 6px; background: var(--surface); cursor: pointer;
-      display: flex; align-items: center; justify-content: center; color: var(--text-muted);
-    }
-
-    .detail-tabs {
-      display: flex; align-items: center; padding: 0 20px;
-      border-bottom: 1px solid var(--border-light); gap: 0;
-    }
-    .detail-tab {
-      font-size: 13px; font-weight: 500; padding: 10px 14px;
-      color: var(--text-sec); cursor: pointer; border-bottom: 2px solid transparent;
-      background: none; border-top: none; border-left: none; border-right: none;
-      margin-bottom: -1px;
-    }
-    .detail-tab--active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 600; }
-    .detail-tab--new {
-      display: flex; align-items: center; gap: 4px;
-    }
-    .detail-actions { margin-left: auto; display: flex; gap: 6px; }
-    .detail-btn {
-      font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 6px;
-      border: 1px solid var(--border); background: var(--surface); color: var(--text-sec);
-      cursor: pointer;
-    }
-    .detail-btn:hover { background: var(--surface-alt); }
-    .detail-btn--dismiss { color: var(--orange); border-color: var(--orange-border); }
-
-    .detail-body { padding: 20px; }
-
-    /* Detail meta */
-    .detail-meta {
-      display: flex; flex-direction: column; gap: 6px;
-      margin-bottom: 16px; font-size: 13px;
-    }
-    .detail-meta-row { display: flex; align-items: center; gap: 8px; }
-    .detail-meta-row .label { color: var(--text-muted); min-width: 50px; }
-    .detail-meta-row .value { color: var(--text); font-weight: 500; }
-    .detail-meta-row .value a { color: var(--blue); text-decoration: none; }
-    .pr-ref { font-size: 12px; color: var(--text-sec); margin-top: 2px; }
-
-    /* Detail sections */
-    .detail-section { margin-bottom: 20px; }
-    .detail-section h3 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
-    .detail-section p { font-size: 13px; color: var(--text-sec); line-height: 1.65; }
-    .detail-section code {
-      font-family: var(--mono); font-size: 12px;
-      background: var(--orange-bg); padding: 1px 5px; border-radius: 3px;
-      color: #6b5300;
-    }
-
-    /* ── HISTORY TAB (NEW) ── */
-    .history-timeline { position: relative; padding-left: 24px; }
-    .history-event {
-      position: relative; padding: 0 0 20px 0;
-      border-left: 2px solid var(--border-light);
-      padding-left: 20px;
-    }
-    .history-event:last-child { border-left-color: transparent; }
-    .history-event::before {
-      content: '';
-      position: absolute; left: -7px; top: 4px;
-      width: 12px; height: 12px; border-radius: 50%;
-      border: 2px solid var(--surface);
-    }
-    .history-event--detected::before { background: var(--orange); box-shadow: 0 0 0 2px var(--orange); }
-    .history-event--scanned::before { background: var(--text-muted); box-shadow: 0 0 0 2px var(--text-muted); }
-    .history-event--resolved::before { background: var(--green); box-shadow: 0 0 0 2px var(--green); }
-    .history-event--fp::before { background: var(--text-muted); box-shadow: 0 0 0 2px var(--text-muted); }
-    .history-event--nit::before { background: #d4a017; box-shadow: 0 0 0 2px #d4a017; }
-    .history-event--current::before { background: var(--purple); box-shadow: 0 0 0 2px var(--purple); }
-
-    .history-event-title {
-      font-size: 13px; font-weight: 600; color: var(--text);
-      display: flex; align-items: center; gap: 6px;
-    }
-    .history-event-time { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
-    .history-event-detail {
-      margin-top: 6px; font-size: 12px; color: var(--text-sec); line-height: 1.5;
-      padding: 8px 12px; background: var(--surface-alt); border-radius: 6px;
-      border: 1px solid var(--border-light);
-    }
-    .history-commit { font-family: var(--mono); font-size: 11px; color: var(--blue); }
-    .history-event-badge {
-      font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 8px;
-    }
-    .hb-detected { background: var(--orange-bg); color: var(--orange); }
-    .hb-still { background: var(--gray-bg); color: var(--text-muted); }
-    .hb-resolved { background: var(--green-bg); color: var(--green); }
-    .hb-fp { background: var(--gray-bg); color: var(--text-muted); }
-
-    /* Status banner in detail */
-    .detail-status-banner {
-      display: flex; align-items: flex-start; gap: 10px;
-      padding: 10px 14px; border-radius: 6px; margin-bottom: 16px;
-      font-size: 12px; line-height: 1.5;
-    }
-    .detail-status-banner svg { flex-shrink: 0; margin-top: 1px; }
-    .dsb-resolved { background: var(--green-bg); border: 1px solid var(--green-border); color: #15572a; }
-    .dsb-fp { background: var(--gray-bg); border: 1px solid var(--border); color: var(--text-sec); }
-    .dsb-active { background: var(--orange-bg); border: 1px solid var(--orange-border); color: #6b5300; }
-
-    /* ── ANNOTATION BANNER ── */
-    .annotation-banner {
-      background: var(--purple-bg); border: 1px solid var(--purple-border); border-radius: 8px;
-      padding: 12px 16px; margin-bottom: 20px;
-      display: flex; align-items: flex-start; gap: 10px;
-      font-size: 13px; color: #4338ca; line-height: 1.5;
-    }
-    .annotation-banner svg { flex-shrink: 0; margin-top: 2px; }
+    /* ── LIST PANE ── */
+    .list-pane { flex: 1; min-width: 0; overflow-y: auto; padding: 22px 24px 40px; }
 
     /* ── MERGE WIDGETS ── */
-    .merge-widgets { display: flex; gap: 12px; margin-bottom: 16px; }
+    .merge-widgets { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
     .merge-widget {
-      flex: 1; padding: 14px 18px; border-radius: 10px; border: 2px solid var(--border);
+      padding: 12px 16px; border-radius: 10px; border: 2px solid var(--border);
       background: var(--surface); cursor: pointer; transition: all 0.15s;
-      display: flex; align-items: flex-start; gap: 14px; text-align: left;
+      display: flex; align-items: center; gap: 12px;
     }
-    .merge-widget:hover { border-color: var(--purple-border); box-shadow: 0 2px 8px rgba(124,110,240,0.1); }
-    .merge-widget--active-risk { border-color: #cf222e; background: #fff5f5; }
-    .merge-widget--active-improved { border-color: #1a7f37; background: #f0fff4; }
-    .mw-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .merge-widget:hover { border-color: var(--purple-border); }
+    .mw-icon { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .mw-icon-risk { background: var(--red-bg); }
     .mw-icon-improved { background: var(--green-bg); }
     .mw-body { flex: 1; }
-    .mw-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 2px; }
-    .mw-value { font-size: 26px; font-weight: 700; line-height: 1.1; }
+    .mw-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); }
+    .mw-value { font-size: 24px; font-weight: 700; line-height: 1.1; }
     .mw-value-risk { color: var(--red); }
     .mw-value-improved { color: var(--green); }
-    .mw-sub { font-size: 11.5px; color: var(--text-muted); margin-top: 3px; line-height: 1.4; }
-    .mw-active-label { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 8px; margin-top: 6px; display: inline-block; }
-    .mw-active-label-risk { background: var(--red-bg); color: var(--red); }
-    .mw-active-label-improved { background: var(--green-bg); color: var(--green); }
-    .filter-notice { font-size: 12px; color: var(--text-muted); padding: 6px 10px; background: var(--surface-alt); border: 1px solid var(--border-light); border-radius: 6px; margin-bottom: 10px; display: none; align-items: center; gap: 8px; justify-content: space-between; }
-    .filter-notice span { display: flex; align-items: center; gap: 6px; }
-    .filter-notice-clear { font-size: 11px; font-weight: 600; color: var(--purple); cursor: pointer; background: none; border: none; font-family: var(--font); }
+    .mw-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+    .merge-widget--active-risk  { border-color: var(--red); background: #fff8f8; }
+    .merge-widget--active-improved { border-color: var(--green); background: #f0fff4; }
 
-      .mockup-breadcrumb { padding: 8px 24px; font-size: 12px; color: #8b919e; background: #fff; border-bottom: 1px solid #e8ecf0; font-family: Inter,-apple-system,sans-serif; }
-    .mockup-breadcrumb a { color: #7c6ef0; text-decoration: none; }
-    .mockup-breadcrumb a:hover { text-decoration: underline; }
-    .mockup-breadcrumb span { color: #5a5f6b; }
-</style>
+    /* ── SUMMARY CARDS ── */
+    .summary-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 18px; }
+    .summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; }
+    .sc-label { font-size: 12px; color: var(--text-sec); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+    .sc-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .dot-red { background: #cf222e; }
+    .dot-orange { background: #bf8700; }
+    .dot-yellow { background: #d4a017; }
+    .dot-gray { background: #8b919e; }
+    .sc-value { font-size: 28px; font-weight: 700; line-height: 1.1; }
+
+    /* ── FILTER BAR ── */
+    .filter-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+    .search-wrap { position: relative; flex: 1; min-width: 160px; }
+    .search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; }
+    .search-input { width: 100%; padding: 7px 10px 7px 30px; border: 1px solid var(--border); border-radius: 7px; font-size: 13px; font-family: var(--font); color: var(--text); background: var(--surface); outline: none; }
+    .search-input:focus { border-color: var(--purple); }
+    .tb-btn { font-size: 12px; font-weight: 500; padding: 6px 12px; border: 1px solid var(--border); border-radius: 7px; background: var(--surface); color: var(--text-sec); cursor: pointer; font-family: var(--font); display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+    .tb-btn:hover { background: var(--surface-alt); }
+    .tb-btn--date { font-weight: 600; color: var(--text); }
+    .export-wrap { position: relative; }
+    .export-menu { display: none; position: absolute; right: 0; top: calc(100% + 4px); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); z-index: 100; min-width: 150px; overflow: hidden; }
+    .export-menu.open { display: block; }
+    .export-item { padding: 8px 14px; font-size: 13px; cursor: pointer; color: var(--text-sec); }
+    .export-item:hover { background: var(--surface-alt); color: var(--text); }
+    .dismiss-btn { font-size: 12px; font-weight: 500; padding: 6px 12px; border: 1px solid var(--border); border-radius: 7px; background: var(--surface); color: var(--text-muted); cursor: pointer; font-family: var(--font); }
+
+    /* ── STATUS FILTER TABS ── */
+    .status-tabs { display: flex; gap: 2px; background: var(--surface-alt); border: 1px solid var(--border); border-radius: 8px; padding: 3px; margin-bottom: 12px; width: fit-content; }
+    .status-tab { font-size: 12px; font-weight: 500; padding: 5px 10px; border-radius: 6px; cursor: pointer; border: none; background: transparent; color: var(--text-sec); font-family: var(--font); display: flex; align-items: center; gap: 4px; }
+    .status-tab:hover { background: var(--surface); }
+    .status-tab--active { background: var(--surface); color: var(--text); font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .stc { font-size: 10px; font-weight: 700; padding: 1px 5px; border-radius: 7px; }
+    .stc-all { background: #f0f0f0; color: var(--text-muted); }
+    .stc-active { background: var(--orange-bg); color: var(--orange); }
+    .stc-resolved { background: var(--green-bg); color: var(--green); }
+    .stc-dismissed { background: #f0f0f0; color: var(--text-muted); }
+
+    /* ── TABLE ── */
+    .findings-table { width: 100%; border-collapse: collapse; }
+    .tbl-head { display: grid; grid-template-columns: 28px 80px 1fr 150px 150px 130px 90px 90px; padding: 7px 12px; font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 1px solid var(--border); }
+    .finding-row { display: grid; grid-template-columns: 28px 80px 1fr 150px 150px 130px 90px 90px; align-items: center; padding: 10px 12px; border-bottom: 1px solid var(--border-light); cursor: pointer; transition: background 0.1s; }
+    .finding-row:hover { background: var(--surface-alt); }
+    .finding-row--selected { background: var(--purple-bg) !important; border-left: 3px solid var(--purple); padding-left: 9px; }
+    .finding-row--resolved { opacity: 0.6; }
+    .finding-row--dismissed { opacity: 0.45; }
+    .row-checkbox { width: 14px; height: 14px; accent-color: var(--purple); cursor: pointer; }
+    .sev-badge { font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 4px; display: inline-block; text-align: center; }
+    .sev-critical { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+    .sev-high { background: var(--orange-bg); color: #92400e; border: 1px solid var(--orange-border); }
+    .sev-medium { background: #fff8c5; color: #6b5300; border: 1px solid #f5e0a0; }
+    .row-type { font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 8px; }
+    .row-file { font-size: 11.5px; font-family: var(--mono); color: var(--text-sec); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 8px; }
+    .row-repo { font-size: 12px; color: var(--text-sec); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 8px; }
+    .row-detected { font-size: 11.5px; color: var(--text-muted); white-space: nowrap; }
+    .row-agent { font-size: 11.5px; color: var(--text-sec); white-space: nowrap; }
+    .row-status-badge { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px; display: inline-flex; align-items: center; gap: 3px; }
+    .rsb-active { background: var(--orange-bg); color: var(--orange); border: 1px solid var(--orange-border); }
+    .rsb-resolved { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+    .rsb-fp { background: #f0f0f0; color: var(--text-muted); border: 1px solid var(--border); }
+
+    /* ── DETAIL PANE ── */
+    .detail-pane { width: 500px; flex-shrink: 0; border-left: 1px solid var(--border); background: var(--surface); display: flex; flex-direction: column; overflow: hidden; }
+    .dp-header { padding: 16px 18px 12px; border-bottom: 1px solid var(--border-light); display: flex; align-items: flex-start; gap: 10px; }
+    .dp-title { font-size: 15px; font-weight: 700; flex: 1; line-height: 1.3; }
+    .dp-close { width: 26px; height: 26px; border: 1px solid var(--border); border-radius: 6px; background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); flex-shrink: 0; }
+    .dp-tabs { display: flex; border-bottom: 1px solid var(--border-light); padding: 0 18px; flex-shrink: 0; }
+    .dp-tab { font-size: 12.5px; font-weight: 500; padding: 9px 12px; border: none; background: none; cursor: pointer; color: var(--text-muted); font-family: var(--font); border-bottom: 2px solid transparent; margin-bottom: -1px; display: flex; align-items: center; gap: 5px; }
+    .dp-tab:hover { color: var(--text); }
+    .dp-tab--active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 600; }
+    .dp-actions { margin-left: auto; display: flex; align-items: center; gap: 6px; padding: 0 0 0 10px; }
+    .dp-action-btn { font-size: 11.5px; font-weight: 500; padding: 5px 11px; border: 1px solid var(--border); border-radius: 6px; background: none; color: var(--text-sec); cursor: pointer; font-family: var(--font); }
+    .dp-action-btn:hover { background: var(--surface-alt); }
+    .dp-action-btn--dismiss { color: var(--orange); border-color: var(--orange-border); }
+    .dp-body { flex: 1; overflow-y: auto; padding: 18px; }
+    .dp-panel { display: none; }
+    .dp-panel--active { display: block; }
+
+    /* Detail content */
+    .dp-status-banner { display: flex; align-items: flex-start; gap: 9px; padding: 9px 12px; border-radius: 7px; margin-bottom: 14px; font-size: 12px; line-height: 1.5; }
+    .dsb-active { background: var(--orange-bg); border: 1px solid var(--orange-border); color: #6b5300; }
+    .dsb-resolved { background: var(--green-bg); border: 1px solid var(--green-border); color: #15572a; }
+    .dp-meta { font-size: 12.5px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 5px; }
+    .dp-meta-row { display: flex; gap: 8px; }
+    .dp-meta-label { color: var(--text-muted); min-width: 52px; }
+    .dp-meta-value { font-weight: 500; color: var(--text); }
+    .dp-meta-value a { color: var(--blue); text-decoration: none; }
+    .dp-section { margin-bottom: 18px; }
+    .dp-section h3 { font-size: 13px; font-weight: 700; margin-bottom: 7px; }
+    .dp-section p { font-size: 12.5px; color: var(--text-sec); line-height: 1.6; }
+    .dp-section code { font-family: var(--mono); font-size: 11.5px; background: var(--orange-bg); padding: 1px 5px; border-radius: 3px; color: #6b5300; }
+
+    /* ── HISTORY TIMELINE ── */
+    .history-timeline { padding-left: 0; }
+    .ht-event { position: relative; padding: 0 0 18px 24px; border-left: 2px solid var(--border-light); cursor: pointer; }
+    .ht-event:last-child { border-left-color: transparent; padding-bottom: 0; }
+    .ht-event::before { content: ''; position: absolute; left: -7px; top: 3px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--surface); }
+    .ht-detected::before { background: var(--orange); box-shadow: 0 0 0 2px var(--orange); }
+    .ht-scanned::before { background: var(--text-muted); box-shadow: 0 0 0 2px var(--text-muted); }
+    .ht-resolved::before { background: var(--green); box-shadow: 0 0 0 2px var(--green); }
+    .ht-dismissed::before { background: var(--text-muted); box-shadow: 0 0 0 2px var(--text-muted); }
+    .ht-current::before { background: var(--purple); box-shadow: 0 0 0 2px var(--purple); }
+    .ht-title { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 7px; margin-bottom: 1px; }
+    .ht-time { font-size: 11px; color: var(--text-muted); }
+    .ht-commit { font-family: var(--mono); font-size: 11px; color: var(--blue); }
+    .ht-detail { margin-top: 7px; font-size: 12px; color: var(--text-sec); line-height: 1.5; padding: 7px 10px; background: var(--surface-alt); border-radius: 6px; border: 1px solid var(--border-light); display: none; }
+    .ht-event.expanded .ht-detail { display: block; }
+    .ht-badge { font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 8px; }
+    .htb-new { background: var(--orange-bg); color: var(--orange); }
+    .htb-still { background: #f0f0f0; color: var(--text-muted); }
+    .htb-resolved { background: var(--green-bg); color: var(--green); }
+    .ht-expand-hint { font-size: 10px; color: var(--text-muted); margin-left: auto; }
+
+    /* PR Details panel */
+    .pr-timeline { display: flex; flex-direction: column; gap: 10px; }
+    .pr-event { display: flex; gap: 10px; align-items: flex-start; }
+    .pr-event-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); flex-shrink: 0; margin-top: 5px; }
+    .pr-event-dot--merged { background: var(--purple); }
+    .pr-event-dot--scan { background: var(--orange); }
+    .pr-event-dot--resolved { background: var(--green); }
+    .pr-event-content { flex: 1; }
+    .pr-event-title { font-size: 12.5px; font-weight: 500; }
+    .pr-event-time { font-size: 11px; color: var(--text-muted); }
+
+    /* change indicators */
+    .ci-new { display: inline-flex; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 8px; background: var(--purple-bg); color: var(--purple); border: 1px solid var(--purple-border); }
+
+    /* annotation */
+    .anno { background: var(--purple-bg); border: 1px solid var(--purple-border); border-radius: 8px; padding: 9px 12px; margin-bottom: 16px; font-size: 12px; color: #4338ca; display: flex; gap: 8px; align-items: flex-start; line-height: 1.5; }
+    .anno svg { flex-shrink: 0; margin-top: 1px; }
+  </style>
 </head>
 <body>
 
 <div class="mockup-bar">
-  <div style="display: flex; align-items: center; gap: 12px;">
-    <span class="mockup-badge"><svg width="10" height="10" viewBox="0 0 16 16" fill="#c4b5fd"><circle cx="8" cy="8" r="8"/></svg> PROPOSED MOCKUP</span>
-    <span style="opacity: 0.6;">Risk Register — Finding Lifecycle &amp; History</span>
-  </div>
+  <span class="mockup-badge"><svg width="10" height="10" viewBox="0 0 16 16" fill="#c4b5fd"><circle cx="8" cy="8" r="8"/></svg> PROPOSED MOCKUP</span>
+  <span style="opacity:0.6;">Risk Register — Finding Lifecycle &amp; History</span>
 </div>
-
 <div class="mockup-breadcrumb"><a href="index.html">Mockups</a> / <span>PR History / Risk Register</span></div>
-<div class="layout" style="height: calc(100vh - 72px);">
 
-  <!-- ════════════════════════════ -->
-  <!--         LEFT: LIST PANE      -->
-  <!-- ════════════════════════════ -->
-  <div class="list-pane">
+<div class="shell">
 
-    <div class="annotation-banner">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="#7c6ef0"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zm0 3a1 1 0 110 2 1 1 0 010-2zm2 9H6v-1h1V7H6V6h3v6h1v1z"/></svg>
-      <div><strong>Proposed Risk Register layout.</strong> New additions: status column with lifecycle badges <span class="change-indicator change-indicator--new">New</span>, status filter tabs <span class="change-indicator change-indicator--new">New</span>, updated summary cards with status breakdown <span class="change-indicator change-indicator--new">New</span>, and a History tab in the detail panel <span class="change-indicator change-indicator--new">New</span>.</div>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-logo">
+      <svg width="22" height="22" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="13" stroke="var(--text)" stroke-width="1.5" fill="none"/><path d="M16 7L9 11v10l7 4 7-4V11l-7-4z" stroke="var(--text)" stroke-width="1" fill="none"/><path d="M13 16l2 2 4-4" stroke="#1a7f37" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      DRYRUN SECURITY
     </div>
+    <div class="sb-org">
+      <svg width="16" height="16" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="13" stroke="var(--text-muted)" stroke-width="1" fill="none"/></svg>
+      <span style="font-size:13px;">DryRunSec</span>
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="var(--text-muted)" style="margin-left:auto;"><path d="M4.427 7.427l3.396 3.396a.25.25 0 00.354 0l3.396-3.396A.25.25 0 0011.396 7H4.604a.25.25 0 00-.177.427z"/></svg>
+    </div>
+    <div class="sb-sec">Main</div>
+    <a class="sb-link sb-link--active" href="risk-register.html">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0114.25 15H1.75A1.75 1.75 0 010 13.25V2.75C0 1.784.784 1 1.75 1z"/></svg>
+      Risk Register
+    </a>
+    <a class="sb-link" href="#">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 010-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9z"/></svg>
+      Repositories
+    </a>
+    <a class="sb-link" href="#">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1.5 3.25a2.25 2.25 0 113 2.122v5.256a2.251 2.251 0 11-1.5 0V5.372A2.25 2.25 0 011.5 3.25z"/></svg>
+      Pull Requests
+    </a>
+    <a class="sb-link" href="deepscan-history.html">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8.2 8.2 0 00-2.3.3c-.3.1-.5.4-.5.7v1.4a1 1 0 01-.6.9l-.5.3a1 1 0 01-1.1-.1L1.9 2.4c-.2-.2-.6-.2-.8 0A8 8 0 00.3 5.7c0 .3.2.6.5.7L2.2 7a1 1 0 01.5 1v.5a1 1 0 01-.5.9l-1.4.8c-.3.1-.5.4-.5.7a8 8 0 00.8 3.3c.2.3.5.3.8.1l1.1-1.1a1 1 0 011.1-.1l.5.3a1 1 0 01.6.9v1.4c0 .3.2.6.5.7a8.2 8.2 0 004.6 0c.3-.1.5-.4.5-.7v-1.4a1 1 0 01.6-.9l.5-.3a1 1 0 011.1.1l1.1 1.1c.2.2.6.2.8 0a8 8 0 00.8-3.3c0-.3-.2-.6-.5-.7L13.8 9a1 1 0 01-.5-1V7.5a1 1 0 01.5-.9l1.4-.8c.3-.1.5-.4.5-.7a8 8 0 00-.8-3.3c-.2-.3-.5-.3-.8-.1l-1.1 1.1a1 1 0 01-1.1.1l-.5-.3a1 1 0 01-.6-.9V.8c0-.3-.2-.6-.5-.7A8.2 8.2 0 008 0zM8 11a3 3 0 110-6 3 3 0 010 6z"/></svg>
+      DeepScan
+    </a>
+    <a class="sb-link" href="#">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8.878.392a1.75 1.75 0 00-1.756 0l-5.25 3.045A1.75 1.75 0 001 4.951v6.098c0 .624.332 1.2.872 1.514l5.25 3.045a1.75 1.75 0 001.756 0l5.25-3.045c.54-.313.872-.89.872-1.514V4.951c0-.624-.332-1.2-.872-1.514L8.878.392z"/></svg>
+      Code Policies
+    </a>
+    <a class="sb-link" href="csi.html">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M7.467.133a1.75 1.75 0 011.066 0l5.25 1.68A1.75 1.75 0 0115 3.48V7c0 1.566-.32 3.182-1.303 4.682-.983 1.498-2.585 2.813-5.032 3.855a1.697 1.697 0 01-1.33 0c-2.447-1.042-4.049-2.357-5.032-3.855C1.32 10.182 1 8.566 1 7V3.48a1.75 1.75 0 011.217-1.667l5.25-1.68z"/></svg>
+      Insights
+      <span class="sb-badge">BETA</span>
+    </a>
+    <div class="sb-sec">Settings</div>
+    <a class="sb-link" href="configurations.html">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8.2 8.2 0 00-2.3.3c-.3.1-.5.4-.5.7v1.4a1 1 0 01-.6.9l-.5.3a1 1 0 01-1.1-.1L1.9 2.4c-.2-.2-.6-.2-.8 0A8 8 0 00.3 5.7c0 .3.2.6.5.7L2.2 7a1 1 0 01.5 1v.5a1 1 0 01-.5.9l-1.4.8c-.3.1-.5.4-.5.7a8 8 0 00.8 3.3c.2.3.5.3.8.1l1.1-1.1a1 1 0 011.1-.1l.5.3a1 1 0 01.6.9v1.4c0 .3.2.6.5.7a8.2 8.2 0 004.6 0c.3-.1.5-.4.5-.7v-1.4a1 1 0 01.6-.9l.5-.3a1 1 0 011.1.1l1.1 1.1c.2.2.6.2.8 0a8 8 0 00.8-3.3c0-.3-.2-.6-.5-.7L13.8 9a1 1 0 01-.5-1V7.5a1 1 0 01.5-.9l1.4-.8c.3-.1.5-.4.5-.7a8 8 0 00-.8-3.3c-.2-.3-.5-.3-.8-.1l-1.1 1.1a1 1 0 01-1.1.1l-.5-.3a1 1 0 01-.6-.9V.8c0-.3-.2-.6-.5-.7A8.2 8.2 0 008 0zM8 11a3 3 0 110-6 3 3 0 010 6z"/></svg>
+      Configurations
+    </a>
+    <a class="sb-link" href="integrations.html">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 16a2 2 0 001.985-1.75c.017-.137-.097-.25-.235-.25h-3.5c-.138 0-.252.113-.235.25A2 2 0 008 16zm.25-14.75v-.5a.75.75 0 00-1.5 0v.5A4.56 4.56 0 003.5 7.35c0 1.129-.133 2.099-.348 2.895A2.088 2.088 0 001 12.5c0 .828.48 1.5 1.085 1.5h11.83C14.52 14 15 13.328 15 12.5a2.088 2.088 0 00-2.152-2.255c-.215-.796-.348-1.766-.348-2.895A4.56 4.56 0 008.25 2.25z"/></svg>
+      Integrations
+    </a>
+    <a class="sb-link" href="#">Access Keys</a>
+    <div class="sb-sec">Metrics</div>
+    <a class="sb-link" href="merge-report.html">
+      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1.5 3.25a2.25 2.25 0 113 2.122v5.256a2.251 2.251 0 11-1.5 0V5.372A2.25 2.25 0 011.5 3.25zm5 0a.75.75 0 000 1.5h6a.75.75 0 000-1.5h-6zm0 5a.75.75 0 000 1.5h6a.75.75 0 000-1.5h-6zM4.5 12a.75.75 0 100 1.5.75.75 0 000-1.5z"/></svg>
+      Merge Report
+    </a>
+    <div class="sb-spacer"></div>
+    <div style="padding:10px 16px;border-top:1px solid var(--border-light);font-size:12px;color:var(--text-muted);">
+      <a href="#" style="text-decoration:none;color:var(--text-muted);">Docs</a> &nbsp;·&nbsp; <a href="#" style="text-decoration:none;color:var(--text-muted);">Ask Questions</a>
+    </div>
+  </aside>
 
-    <h1>Risk Register</h1>
+  <!-- CONTENT -->
+  <div class="content">
 
-    <!-- Merge Widgets -->
-    <div class="merge-widgets">
-      <div class="merge-widget" id="widget-risk" onclick="toggleMergeFilter('risk')">
-        <div class="mw-icon mw-icon-risk">
-          <svg width="18" height="18" viewBox="0 0 16 16" fill="#cf222e"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0114.082 15H1.918a1.75 1.75 0 01-1.543-2.575l6.082-11.378zm1.763.707a.25.25 0 00-.44 0L1.698 13.132a.25.25 0 00.22.368h12.164a.25.25 0 00.22-.368L8.22 1.754zM9 11a1 1 0 11-2 0 1 1 0 012 0zm-.25-5.25a.75.75 0 00-1.5 0v2.5a.75.75 0 001.5 0v-2.5z"/></svg>
+    <!-- LIST PANE -->
+    <div class="list-pane">
+
+      <div class="anno">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="#7c6ef0"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zm0 3a1 1 0 110 2 1 1 0 010-2zm2 9H6v-1h1V7H6V6h3v6h1v1z"/></svg>
+        <div><strong>Proposed additions:</strong> merge quality widgets <span class="ci-new">New</span>, status column <span class="ci-new">New</span>, status filter tabs <span class="ci-new">New</span>, interactive History tab <span class="ci-new">New</span>, export <span class="ci-new">New</span>.</div>
+      </div>
+
+      <h1 style="font-size:22px;font-weight:700;margin-bottom:16px;">Risk Register</h1>
+
+      <!-- Merge quality widgets -->
+      <div class="merge-widgets">
+        <div class="merge-widget" id="widget-risk" onclick="toggleFilter('risk')">
+          <div class="mw-icon mw-icon-risk">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="#cf222e"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0114.082 15H1.918a1.75 1.75 0 01-1.543-2.575l6.082-11.378zm1.763.707a.25.25 0 00-.44 0L1.698 13.132a.25.25 0 00.22.368h12.164a.25.25 0 00.22-.368L8.22 1.754zM9 11a1 1 0 11-2 0 1 1 0 012 0zm-.25-5.25a.75.75 0 00-1.5 0v2.5a.75.75 0 001.5 0v-2.5z"/></svg>
+          </div>
+          <div class="mw-body">
+            <div class="mw-label">Merged with Risk</div>
+            <div class="mw-value mw-value-risk">4</div>
+            <div class="mw-sub">PRs merged with open findings</div>
+          </div>
         </div>
-        <div class="mw-body">
-          <div class="mw-label">Merged with Risk</div>
-          <div class="mw-value mw-value-risk">3</div>
-          <div class="mw-sub">PRs merged while findings were still open — risk carried into main</div>
-          <div id="widget-risk-label" class="mw-active-label mw-active-label-risk" style="display:none;">Filtering table ↓</div>
+        <div class="merge-widget" id="widget-improved" onclick="toggleFilter('improved')">
+          <div class="mw-icon mw-icon-improved">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="#1a7f37"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"/></svg>
+          </div>
+          <div class="mw-body">
+            <div class="mw-label">Improved PRs</div>
+            <div class="mw-value mw-value-improved">5</div>
+            <div class="mw-sub">Risk resolved before merge</div>
+          </div>
         </div>
       </div>
-      <div class="merge-widget" id="widget-improved" onclick="toggleMergeFilter('improved')">
-        <div class="mw-icon mw-icon-improved">
-          <svg width="18" height="18" viewBox="0 0 16 16" fill="#1a7f37"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"/></svg>
+
+      <!-- Severity summary cards -->
+      <div class="summary-cards">
+        <div class="summary-card">
+          <div class="sc-label"><span class="sc-dot dot-red"></span> Critical</div>
+          <div class="sc-value">4</div>
         </div>
-        <div class="mw-body">
-          <div class="mw-label">Improved PRs</div>
-          <div class="mw-value mw-value-improved">3</div>
-          <div class="mw-sub">PRs where all findings were resolved or dismissed before merge</div>
-          <div id="widget-improved-label" class="mw-active-label mw-active-label-improved" style="display:none;">Filtering table ↓</div>
+        <div class="summary-card">
+          <div class="sc-label"><span class="sc-dot dot-orange"></span> High</div>
+          <div class="sc-value">1</div>
+        </div>
+        <div class="summary-card">
+          <div class="sc-label"><span class="sc-dot dot-yellow"></span> Medium</div>
+          <div class="sc-value">1</div>
+        </div>
+        <div class="summary-card">
+          <div class="sc-label"><span class="sc-dot dot-gray"></span> Low</div>
+          <div class="sc-value">0</div>
         </div>
       </div>
-    </div>
 
-    <!-- Active filter notice -->
-    <div class="filter-notice" id="filter-notice">
-      <span id="filter-notice-text"></span>
-      <button class="filter-notice-clear" onclick="clearMergeFilter()">✕ Clear filter</button>
-    </div>
+      <!-- Filter bar -->
+      <div class="filter-bar">
+        <div class="search-wrap">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="var(--text-muted)"><path d="M10.68 11.74a6 6 0 01-7.922-8.982 6 6 0 018.982 7.922l3.04 3.04a.749.749 0 01-.326 1.275.749.749 0 01-.734-.215l-3.04-3.04zm-5.44.406a4.5 4.5 0 100-9 4.5 4.5 0 000 9z"/></svg>
+          <input class="search-input" type="text" placeholder="Search findings">
+        </div>
+        <button class="tb-btn tb-btn--date">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M4.75 0a.75.75 0 01.75.75V2h5V.75a.75.75 0 011.5 0V2h1.25c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0113.25 16H2.75A1.75 1.75 0 011 14.25V3.75C1 2.784 1.784 2 2.75 2H4V.75A.75.75 0 014.75 0zm0 3.5h-2a.25.25 0 00-.25.25V6h11V3.75a.25.25 0 00-.25-.25h-2V5a.75.75 0 01-1.5 0V3.5h-5V5a.75.75 0 01-1.5 0V3.5z"/></svg>
+          7D
+        </button>
+        <button class="tb-btn">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M.75 3h14.5a.75.75 0 000-1.5H.75a.75.75 0 000 1.5zM3 7.75A.75.75 0 013.75 7h8.5a.75.75 0 010 1.5h-8.5A.75.75 0 013 7.75zm3 4a.75.75 0 01.75-.75h2.5a.75.75 0 010 1.5h-2.5a.75.75 0 01-.75-.75z"/></svg>
+          Filter
+        </button>
+        <div class="export-wrap">
+          <button class="tb-btn" onclick="toggleExportMenu(event)">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M2.75 14A1.75 1.75 0 011 12.25v-2.5a.75.75 0 011.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 00.25-.25v-2.5a.75.75 0 011.5 0v2.5A1.75 1.75 0 0113.25 14H2.75zM7.25 7.689V2a.75.75 0 011.5 0v5.689l1.97-1.97a.749.749 0 111.06 1.06l-3.25 3.25a.749.749 0 01-1.06 0L4.22 6.779a.749.749 0 111.06-1.06l1.97 1.97z"/></svg>
+            Export
+          </button>
+          <div class="export-menu" id="export-menu">
+            <div class="export-item" onclick="closeExportMenu()">Export as CSV</div>
+            <div class="export-item" onclick="closeExportMenu()">Export as JSON</div>
+            <div class="export-item" onclick="closeExportMenu()">Copy finding IDs</div>
+          </div>
+        </div>
+        <button class="dismiss-btn">Dismiss</button>
+      </div>
 
-    <!-- Summary Cards (updated) -->
-    <div class="summary-cards">
-      <div class="summary-card">
-        <div class="summary-card-label"><span class="summary-card-dot dot-red"></span> Critical</div>
-        <div class="summary-card-value">1</div>
-        <div class="summary-card-sub">1 active</div>
+      <!-- Status filter tabs -->
+      <div class="status-tabs">
+        <button class="status-tab status-tab--active" onclick="setStatusFilter('all', this)">All <span class="stc stc-all">6</span></button>
+        <button class="status-tab" onclick="setStatusFilter('active', this)">Active <span class="stc stc-active">4</span></button>
+        <button class="status-tab" onclick="setStatusFilter('resolved', this)">Resolved <span class="stc stc-resolved">1</span></button>
+        <button class="status-tab" onclick="setStatusFilter('dismissed', this)">Dismissed <span class="stc stc-dismissed">1</span></button>
       </div>
-      <div class="summary-card">
-        <div class="summary-card-label"><span class="summary-card-dot dot-orange"></span> High</div>
-        <div class="summary-card-value">4</div>
-        <div class="summary-card-sub">2 active · 1 resolved · 1 FP</div>
-      </div>
-      <div class="summary-card">
-        <div class="summary-card-label"><span class="summary-card-dot dot-yellow"></span> Medium</div>
-        <div class="summary-card-value">2</div>
-        <div class="summary-card-sub">0 active · 2 resolved</div>
-      </div>
-      <div class="summary-card">
-        <div class="summary-card-label"><span class="summary-card-dot dot-green"></span> Resolved</div>
-        <div class="summary-card-value">3</div>
-        <div class="summary-card-sub change-indicator change-indicator--new" style="margin-top: 4px;">New</div>
-      </div>
-    </div>
 
-    <!-- Filter Bar -->
-    <div class="filter-bar">
-      <input type="text" class="search-input" placeholder="Search findings">
-      <div class="status-filters">
-        <button class="status-filter status-filter--active">All <span class="filter-count fc-all">7</span></button>
-        <button class="status-filter">Active <span class="filter-count fc-active">3</span></button>
-        <button class="status-filter">Resolved <span class="filter-count fc-resolved">3</span></button>
-        <button class="status-filter">Dismissed <span class="filter-count fc-fp">1</span></button>
-      </div>
-    </div>
-
-    <!-- Table -->
-    <div class="findings-table">
-      <div class="table-header">
+      <!-- Findings table -->
+      <div class="tbl-head">
         <div></div>
-        <div class="sortable">Risk ▾</div>
+        <div>Risk</div>
         <div>Type</div>
         <div>File</div>
         <div>Repo</div>
-        <div>Status <span class="change-indicator change-indicator--new" style="margin-left: 2px;">New</span></div>
+        <div>Detected</div>
+        <div>Agent</div>
+        <div>Status <span class="ci-new" style="font-size:9px;">New</span></div>
       </div>
 
-      <!-- Row 1: Critical Active - merged with risk -->
-      <div class="finding-row" data-merge="risk">
-        <input type="checkbox" class="row-checkbox">
+      <!-- Row 1 -->
+      <div class="finding-row finding-row--selected" data-merge="risk" data-status="active" onclick="selectRow(this, 0)">
+        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()">
         <div><span class="sev-badge sev-critical">Critical</span></div>
-        <div class="row-type">Path Traversal</div>
-        <div class="row-file">app/analyzers/vulnerability_...</div>
+        <div class="row-type">Authentication Bypass: Incomplete We...</div>
+        <div class="row-file">pkg/usecases/providers/w...</div>
         <div class="row-repo">DryRunSec/dryrun-api</div>
-        <div><span class="row-status rs-active">Active</span></div>
+        <div class="row-detected">05/20/26 11:03</div>
+        <div class="row-agent">PR</div>
+        <div><span class="row-status-badge rsb-active">Active</span></div>
       </div>
 
-      <!-- Row 2: High Active - merged with risk -->
-      <div class="finding-row" data-merge="risk">
-        <input type="checkbox" class="row-checkbox">
-        <div><span class="sev-badge sev-high">High</span></div>
-        <div class="row-type">Missing Tenant Isolation in Database Delete</div>
-        <div class="row-file">pkg/models/drift.go</div>
-        <div class="row-repo">DryRunSec/dryrun-api</div>
-        <div><span class="row-status rs-active">Active</span></div>
-      </div>
-
-      <!-- Row 3: High Active (selected — detail panel open) - merged with risk -->
-      <div class="finding-row finding-row--selected" data-merge="risk">
-        <input type="checkbox" class="row-checkbox">
-        <div><span class="sev-badge sev-high">High</span></div>
-        <div class="row-type">Prompt Injection in Nitpick Filter</div>
-        <div class="row-file">scanner/feedback/nitpick_fil...</div>
+      <!-- Row 2 -->
+      <div class="finding-row" data-merge="risk" data-status="active" onclick="selectRow(this, 1)">
+        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()">
+        <div><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="row-type">Dependency License Check v1</div>
+        <div class="row-file">.github/workflows/codex-...</div>
         <div class="row-repo">DryRunSec/reposture</div>
-        <div><span class="row-status rs-active">Active</span></div>
+        <div class="row-detected">05/13/26 17:20</div>
+        <div class="row-agent">Code Policy</div>
+        <div><span class="row-status-badge rsb-active">Active</span></div>
       </div>
 
-      <!-- Row 4: High Resolved - improved (resolved before merge) -->
-      <div class="finding-row finding-row--resolved" data-merge="improved">
-        <input type="checkbox" class="row-checkbox">
+      <!-- Row 3 -->
+      <div class="finding-row" data-merge="risk" data-status="active" onclick="selectRow(this, 2)">
+        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()">
+        <div><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="row-type">Dependency License Check v1</div>
+        <div class="row-file">.github/workflows/codex-...</div>
+        <div class="row-repo">DryRunSec/admin-panel</div>
+        <div class="row-detected">05/13/26 17:20</div>
+        <div class="row-agent">Code Policy</div>
+        <div><span class="row-status-badge rsb-active">Active</span></div>
+      </div>
+
+      <!-- Row 4 -->
+      <div class="finding-row" data-merge="improved" data-status="active" onclick="selectRow(this, 3)">
+        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()">
+        <div><span class="sev-badge sev-critical">Critical</span></div>
+        <div class="row-type">Unencrypted Git Protocol Exposure</div>
+        <div class="row-file">aws/dryrunsec-sandbox/us...</div>
+        <div class="row-repo">DryRunSec/tf-infra</div>
+        <div class="row-detected">05/13/26 13:25</div>
+        <div class="row-agent">PR</div>
+        <div><span class="row-status-badge rsb-active">Active</span></div>
+      </div>
+
+      <!-- Row 5 -->
+      <div class="finding-row finding-row--resolved" data-merge="improved" data-status="resolved" onclick="selectRow(this, 4)">
+        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()">
         <div><span class="sev-badge sev-high">High</span></div>
-        <div class="row-type">SQL Injection via Raw Query</div>
-        <div class="row-file">pkg/models/repo_deep_scan.go</div>
-        <div class="row-repo">DryRunSec/dryrun-api</div>
-        <div><span class="row-status rs-resolved"><svg width="10" height="10" viewBox="0 0 16 16" fill="#1a7f37"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"/></svg> Resolved</span></div>
+        <div class="row-type">Sensitive Service Exposed to Public Int...</div>
+        <div class="row-file">aws/dryrunsec-sandbox/us...</div>
+        <div class="row-repo">DryRunSec/tf-infra</div>
+        <div class="row-detected">05/13/26 13:25</div>
+        <div class="row-agent">PR</div>
+        <div><span class="row-status-badge rsb-resolved"><svg width="8" height="8" viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"/></svg> Resolved</span></div>
       </div>
 
-      <!-- Row 5: Medium Resolved - improved -->
-      <div class="finding-row finding-row--resolved" data-merge="improved">
-        <input type="checkbox" class="row-checkbox">
+      <!-- Row 6 -->
+      <div class="finding-row" data-merge="risk" data-status="active" onclick="selectRow(this, 5)">
+        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()">
         <div><span class="sev-badge sev-medium">Medium</span></div>
-        <div class="row-type">Insecure Deserialization</div>
-        <div class="row-file">pkg/handlers/webhook.go</div>
-        <div class="row-repo">DryRunSec/dryrun-api</div>
-        <div><span class="row-status rs-resolved"><svg width="10" height="10" viewBox="0 0 16 16" fill="#1a7f37"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"/></svg> Resolved</span></div>
+        <div class="row-type">Insecure Storage of Sensitive Authentic...</div>
+        <div class="row-file">src/features/user/userSl...</div>
+        <div class="row-repo">DryRunSec/dryrun-ui</div>
+        <div class="row-detected">05/13/26 10:18</div>
+        <div class="row-agent">PR</div>
+        <div><span class="row-status-badge rsb-active">Active</span></div>
       </div>
 
-      <!-- Row 6: Medium Resolved - improved -->
-      <div class="finding-row finding-row--resolved" data-merge="improved">
-        <input type="checkbox" class="row-checkbox">
-        <div><span class="sev-badge sev-medium">Medium</span></div>
-        <div class="row-type">Hardcoded Database Credentials</div>
-        <div class="row-file">config/database.go</div>
-        <div class="row-repo">DryRunSec/reposture</div>
-        <div><span class="row-status rs-resolved"><svg width="10" height="10" viewBox="0 0 16 16" fill="#1a7f37"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"/></svg> Resolved</span></div>
-      </div>
-
-      <!-- Row 7: High False Positive -->
-      <div class="finding-row finding-row--dismissed">
-        <input type="checkbox" class="row-checkbox">
+      <!-- Row 7 dismissed -->
+      <div class="finding-row finding-row--dismissed" data-merge="" data-status="dismissed" onclick="selectRow(this, 6)">
+        <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()">
         <div><span class="sev-badge sev-high">High</span></div>
         <div class="row-type">Potential SSRF in Webhook Handler</div>
         <div class="row-file">pkg/handlers/webhook.go</div>
         <div class="row-repo">DryRunSec/dryrun-api</div>
-        <div><span class="row-status rs-fp">False Positive</span></div>
+        <div class="row-detected">05/10/26 09:44</div>
+        <div class="row-agent">PR</div>
+        <div><span class="row-status-badge rsb-fp">False Positive</span></div>
       </div>
-    </div>
-  </div>
 
-  <!-- ════════════════════════════ -->
-  <!--       RIGHT: DETAIL PANE     -->
-  <!-- ════════════════════════════ -->
-  <div class="detail-pane">
+    </div><!-- /list-pane -->
 
-    <!-- Header -->
-    <div class="detail-header">
-      <span class="sev-badge sev-high">High</span>
-      <div class="detail-title">Prompt Injection in Nitpick Filter</div>
-      <button class="detail-minimize">
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M2 4a1 1 0 011-1h10a1 1 0 110 2H3a1 1 0 01-1-1zm0 4a1 1 0 011-1h10a1 1 0 110 2H3a1 1 0 01-1-1z"/></svg>
-      </button>
-    </div>
-
-    <!-- Tabs -->
-    <div class="detail-tabs">
-      <button class="detail-tab detail-tab--active">Finding Details</button>
-      <button class="detail-tab">PR Details</button>
-      <button class="detail-tab detail-tab--new">
-        History
-        <span class="change-indicator change-indicator--new">New</span>
-      </button>
-      <div class="detail-actions">
-        <button class="detail-btn detail-btn--dismiss">Dismiss ▾</button>
+    <!-- DETAIL PANE -->
+    <div class="detail-pane">
+      <div class="dp-header">
+        <span class="sev-badge sev-critical" style="flex-shrink:0;">Critical</span>
+        <div class="dp-title">Authentication Bypass: Incomplete Webhook Verification</div>
+        <button class="dp-close">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"/></svg>
+        </button>
       </div>
-    </div>
 
-    <div class="detail-body">
-
-      <!-- Status Banner (NEW) -->
-      <div class="detail-status-banner dsb-active">
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="#6b5300"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0114.082 15H1.918a1.75 1.75 0 01-1.543-2.575L6.457 1.047zM8 5a.75.75 0 00-.75.75v2.5a.75.75 0 001.5 0v-2.5A.75.75 0 008 5zm0 9a1 1 0 100-2 1 1 0 000 2z"/></svg>
-        <div>
-          <strong>Active finding</strong> — first detected 3 weeks ago. Present in 4 consecutive scans across this PR.
-          <span class="change-indicator change-indicator--new" style="margin-left: 4px;">New</span>
+      <div class="dp-tabs">
+        <button class="dp-tab dp-tab--active" onclick="switchTab(this, 'finding-details')">Finding Details</button>
+        <button class="dp-tab" onclick="switchTab(this, 'pr-details')">PR Details</button>
+        <button class="dp-tab" onclick="switchTab(this, 'history')">History <span class="ci-new">New</span></button>
+        <div class="dp-actions">
+          <button class="dp-action-btn dp-action-btn--dismiss">Dismiss ▾</button>
         </div>
       </div>
 
-      <!-- PR Context -->
-      <div class="detail-meta">
-        <div class="detail-meta-row">
-          <span class="label">Repo</span>
-          <span class="value"><a href="#">DryRunSec/reposture</a>
-            <svg width="12" height="12" viewBox="0 0 16 16" fill="#8b919e" style="vertical-align: -1px; margin-left: 4px;"><path d="M5.45 5.154A4.25 4.25 0 009.25 7.5h1.378a5.75 5.75 0 10-3.863-2.563l-.238.474-.087.168A5.75 5.75 0 005 10.25v.25a1 1 0 001 1h.25A5.75 5.75 0 0012 5.75v-.238l.168-.087.474-.238A5.75 5.75 0 0010.25 1.5h-.5A4.25 4.25 0 005.45 5.154z"/></svg>
-          </span>
+      <div class="dp-body">
+
+        <!-- FINDING DETAILS PANEL -->
+        <div class="dp-panel dp-panel--active" id="panel-finding-details">
+          <div class="dp-status-banner dsb-active">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="#6b5300"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0114.082 15H1.918a1.75 1.75 0 01-1.543-2.575L6.457 1.047zM8 5a.75.75 0 00-.75.75v2.5a.75.75 0 001.5 0v-2.5A.75.75 0 008 5zm0 9a1 1 0 100-2 1 1 0 000 2z"/></svg>
+            <div><strong>Active</strong> — detected May 20, 2026. Present in 2 consecutive scans. No code changes have addressed this finding.</div>
+          </div>
+          <div class="dp-meta">
+            <div class="dp-meta-row"><span class="dp-meta-label">Repo</span><span class="dp-meta-value"><a href="#">DryRunSec/dryrun-api</a></span></div>
+            <div class="dp-meta-row"><span class="dp-meta-label">PR</span><span class="dp-meta-value">#412 — fix/auth-bypass-recovery</span></div>
+            <div class="dp-meta-row"><span class="dp-meta-label">Agent</span><span class="dp-meta-value">General Security Analyzer</span></div>
+            <div class="dp-meta-row"><span class="dp-meta-label">File</span><span class="dp-meta-value" style="font-family:var(--mono);font-size:11.5px;">pkg/usecases/providers/webhook_verifier.go</span></div>
+          </div>
+          <div class="dp-section">
+            <h3>Description</h3>
+            <p>The webhook verification handler checks the signature only when a <code>X-Hub-Signature-256</code> header is present. Requests without the header bypass verification entirely, allowing unauthenticated webhook delivery to trigger internal processing logic.</p>
+          </div>
+          <div class="dp-section">
+            <h3>Evidence</h3>
+            <p>In <code>VerifyWebhook()</code>, the conditional <code>if sig := r.Header.Get(...)</code> returns early only on mismatch — a missing header evaluates the check as falsy and proceeds without validation.</p>
+          </div>
+          <div class="dp-section">
+            <h3>Recommendation</h3>
+            <p>Require the signature header unconditionally. Return a <code>401</code> if the header is absent rather than treating absence as a passing state.</p>
+          </div>
         </div>
-        <div class="detail-meta-row">
-          <span class="label">PR</span>
-          <span class="value">[codex] Add pinecone triage feedback to reviews</span>
+
+        <!-- PR DETAILS PANEL -->
+        <div class="dp-panel" id="panel-pr-details">
+          <div class="dp-meta" style="margin-bottom:18px;">
+            <div class="dp-meta-row"><span class="dp-meta-label">PR</span><span class="dp-meta-value"><a href="#">#412</a> — fix/auth-bypass-recovery</span></div>
+            <div class="dp-meta-row"><span class="dp-meta-label">Author</span><span class="dp-meta-value">wickett</span></div>
+            <div class="dp-meta-row"><span class="dp-meta-label">Repo</span><span class="dp-meta-value"><a href="#">DryRunSec/dryrun-api</a></span></div>
+            <div class="dp-meta-row"><span class="dp-meta-label">Branch</span><span class="dp-meta-value" style="font-family:var(--mono);font-size:11.5px;">fix/auth-bypass-recovery</span></div>
+            <div class="dp-meta-row"><span class="dp-meta-label">Status</span><span class="dp-meta-value" style="color:var(--red);">Open — 1 finding blocking merge</span></div>
+          </div>
+          <div class="dp-section">
+            <h3>Scan Timeline</h3>
+            <div class="pr-timeline">
+              <div class="pr-event">
+                <div class="pr-event-dot pr-event-dot--scan"></div>
+                <div class="pr-event-content">
+                  <div class="pr-event-title">Initial scan — 1 finding detected</div>
+                  <div class="pr-event-time">May 20, 2026 · 11:03 · Commit <span style="font-family:var(--mono);font-size:11px;color:var(--blue);">a3f82c1</span></div>
+                </div>
+              </div>
+              <div class="pr-event">
+                <div class="pr-event-dot pr-event-dot--scan"></div>
+                <div class="pr-event-content">
+                  <div class="pr-event-title">Re-scan — finding still present</div>
+                  <div class="pr-event-time">May 20, 2026 · 14:31 · Commit <span style="font-family:var(--mono);font-size:11px;color:var(--blue);">b7d94e2</span></div>
+                </div>
+              </div>
+              <div class="pr-event">
+                <div class="pr-event-dot" style="background:var(--orange);"></div>
+                <div class="pr-event-content">
+                  <div class="pr-event-title" style="color:var(--orange);">PR currently blocked from merging</div>
+                  <div class="pr-event-time">Blocking threshold: High+ · 1 critical finding open</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="dp-section">
+            <h3>Other Findings in this PR</h3>
+            <div style="font-size:12px;color:var(--text-muted);padding:10px;background:var(--surface-alt);border-radius:6px;border:1px solid var(--border-light);">No other findings in this PR.</div>
+          </div>
         </div>
-        <div class="pr-ref" style="margin-left: 58px;">#369 by peterkarman1</div>
-      </div>
 
-      <!-- Description -->
-      <div class="detail-section">
-        <h3>Description</h3>
-        <p>The <code>_ask_model</code> method in <code>NitpickFilterService</code> constructs a prompt for an LLM by directly concatenating user-controlled finding data (<code>finding.type</code>, <code>finding.description</code>, <code>finding.filename</code>, <code>finding.label</code>) and retrieved data from the Pinecone vector database (<code>doc.page_content</code> in precedents). While the prompt includes a warning to treat data as untrusted, this relies solely on LLM instruction following.</p>
-      </div>
+        <!-- HISTORY PANEL -->
+        <div class="dp-panel" id="panel-history">
+          <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">Click any event to expand details. This finding has been present across 2 scans.</p>
+          <div class="history-timeline">
 
-      <!-- Evidence -->
-      <div class="detail-section">
-        <h3>Evidence</h3>
-        <p>The prompt uses direct string concatenation with untrusted input fields from <code>TriageFilterFindingInput</code> (type, filename, label, description).</p>
-        <p style="margin-top: 8px;">Precedent content (<code>doc.page_content</code>) retrieved from the database is also concatenated without escaping or clear isolation.</p>
-      </div>
-
-      <!-- Inline History Summary (NEW) -->
-      <div class="detail-section" style="margin-top: 24px;">
-        <h3 style="display: flex; align-items: center; gap: 8px;">
-          Finding History
-          <span class="change-indicator change-indicator--new">New</span>
-        </h3>
-        <div class="history-timeline">
-
-          <div class="history-event history-event--detected">
-            <div class="history-event-title">
-              First detected
-              <span class="history-event-badge hb-detected">New finding</span>
+            <div class="ht-event ht-detected expanded" onclick="toggleHistoryEvent(this)">
+              <div class="ht-title">
+                First detected
+                <span class="ht-badge htb-new">New finding</span>
+                <span class="ht-expand-hint">▲</span>
+              </div>
+              <div class="ht-time">May 20, 2026 · 11:03 · Commit <span class="ht-commit">a3f82c1</span></div>
+              <div class="ht-detail">
+                Detected during the first scan of PR #412. Classified as Critical by the General Security Analyzer. Webhook verification logic allows requests without a signature header to proceed without validation.
+              </div>
             </div>
-            <div class="history-event-time">Mar 15, 2026 · Commit <span class="history-commit">a3f82c1</span></div>
-            <div class="history-event-detail">
-              Found during initial scan of PR #369. Severity classified as High by the General Security Analyzer.
+
+            <div class="ht-event ht-scanned" onclick="toggleHistoryEvent(this)">
+              <div class="ht-title">
+                Still present
+                <span class="ht-badge htb-still">Re-scanned</span>
+                <span class="ht-expand-hint">▼</span>
+              </div>
+              <div class="ht-time">May 20, 2026 · 14:31 · Commit <span class="ht-commit">b7d94e2</span></div>
+              <div class="ht-detail">
+                No changes to the affected file. Finding persists. PR is currently blocked from merging due to this finding exceeding the High+ blocking threshold.
+              </div>
             </div>
+
+            <div class="ht-event ht-current" onclick="toggleHistoryEvent(this)">
+              <div class="ht-title">
+                Current state
+                <span class="row-status-badge rsb-active" style="font-size:9px;">Active</span>
+                <span class="ht-expand-hint">▼</span>
+              </div>
+              <div class="ht-time">Latest scan · PR #412 still open</div>
+              <div class="ht-detail">Finding has not been resolved or dismissed. Merge is blocked. No dismissal has been submitted.</div>
+            </div>
+
           </div>
-
-          <div class="history-event history-event--scanned">
-            <div class="history-event-title">
-              Still present
-              <span class="history-event-badge hb-still">Re-scanned</span>
-            </div>
-            <div class="history-event-time">Mar 18, 2026 · Commit <span class="history-commit">b7d94e2</span></div>
-          </div>
-
-          <div class="history-event history-event--scanned">
-            <div class="history-event-title">
-              Still present
-              <span class="history-event-badge hb-still">Re-scanned</span>
-            </div>
-            <div class="history-event-time">Mar 22, 2026 · Commit <span class="history-commit">e7b21d4</span></div>
-          </div>
-
-          <div class="history-event history-event--current">
-            <div class="history-event-title">
-              Current state
-              <span class="row-status rs-active" style="font-size: 10px;">Active</span>
-            </div>
-            <div class="history-event-time">Apr 8, 2026 · Commit <span class="history-commit">0595c66</span> (latest scan)</div>
-            <div class="history-event-detail">
-              Finding persists after 4 scans. No code changes have addressed this vulnerability in the affected file.
-            </div>
-          </div>
-
         </div>
-      </div>
 
-    </div>
-  </div>
+      </div><!-- /dp-body -->
+    </div><!-- /detail-pane -->
 
-</div>
+  </div><!-- /content -->
+</div><!-- /shell -->
 
 <script>
-let activeMergeFilter = null;
+// ── MERGE FILTER ──
+let activeFilter = null;
 
-function toggleMergeFilter(type) {
-  if (activeMergeFilter === type) {
-    clearMergeFilter();
-    return;
+function toggleFilter(type) {
+  if (activeFilter === type) {
+    // Deselect
+    activeFilter = null;
+    document.getElementById('widget-risk').classList.remove('merge-widget--active-risk');
+    document.getElementById('widget-improved').classList.remove('merge-widget--active-improved');
+    document.querySelectorAll('.finding-row').forEach(r => r.style.display = '');
+  } else {
+    activeFilter = type;
+    document.getElementById('widget-risk').classList.toggle('merge-widget--active-risk', type === 'risk');
+    document.getElementById('widget-improved').classList.toggle('merge-widget--active-improved', type === 'improved');
+    document.getElementById('widget-risk').classList.toggle('merge-widget--active-risk', type === 'risk');
+    document.getElementById('widget-improved').classList.remove('merge-widget--active-improved');
+    if (type === 'improved') {
+      document.getElementById('widget-improved').classList.add('merge-widget--active-improved');
+      document.getElementById('widget-risk').classList.remove('merge-widget--active-risk');
+    }
+    document.querySelectorAll('.finding-row').forEach(r => {
+      r.style.display = r.dataset.merge === type ? '' : 'none';
+    });
   }
-  activeMergeFilter = type;
-
-  // Update widget styles
-  const riskWidget = document.getElementById('widget-risk');
-  const improvedWidget = document.getElementById('widget-improved');
-  riskWidget.classList.toggle('merge-widget--active-risk', type === 'risk');
-  improvedWidget.classList.toggle('merge-widget--active-improved', type === 'improved');
-  document.getElementById('widget-risk-label').style.display = type === 'risk' ? 'inline-block' : 'none';
-  document.getElementById('widget-improved-label').style.display = type === 'improved' ? 'inline-block' : 'none';
-
-  // Filter rows
-  const rows = document.querySelectorAll('.finding-row');
-  let shown = 0;
-  rows.forEach(row => {
-    const match = row.dataset.merge === type;
-    row.style.display = match ? '' : 'none';
-    if (match) shown++;
-  });
-
-  // Show notice
-  const notice = document.getElementById('filter-notice');
-  const noticeText = document.getElementById('filter-notice-text');
-  const labels = {
-    risk: `Showing ${shown} findings from PRs merged with unresolved risk`,
-    improved: `Showing ${shown} findings resolved before merge (improved PRs)`
-  };
-  noticeText.textContent = labels[type];
-  notice.style.display = 'flex';
 }
 
-function clearMergeFilter() {
-  activeMergeFilter = null;
+// ── STATUS FILTER TABS ──
+function setStatusFilter(status, btn) {
+  document.querySelectorAll('.status-tab').forEach(t => t.classList.remove('status-tab--active'));
+  btn.classList.add('status-tab--active');
+  document.querySelectorAll('.finding-row').forEach(r => {
+    r.style.display = (status === 'all' || r.dataset.status === status) ? '' : 'none';
+  });
+  activeFilter = null;
   document.getElementById('widget-risk').classList.remove('merge-widget--active-risk');
   document.getElementById('widget-improved').classList.remove('merge-widget--active-improved');
-  document.getElementById('widget-risk-label').style.display = 'none';
-  document.getElementById('widget-improved-label').style.display = 'none';
-  document.getElementById('filter-notice').style.display = 'none';
-  document.querySelectorAll('.finding-row').forEach(row => row.style.display = '');
 }
+
+// ── ROW SELECTION ──
+function selectRow(el) {
+  document.querySelectorAll('.finding-row').forEach(r => r.classList.remove('finding-row--selected'));
+  el.classList.add('finding-row--selected');
+}
+
+// ── DETAIL TABS ──
+function switchTab(btn, panelId) {
+  document.querySelectorAll('.dp-tab').forEach(t => t.classList.remove('dp-tab--active'));
+  btn.classList.add('dp-tab--active');
+  document.querySelectorAll('.dp-panel').forEach(p => p.classList.remove('dp-panel--active'));
+  document.getElementById('panel-' + panelId).classList.add('dp-panel--active');
+}
+
+// ── HISTORY EVENTS ──
+function toggleHistoryEvent(el) {
+  const wasExpanded = el.classList.contains('expanded');
+  el.classList.toggle('expanded', !wasExpanded);
+  const hint = el.querySelector('.ht-expand-hint');
+  if (hint) hint.textContent = !wasExpanded ? '▲' : '▼';
+}
+
+// ── EXPORT MENU ──
+function toggleExportMenu(e) {
+  e.stopPropagation();
+  document.getElementById('export-menu').classList.toggle('open');
+}
+function closeExportMenu() {
+  document.getElementById('export-menu').classList.remove('open');
+}
+document.addEventListener('click', () => closeExportMenu());
 </script>
+
 <script src="gate.js"></script>
 </body>
 </html>
