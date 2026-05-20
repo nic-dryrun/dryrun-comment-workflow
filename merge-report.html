@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DryRun — Merge Report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --font: 'Inter', -apple-system, sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+      --bg: #fafbfc;
+      --surface: #ffffff;
+      --surface-alt: #f6f8fa;
+      --text: #1a1d23;
+      --text-sec: #5a5f6b;
+      --text-muted: #8b919e;
+      --border: #e3e6eb;
+      --border-light: #eef0f4;
+      --purple: #7c6ef0;
+      --purple-bg: #f0eeff;
+      --purple-border: #d8d3f7;
+      --green: #1a7f37;
+      --green-bg: #dafbe1;
+      --green-border: #aceebb;
+      --orange: #bf8700;
+      --orange-bg: #fff8c5;
+      --orange-border: #f5e0a0;
+      --red: #cf222e;
+      --red-bg: #ffebe9;
+      --red-border: #ffcecb;
+      --blue: #0969da;
+      --blue-bg: #ddf4ff;
+    }
+    body { font-family: var(--font); font-size: 14px; line-height: 1.5; color: var(--text); background: var(--bg); }
+
+    /* TOP BARS */
+    .mockup-bar { background: linear-gradient(135deg, #1a1e3a, #2d3260); padding: 10px 24px; display: flex; align-items: center; gap: 12px; font-size: 12px; color: #fff; }
+    .mockup-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(124,110,240,0.3); padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+    .mockup-breadcrumb { padding: 8px 24px; font-size: 12px; color: #8b919e; background: #fff; border-bottom: 1px solid #e8ecf0; }
+    .mockup-breadcrumb a { color: var(--purple); text-decoration: none; }
+
+    /* APP SHELL */
+    .app { display: flex; min-height: calc(100vh - 64px); }
+
+    /* SIDEBAR */
+    .sidebar { width: 210px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); padding: 16px 0; display: flex; flex-direction: column; }
+    .sidebar-logo { display: flex; align-items: center; gap: 8px; padding: 0 16px 14px; border-bottom: 1px solid var(--border-light); margin-bottom: 10px; font-weight: 700; font-size: 13px; }
+    .sidebar-org { margin: 0 12px 12px; padding: 7px 10px; border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; }
+    .s-sec { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); padding: 10px 16px 4px; }
+    .s-link { text-decoration: none !important; display: flex; align-items: center; gap: 8px; padding: 7px 16px; font-size: 13px; font-weight: 500; color: var(--text-sec); }
+    .s-link:hover { color: var(--text); background: #f6f8fa; }
+    .s-link--active { color: var(--purple); background: var(--purple-bg); font-weight: 600; }
+    .s-link svg { width: 15px; height: 15px; flex-shrink: 0; }
+    .sidebar-spacer { flex: 1; }
+
+    /* MAIN */
+    .main { flex: 1; padding: 28px 32px 80px; overflow-y: auto; }
+
+    /* PAGE HEADER */
+    .page-header { margin-bottom: 24px; }
+    .page-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 12px; }
+    .page-sub { font-size: 13px; color: var(--text-muted); }
+
+    /* DATE/FILTER BAR */
+    .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
+    .tb-select { font-size: 12px; padding: 6px 24px 6px 10px; border: 1px solid var(--border); border-radius: 7px; background: var(--surface); color: var(--text); font-family: var(--font); cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='%236b7084' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; }
+    .tb-sep { flex: 1; }
+    .tb-btn { font-size: 12px; font-weight: 500; padding: 6px 14px; border: 1px solid var(--border); border-radius: 7px; background: var(--surface); color: var(--text-sec); cursor: pointer; font-family: var(--font); }
+
+    /* STAT CARDS */
+    .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+    .stat-card-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+    .stat-card-value { font-size: 32px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+    .stat-card-sub { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+    .stat-card--risk { border-left: 3px solid var(--red); }
+    .stat-card--improved { border-left: 3px solid var(--green); }
+    .stat-card--total { border-left: 3px solid var(--purple); }
+    .stat-card--rate { border-left: 3px solid var(--orange); }
+
+    /* TREND BAR */
+    .trend-section { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 24px; overflow: hidden; }
+    .trend-header { padding: 12px 18px; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; }
+    .trend-title { font-size: 13px; font-weight: 700; }
+    .trend-legend { display: flex; gap: 14px; font-size: 11px; color: var(--text-muted); }
+    .trend-legend-item { display: flex; align-items: center; gap: 5px; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+    .trend-chart { padding: 16px 18px 12px; }
+    .trend-weeks { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; align-items: end; height: 80px; margin-bottom: 8px; }
+    .trend-week { display: flex; flex-direction: column; gap: 2px; align-items: center; }
+    .trend-bar-wrap { display: flex; flex-direction: column; gap: 2px; align-items: center; flex: 1; width: 100%; justify-content: flex-end; }
+    .trend-bar { width: 70%; border-radius: 3px 3px 0 0; min-height: 2px; }
+    .trend-bar-risk { background: #fca5a5; }
+    .trend-bar-improved { background: #86efac; }
+    .trend-week-label { font-size: 9px; color: var(--text-muted); text-align: center; white-space: nowrap; }
+
+    /* PR TABLE */
+    .table-section { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .table-section-header { padding: 12px 18px; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; }
+    .table-section-title { font-size: 13px; font-weight: 700; }
+    .search-wrap { position: relative; }
+    .search-wrap svg { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); pointer-events: none; }
+    .search-input { padding: 6px 10px 6px 28px; border: 1px solid var(--border); border-radius: 7px; font-size: 12px; font-family: var(--font); color: var(--text); background: var(--surface); outline: none; width: 200px; }
+    .search-input:focus { border-color: var(--purple); }
+
+    .pr-table { width: 100%; border-collapse: collapse; }
+    .pr-table th { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); padding: 9px 16px; background: var(--surface-alt); border-bottom: 1px solid var(--border-light); text-align: left; white-space: nowrap; }
+    .pr-table td { padding: 11px 16px; border-bottom: 1px solid var(--border-light); font-size: 13px; vertical-align: middle; }
+    .pr-table tr:last-child td { border-bottom: none; }
+    .pr-table tr:hover td { background: var(--surface-alt); }
+
+    .pr-name { font-weight: 500; color: var(--text); }
+    .pr-ref { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+    .pr-repo { font-size: 12px; color: var(--text-sec); }
+
+    .merge-status { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 10px; white-space: nowrap; }
+    .ms-risk { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+    .ms-improved { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+    .ms-clean { background: var(--surface-alt); color: var(--text-muted); border: 1px solid var(--border); }
+
+    .finding-count { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; font-size: 11px; font-weight: 700; }
+    .fc-risk { background: var(--red-bg); color: var(--red); }
+    .fc-resolved { background: var(--green-bg); color: var(--green); }
+    .fc-zero { background: var(--surface-alt); color: var(--text-muted); }
+
+    .sev-pill { font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 6px; }
+    .sp-critical { background: var(--red-bg); color: var(--red); }
+    .sp-high { background: var(--orange-bg); color: var(--orange); }
+    .sp-medium { background: #fff8c5; color: #6b5300; }
+
+    /* FILTER TABS */
+    .filter-tabs { display: flex; gap: 2px; background: var(--surface-alt); border: 1px solid var(--border); border-radius: 8px; padding: 3px; }
+    .filter-tab { font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 6px; cursor: pointer; border: none; background: transparent; color: var(--text-sec); font-family: var(--font); display: flex; align-items: center; gap: 5px; }
+    .filter-tab:hover { background: var(--surface); }
+    .filter-tab--active { background: var(--surface); color: var(--text); font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .tab-count { font-size: 10px; font-weight: 700; padding: 1px 5px; border-radius: 7px; }
+    .tc-all { background: #f0f0f0; color: var(--text-muted); }
+    .tc-risk { background: var(--red-bg); color: var(--red); }
+    .tc-improved { background: var(--green-bg); color: var(--green); }
+
+    /* ANNOTATION */
+    .anno { background: var(--purple-bg); border: 1px solid var(--purple-border); border-radius: 8px; padding: 10px 14px; margin-bottom: 20px; font-size: 12.5px; color: #4338ca; display: flex; gap: 8px; align-items: flex-start; }
+    .anno svg { flex-shrink: 0; margin-top: 1px; }
+    .ci-new { display: inline-flex; align-items: center; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 8px; background: var(--purple-bg); color: var(--purple); border: 1px solid var(--purple-border); }
+
+    .merged-by { font-size: 11px; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+<div class="mockup-bar">
+  <span class="mockup-badge"><svg width="10" height="10" viewBox="0 0 16 16" fill="#c4b5fd"><circle cx="8" cy="8" r="8"/></svg> PROPOSED MOCKUP</span>
+  <span style="opacity:0.6;">Metrics — Merge Report</span>
+</div>
+<div class="mockup-breadcrumb"><a href="index.html">Mockups</a> / <span>Metrics / Merge Report</span></div>
+
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <svg width="22" height="22" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="13" stroke="var(--text)" stroke-width="1.5" fill="none"/><path d="M16 7L9 11v10l7 4 7-4V11l-7-4z" stroke="var(--text)" stroke-width="1" fill="none"/><path d="M13 16l2 2 4-4" stroke="#1a7f37" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    DRYRUN SECURITY
+  </div>
+  <div class="sidebar-org">
+    <svg width="16" height="16" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="13" stroke="var(--text-muted)" stroke-width="1" fill="none"/></svg>
+    <span>DryRunSec</span>
+    <svg width="12" height="12" viewBox="0 0 16 16" fill="var(--text-muted)" style="margin-left:auto;"><path d="M4.427 7.427l3.396 3.396a.25.25 0 00.354 0l3.396-3.396A.25.25 0 0011.396 7H4.604a.25.25 0 00-.177.427z"/></svg>
+  </div>
+  <div class="s-sec">Main</div>
+  <a class="s-link" href="risk-register.html"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0114.25 15H1.75A1.75 1.75 0 010 13.25V2.75C0 1.784.784 1 1.75 1z"/></svg>Risk Register</a>
+  <a class="s-link" href="#"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 010-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9z"/></svg>Repositories</a>
+  <a class="s-link" href="#"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M1.5 3.25a2.25 2.25 0 113 2.122v5.256a2.251 2.251 0 11-1.5 0V5.372A2.25 2.25 0 011.5 3.25z"/></svg>Pull Requests</a>
+  <a class="s-link" href="deepscan-history.html"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M5.75 0a.75.75 0 01.75.75V2h3V.75a.75.75 0 011.5 0V2h1.25c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0112.25 16H3.75A1.75 1.75 0 012 14.25V3.75C2 2.784 2.784 2 3.75 2H5V.75A.75.75 0 015.75 0z"/></svg>DeepScan</a>
+  <a class="s-link" href="#">Code Policies</a>
+  <a class="s-link" href="csi.html">Code Security Intelligence</a>
+  <div class="s-sec">Metrics</div>
+  <a class="s-link s-link--active" href="merge-report.html">
+    <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1.5 3.25a2.25 2.25 0 113 2.122v5.256a2.251 2.251 0 11-1.5 0V5.372A2.25 2.25 0 011.5 3.25zm5 0a.75.75 0 000 1.5h6a.75.75 0 000-1.5h-6zm0 5a.75.75 0 000 1.5h6a.75.75 0 000-1.5h-6zM4.5 12a.75.75 0 100 1.5.75.75 0 000-1.5z"/></svg>
+    Merge Report
+  </a>
+  <div class="s-sec">Settings</div>
+  <a class="s-link" href="configurations.html"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8.2 8.2 0 00-2.3.3c-.3.1-.5.4-.5.7v1.4a1 1 0 01-.6.9l-.5.3a1 1 0 01-1.1-.1L1.9 2.4c-.2-.2-.6-.2-.8 0A8 8 0 00.3 5.7c0 .3.2.6.5.7L2.2 7a1 1 0 01.5 1v.5a1 1 0 01-.5.9l-1.4.8c-.3.1-.5.4-.5.7a8 8 0 00.8 3.3c.2.3.5.3.8.1l1.1-1.1a1 1 0 011.1-.1l.5.3a1 1 0 01.6.9v1.4c0 .3.2.6.5.7a8.2 8.2 0 004.6 0c.3-.1.5-.4.5-.7v-1.4a1 1 0 01.6-.9l.5-.3a1 1 0 011.1.1l1.1 1.1c.2.2.6.2.8 0a8 8 0 00.8-3.3c0-.3-.2-.6-.5-.7L13.8 9a1 1 0 01-.5-1V7.5a1 1 0 01.5-.9l1.4-.8c.3-.1.5-.4.5-.7a8 8 0 00-.8-3.3c-.2-.3-.5-.3-.8-.1l-1.1 1.1a1 1 0 01-1.1.1l-.5-.3a1 1 0 01-.6-.9V.8c0-.3-.2-.6-.5-.7A8.2 8.2 0 008 0zM8 11a3 3 0 110-6 3 3 0 010 6z"/></svg>Configurations</a>
+  <a class="s-link" href="integrations.html">Integrations</a>
+  <div class="sidebar-spacer"></div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <div class="anno">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="#7c6ef0"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zm0 3a1 1 0 110 2 1 1 0 010-2zm2 9H6v-1h1V7H6V6h3v6h1v1z"/></svg>
+    <div><strong>New page.</strong> The Merge Report tracks PR merge quality — showing which PRs were merged with active findings (risk carried to main) vs. PRs where all findings were resolved before merge. <span class="ci-new">New</span></div>
+  </div>
+
+  <div class="page-header">
+    <div class="page-title">
+      Merge Report
+    </div>
+    <div class="page-sub">Track whether risks are being resolved before code lands in main</div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <select class="tb-select">
+      <option>Last 30 days</option>
+      <option>Last 7 days</option>
+      <option>Last 90 days</option>
+      <option>All time</option>
+    </select>
+    <select class="tb-select">
+      <option>All repositories</option>
+      <option>DryRunSec/dryrun-api</option>
+      <option>DryRunSec/reposture</option>
+      <option>DryRunSec/analyzers</option>
+    </select>
+    <div class="tb-sep"></div>
+    <button class="tb-btn">Export CSV</button>
+  </div>
+
+  <!-- Stat cards -->
+  <div class="stat-grid">
+    <div class="stat-card stat-card--total">
+      <div class="stat-card-label">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="var(--purple)"><path d="M1.5 3.25a2.25 2.25 0 113 2.122v5.256a2.251 2.251 0 11-1.5 0V5.372A2.25 2.25 0 011.5 3.25z"/></svg>
+        Total Merges
+      </div>
+      <div class="stat-card-value" style="color:var(--purple);">31</div>
+      <div class="stat-card-sub">PRs merged in the last 30 days across all repos</div>
+    </div>
+    <div class="stat-card stat-card--risk">
+      <div class="stat-card-label">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="var(--red)"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0114.082 15H1.918a1.75 1.75 0 01-1.543-2.575z"/></svg>
+        Merged with Risk
+      </div>
+      <div class="stat-card-value" style="color:var(--red);">8</div>
+      <div class="stat-card-sub">PRs merged while security findings were still open</div>
+    </div>
+    <div class="stat-card stat-card--improved">
+      <div class="stat-card-label">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="var(--green)"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"/></svg>
+        Improved PRs
+      </div>
+      <div class="stat-card-value" style="color:var(--green);">14</div>
+      <div class="stat-card-sub">PRs where all findings were resolved before merge</div>
+    </div>
+    <div class="stat-card stat-card--rate">
+      <div class="stat-card-label">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="var(--orange)"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zm0 3a1 1 0 110 2 1 1 0 010-2zm2 9H6v-1h1V7H6V6h3v6h1v1z"/></svg>
+        Risk Merge Rate
+      </div>
+      <div class="stat-card-value" style="color:var(--orange);">26%</div>
+      <div class="stat-card-sub">of merged PRs carried unresolved risk into main</div>
+    </div>
+  </div>
+
+  <!-- Trend chart -->
+  <div class="trend-section">
+    <div class="trend-header">
+      <div class="trend-title">Weekly Merge Breakdown</div>
+      <div class="trend-legend">
+        <div class="trend-legend-item"><div class="legend-dot" style="background:#fca5a5;"></div> Merged with risk</div>
+        <div class="trend-legend-item"><div class="legend-dot" style="background:#86efac;"></div> Improved PRs</div>
+      </div>
+    </div>
+    <div class="trend-chart">
+      <div class="trend-weeks" style="align-items:flex-end;">
+        <!-- Week bars: height in px proportional to count, max ~70px for 10 -->
+        <div class="trend-week">
+          <div class="trend-bar-wrap">
+            <div class="trend-bar trend-bar-risk" style="height:21px;"></div>
+            <div class="trend-bar trend-bar-improved" style="height:28px;"></div>
+          </div>
+          <div class="trend-week-label">Apr 14</div>
+        </div>
+        <div class="trend-week">
+          <div class="trend-bar-wrap">
+            <div class="trend-bar trend-bar-risk" style="height:14px;"></div>
+            <div class="trend-bar trend-bar-improved" style="height:42px;"></div>
+          </div>
+          <div class="trend-week-label">Apr 21</div>
+        </div>
+        <div class="trend-week">
+          <div class="trend-bar-wrap">
+            <div class="trend-bar trend-bar-risk" style="height:35px;"></div>
+            <div class="trend-bar trend-bar-improved" style="height:21px;"></div>
+          </div>
+          <div class="trend-week-label">Apr 28</div>
+        </div>
+        <div class="trend-week">
+          <div class="trend-bar-wrap">
+            <div class="trend-bar trend-bar-risk" style="height:7px;"></div>
+            <div class="trend-bar trend-bar-improved" style="height:49px;"></div>
+          </div>
+          <div class="trend-week-label">May 5</div>
+        </div>
+        <div class="trend-week">
+          <div class="trend-bar-wrap">
+            <div class="trend-bar trend-bar-risk" style="height:28px;"></div>
+            <div class="trend-bar trend-bar-improved" style="height:35px;"></div>
+          </div>
+          <div class="trend-week-label">May 12</div>
+        </div>
+        <div class="trend-week">
+          <div class="trend-bar-wrap">
+            <div class="trend-bar trend-bar-risk" style="height:21px;"></div>
+            <div class="trend-bar trend-bar-improved" style="height:56px;"></div>
+          </div>
+          <div class="trend-week-label">May 19</div>
+        </div>
+        <div class="trend-week">
+          <div class="trend-bar-wrap">
+            <div class="trend-bar trend-bar-risk" style="height:14px;"></div>
+            <div class="trend-bar trend-bar-improved" style="height:42px;"></div>
+          </div>
+          <div class="trend-week-label">May 26</div>
+        </div>
+        <div class="trend-week">
+          <div class="trend-bar-wrap">
+            <div class="trend-bar trend-bar-risk" style="height:21px;"></div>
+            <div class="trend-bar trend-bar-improved" style="height:35px;"></div>
+          </div>
+          <div class="trend-week-label">Jun 2</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PR Table -->
+  <div class="table-section">
+    <div class="table-section-header">
+      <div class="table-section-title">Merged Pull Requests</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="filter-tabs">
+          <button class="filter-tab filter-tab--active" onclick="filterPRs('all', this)">All <span class="tab-count tc-all">31</span></button>
+          <button class="filter-tab" onclick="filterPRs('risk', this)">Merged with Risk <span class="tab-count tc-risk">8</span></button>
+          <button class="filter-tab" onclick="filterPRs('improved', this)">Improved <span class="tab-count tc-improved">14</span></button>
+        </div>
+        <div class="search-wrap">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="var(--text-muted)"><path d="M10.68 11.74a6 6 0 01-7.922-8.982 6 6 0 018.982 7.922l3.04 3.04a.749.749 0 01-.326 1.275.749.749 0 01-.734-.215l-3.04-3.04zm-5.44.406a4.5 4.5 0 100-9 4.5 4.5 0 000 9z"/></svg>
+          <input class="search-input" type="text" placeholder="Search PRs...">
+        </div>
+      </div>
+    </div>
+    <table class="pr-table">
+      <thead>
+        <tr>
+          <th>Pull Request</th>
+          <th>Repo</th>
+          <th>Findings at Merge</th>
+          <th>Resolved</th>
+          <th>Top Severity</th>
+          <th>Merged by</th>
+          <th>Date</th>
+          <th>Outcome</th>
+        </tr>
+      </thead>
+      <tbody id="pr-table-body">
+        <tr data-outcome="risk">
+          <td><div class="pr-name">Add authentication bypass recovery flow</div><div class="pr-ref">#412 · fix/auth-bypass-recovery</div></td>
+          <td class="pr-repo">dryrun-api</td>
+          <td><span class="finding-count fc-risk">3</span></td>
+          <td><span class="finding-count fc-zero">0</span></td>
+          <td><span class="sev-pill sp-critical">Critical</span></td>
+          <td class="merged-by">wickett</td>
+          <td style="font-size:12px;color:var(--text-muted);white-space:nowrap;">May 19</td>
+          <td><span class="merge-status ms-risk"><svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0114.082 15H1.918a1.75 1.75 0 01-1.543-2.575z"/></svg> Merged with Risk</span></td>
+        </tr>
+        <tr data-outcome="improved">
+          <td><div class="pr-name">Move DB credentials to Vault</div><div class="pr-ref">#408 · fix/db-creds-vault</div></td>
+          <td class="pr-repo">dryrun-api</td>
+          <td><span class="finding-count fc-resolved">2</span></td>
+          <td><span class="finding-count fc-resolved">2</span></td>
+          <td><span class="sev-pill sp-high">High</span></td>
+          <td class="merged-by">cnichols-dry</td>
+          <td style="font-size:12px;color:var(--text-muted);white-space:nowrap;">May 18</td>
+          <td><span class="merge-status ms-improved"><svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"/></svg> Improved</span></td>
+        </tr>
+        <tr data-outcome="risk">
+          <td><div class="pr-name">Add analytics pipeline for scan metrics</div><div class="pr-ref">#405 · feat/scan-analytics</div></td>
+          <td class="pr-repo">reposture</td>
+          <td><span class="finding-count fc-risk">1</span></td>
+          <td><span class="finding-count fc-zero">0</span></td>
+          <td><span class="sev-pill sp-high">High</span></td>
+          <td class="merged-by">peterkarman1</td>
+          <td style="font-size:12px;color:var(--text-muted);white-space:nowrap;">May 17</td>
+          <td><span class="merge-status ms-risk"><svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0114.082 15H1.918a1.75 1.75 0 01-1.543-2.575z"/></svg> Merged with Risk</span></td>
+        </tr>
+        <tr data-outcome="improved">
+          <td><div class="pr-name">Refactor webhook handler auth</div><div class="pr-ref">#401 · refactor/webhook-auth</div></td>
+          <td class="pr-repo">dryrun-api</td>
+          <td><span class="finding-count fc-resolved">3</span></td>
+          <td><span class="finding-count fc-resolved">3</span></td>
+          <td><span class="sev-pill sp-high">High</span></td>
+          <td class="merged-by">wickett</td>
+          <td style="font-size:12px;color:var(--text-muted);white-space:nowrap;">May 16</td>
+          <td><span class="merge-status ms-improved"><svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"/></svg> Improved</span></td>
+        </tr>
+        <tr data-outcome="clean">
+          <td><div class="pr-name">Update dependency versions</div><div class="pr-ref">#399 · chore/deps-update</div></td>
+          <td class="pr-repo">analyzers</td>
+          <td><span class="finding-count fc-zero">0</span></td>
+          <td><span class="finding-count fc-zero">0</span></td>
+          <td style="font-size:11px;color:var(--text-muted);">—</td>
+          <td class="merged-by">cnichols-dry</td>
+          <td style="font-size:12px;color:var(--text-muted);white-space:nowrap;">May 15</td>
+          <td><span class="merge-status ms-clean">Clean</span></td>
+        </tr>
+        <tr data-outcome="improved">
+          <td><div class="pr-name">Fix SQL injection in search endpoint</div><div class="pr-ref">#396 · fix/sql-injection-search</div></td>
+          <td class="pr-repo">dryrun-api</td>
+          <td><span class="finding-count fc-resolved">1</span></td>
+          <td><span class="finding-count fc-resolved">1</span></td>
+          <td><span class="sev-pill sp-critical">Critical</span></td>
+          <td class="merged-by">cnichols-dry</td>
+          <td style="font-size:12px;color:var(--text-muted);white-space:nowrap;">May 14</td>
+          <td><span class="merge-status ms-improved"><svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"/></svg> Improved</span></td>
+        </tr>
+        <tr data-outcome="risk">
+          <td><div class="pr-name">Add Pinecone triage feedback to reviews</div><div class="pr-ref">#393 · feat/pinecone-triage</div></td>
+          <td class="pr-repo">reposture</td>
+          <td><span class="finding-count fc-risk">2</span></td>
+          <td><span class="finding-count fc-zero">0</span></td>
+          <td><span class="sev-pill sp-high">High</span></td>
+          <td class="merged-by">peterkarman1</td>
+          <td style="font-size:12px;color:var(--text-muted);white-space:nowrap;">May 13</td>
+          <td><span class="merge-status ms-risk"><svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0114.082 15H1.918a1.75 1.75 0 01-1.543-2.575z"/></svg> Merged with Risk</span></td>
+        </tr>
+        <tr data-outcome="improved">
+          <td><div class="pr-name">Remove hardcoded DB credentials from config</div><div class="pr-ref">#390 · fix/hardcoded-creds</div></td>
+          <td class="pr-repo">reposture</td>
+          <td><span class="finding-count fc-resolved">1</span></td>
+          <td><span class="finding-count fc-resolved">1</span></td>
+          <td><span class="sev-pill sp-high">High</span></td>
+          <td class="merged-by">wickett</td>
+          <td style="font-size:12px;color:var(--text-muted);white-space:nowrap;">May 12</td>
+          <td><span class="merge-status ms-improved"><svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"/></svg> Improved</span></td>
+        </tr>
+        <tr data-outcome="clean">
+          <td><div class="pr-name">Add rate limiting to API endpoints</div><div class="pr-ref">#388 · feat/rate-limiting</div></td>
+          <td class="pr-repo">dryrun-api</td>
+          <td><span class="finding-count fc-zero">0</span></td>
+          <td><span class="finding-count fc-zero">0</span></td>
+          <td style="font-size:11px;color:var(--text-muted);">—</td>
+          <td class="merged-by">cnichols-dry</td>
+          <td style="font-size:12px;color:var(--text-muted);white-space:nowrap;">May 11</td>
+          <td><span class="merge-status ms-clean">Clean</span></td>
+        </tr>
+        <tr data-outcome="risk">
+          <td><div class="pr-name">Integrate Codex for automated PR review</div><div class="pr-ref">#385 · feat/codex-integration</div></td>
+          <td class="pr-repo">analyzers</td>
+          <td><span class="finding-count fc-risk">4</span></td>
+          <td><span class="finding-count fc-resolved">2</span></td>
+          <td><span class="sev-pill sp-critical">Critical</span></td>
+          <td class="merged-by">wickett</td>
+          <td style="font-size:12px;color:var(--text-muted);white-space:nowrap;">May 10</td>
+          <td><span class="merge-status ms-risk"><svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0114.082 15H1.918a1.75 1.75 0 01-1.543-2.575z"/></svg> Merged with Risk</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="padding:10px 18px;border-top:1px solid var(--border-light);font-size:12px;color:var(--text-muted);background:var(--surface-alt);">Showing 10 of 31 merged PRs — <span style="color:var(--purple);cursor:pointer;">Load more</span></div>
+  </div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+
+<script>
+function filterPRs(type, btn) {
+  // Update tab state
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('filter-tab--active'));
+  btn.classList.add('filter-tab--active');
+
+  // Filter rows
+  document.querySelectorAll('#pr-table-body tr').forEach(row => {
+    if (type === 'all') {
+      row.style.display = '';
+    } else {
+      row.style.display = row.dataset.outcome === type ? '' : 'none';
+    }
+  });
+}
+</script>
+
+<script src="gate.js"></script>
+</body>
+</html>
