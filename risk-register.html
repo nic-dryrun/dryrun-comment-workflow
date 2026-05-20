@@ -193,7 +193,8 @@
     .rsb-fp { background: #f0f0f0; color: var(--text-muted); border: 1px solid var(--border); }
 
     /* ── DETAIL PANE ── */
-    .detail-pane { width: 500px; flex-shrink: 0; border-left: 1px solid var(--border); background: var(--surface); display: flex; flex-direction: column; overflow: hidden; }
+    .detail-pane { width: 500px; flex-shrink: 0; border-left: 1px solid var(--border); background: var(--surface); display: flex; flex-direction: column; overflow: hidden; transition: width 0.2s ease; }
+    .detail-pane--collapsed { width: 0; border-left: none; }
     .dp-header { padding: 16px 18px 12px; border-bottom: 1px solid var(--border-light); display: flex; align-items: flex-start; gap: 10px; }
     .dp-title { font-size: 15px; font-weight: 700; flex: 1; line-height: 1.3; }
     .dp-close { width: 26px; height: 26px; border: 1px solid var(--border); border-radius: 6px; background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); flex-shrink: 0; }
@@ -483,7 +484,7 @@
       </div>
 
       <!-- R1: Critical active risk -->
-      <div class="finding-row finding-row--selected" data-sev="critical" data-merge="risk" data-status="active" onclick="selectRow(this)">
+      <div class="finding-row finding-row--selected" id="first-row" data-sev="critical" data-merge="risk" data-status="active" onclick="openFinding(this)">
         <input type="checkbox" class="row-checkbox" onclick="event.stopPropagation()" onchange="updateDismissBtn()">
         <div><span class="sev-badge sev-critical">Critical</span></div>
         <div class="row-type">Authentication Bypass: Incomplete We...</div>
@@ -629,11 +630,11 @@
     </div><!-- /list-pane -->
 
     <!-- DETAIL PANE -->
-    <div class="detail-pane">
+    <div class="detail-pane" id="detail-pane">
       <div class="dp-header">
         <span class="sev-badge sev-critical" style="flex-shrink:0;">Critical</span>
         <div class="dp-title">Authentication Bypass: Incomplete Webhook Verification</div>
-        <button class="dp-close">
+        <button class="dp-close" onclick="closeDetailPane()">
           <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"/></svg>
         </button>
       </div>
@@ -991,6 +992,42 @@ function closeExportMenu()   { document.getElementById('export-menu').classList.
 // ══════════════════════════════════════════
 function openDismissModal()  { document.getElementById('dismiss-modal').classList.add('open'); }
 function closeDismissModal() { document.getElementById('dismiss-modal').classList.remove('open'); }
+
+// ══════════════════════════════════════════
+//  DETAIL PANE OPEN / CLOSE
+// ══════════════════════════════════════════
+function closeDetailPane() {
+  const pane = document.getElementById('detail-pane');
+  pane.classList.add('detail-pane--collapsed');
+  // Deselect all rows
+  document.querySelectorAll('.finding-row').forEach(r => r.classList.remove('finding-row--selected'));
+}
+
+// Regular row click — open pane on Finding Details tab
+function selectRow(el) {
+  document.querySelectorAll('.finding-row').forEach(r => r.classList.remove('finding-row--selected'));
+  el.classList.add('finding-row--selected');
+  openDetailPane('finding-details');
+}
+
+// First row click — open pane on History tab
+function openFinding(el) {
+  document.querySelectorAll('.finding-row').forEach(r => r.classList.remove('finding-row--selected'));
+  el.classList.add('finding-row--selected');
+  openDetailPane('history');
+}
+
+function openDetailPane(tabId) {
+  const pane = document.getElementById('detail-pane');
+  pane.classList.remove('detail-pane--collapsed');
+  // Switch to the specified tab
+  document.querySelectorAll('.dp-tab').forEach(t => t.classList.remove('dp-tab--active'));
+  document.querySelectorAll('.dp-panel').forEach(p => p.classList.remove('dp-panel--active'));
+  const tabBtn = document.querySelector(`.dp-tab[onclick*="${tabId}"]`);
+  if (tabBtn) tabBtn.classList.add('dp-tab--active');
+  const panel = document.getElementById('panel-' + tabId);
+  if (panel) panel.classList.add('dp-panel--active');
+}
 </script>
 
 
